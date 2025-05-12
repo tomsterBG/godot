@@ -474,6 +474,12 @@
 				Returns this node's parent node, or [code]null[/code] if the node doesn't have a parent.
 			</description>
 		</method>
+		<method name="get_grandparent" qualifiers="const">
+			<return type="Node" />
+			<description>
+				Works like [method get_parent].[method get_parent] so it returns the parent parent (grandparent) or [code]null[/code].
+			</description>
+		</method>
 		<method name="get_path" qualifiers="const">
 			<return type="NodePath" />
 			<description>
