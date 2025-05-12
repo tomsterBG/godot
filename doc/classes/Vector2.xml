@@ -321,11 +321,24 @@
 				Returns a new vector moved toward [param to] by the fixed [param delta] amount. Will not go past the final value.
 			</description>
 		</method>
+		<method name="normalize" qualifiers="const">
+			<return type="Vector2" />
+			<description>
+				Scales the vector to unit length directly without copying it (slightly faster than [method normalized]). Similar to [code]v / v.length()[/code]. The vector will be equal to [code](0, 0)[/code] if [code]v.length() == 0[/code]. See also [method is_normalized].
+				[b]Note:[/b] This function may set incorrect values if the input vector length is near zero.
+			</description>
+		</method>
 		<method name="normalized" qualifiers="const">
 			<return type="Vector2" />
 			<description>
 				Returns the result of scaling the vector to unit length. Equivalent to [code]v / v.length()[/code]. Returns [code](0, 0)[/code] if [code]v.length() == 0[/code]. See also [method is_normalized].
 				[b]Note:[/b] This function may return incorrect values if the input vector length is near zero.
+			</description>
+		</method>
+		<method name="reverse" qualifiers="const">
+			<return type="Vector2" />
+			<description>
+				Reverses the vector directly without copying it. Equivalent to [code]-v[/code].
 			</description>
 		</method>
 		<method name="orthogonal" qualifiers="const">
