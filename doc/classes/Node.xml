@@ -508,6 +508,12 @@
 				Returns this node's parent node, or [code]null[/code] if the node doesn't have a parent.
 			</description>
 		</method>
+		<method name="get_grandparent" qualifiers="const">
+			<return type="Node" />
+			<description>
+				Returns this node's grandparent node, or [code]null[/code] if the node doesn't have a grandparent.
+			</description>
+		</method>
 		<method name="get_path" qualifiers="const">
 			<return type="NodePath" />
 			<description>
