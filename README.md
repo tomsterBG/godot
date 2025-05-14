@@ -76,3 +76,16 @@ for more information.
 [![Code Triagers Badge](https://www.codetriage.com/godotengine/godot/badges/users.svg)](https://www.codetriage.com/godotengine/godot)
 [![Translate on Weblate](https://hosted.weblate.org/widgets/godot-engine/-/godot/svg-badge.svg)](https://hosted.weblate.org/engage/godot-engine/?utm_source=widget)
 [![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/godotengine/godot)](https://www.tickgit.com/browse?repo=github.com/godotengine/godot)
+
+## Branch <version>++
+
+This branch extends the `godot/master` version of my choice with my own changes.
+Every time i want to update:
+- Find the latest commit of a specific version in `godot/master` with the help of <https://godotengine.github.io/godot-interactive-changelog>.
+- Run and test the editor compiled in that commit.
+- Update `tomsterBG/godot/master` to have the latest updates locally.
+- Use `git checkout -b <version>++ commit-hash` and use the hash of the found commit.
+- Add all commits from the latest `<version>++` branch, to this new one.
+
+All new features should have unit tests and documentation.
+To prevent merge conflicts i should not commit doc changes or similar cosmetic edits. Only well-planned features in separate branches.
