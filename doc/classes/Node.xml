@@ -361,6 +361,12 @@
 				If [param include_internal] is [code]false[/code], excludes internal children from the returned array (see [method add_child]'s [code]internal[/code] parameter).
 			</description>
 		</method>
+		<method name="get_grandparent" qualifiers="const">
+			<return type="Node" />
+			<description>
+				Returns this node's grandparent node, or [code]null[/code] if the node doesn't have a grandparent.
+			</description>
+		</method>
 		<method name="get_groups" qualifiers="const">
 			<return type="StringName[]" />
 			<description>
