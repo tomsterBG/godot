@@ -23,6 +23,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - name: Editor (target=editor)
+            cache-name: linux-editor
+            target: editor
+            bin: ./bin/godot.linuxbsd.editor.x86_64
+            build-mono: false
+            tests: true
+            doc-test: true
+            proj-conv: true
+            api-compat: true
+            artifact: true
+            cache-limit: 2
+
           - name: Editor w/ Mono (target=editor)
             cache-name: linux-editor-mono
             target: editor
@@ -33,7 +45,7 @@ jobs:
             doc-test: true
             proj-conv: true
             api-compat: true
-            artifact: true
+            artifact: false
             # Validate godot-cpp compatibility on one arbitrary editor build.
             godot-cpp: true
             cache-limit: 2
