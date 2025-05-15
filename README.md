@@ -76,3 +76,17 @@ for more information.
 [![Code Triagers Badge](https://www.codetriage.com/godotengine/godot/badges/users.svg)](https://www.codetriage.com/godotengine/godot)
 [![Translate on Weblate](https://hosted.weblate.org/widgets/godot-engine/-/godot/svg-badge.svg)](https://hosted.weblate.org/engage/godot-engine/?utm_source=widget)
 [![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/godotengine/godot)](https://www.tickgit.com/browse?repo=github.com/godotengine/godot)
+
+## Branch \<version>++
+
+This branch extends the `godot` version of my choice with my own changes.
+Every time i want to update:
+- Find the commit of the version i want to modify. Ways to find the commit are from the bottom right in the engine and from <https://godotengine.github.io/godot-interactive-changelog>.
+- Run and test the editor compiled in that commit. Some unstable editors have bugs so it's best to stick to stable releases.
+- Update `tomsterBG/godot/<version>` to the latest updates and fetch locally.
+- Use `git checkout -b <version>++ commit-hash` and use the hash of the found commit. When doing this, you must locally be on the branch containing this commit.
+- Add all commits from the latest `<version>++` branch, to the new one.
+
+All new features should have unit tests and documentation.
+To prevent overrides where i don't want them, i should not commit doc changes or similar cosmetic edits that would be better contributed to `godot/master`.
+Only commit well-made features from separate branches and stuff that are unlikely to be added to the official engine.
