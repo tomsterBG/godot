@@ -110,6 +110,7 @@ TEST_CASE("[SceneTree][Node] Testing node operations with a very simple scene tr
 	CHECK(node->get_name() == StringName());
 	CHECK_FALSE(node->is_inside_tree());
 	CHECK_EQ(node->get_parent(), nullptr);
+	CHECK_EQ(node->get_grandparent(), nullptr);
 	ERR_PRINT_OFF;
 	CHECK(node->get_path().is_empty());
 	ERR_PRINT_ON;
@@ -123,6 +124,7 @@ TEST_CASE("[SceneTree][Node] Testing node operations with a very simple scene tr
 	CHECK(node->get_name() != StringName());
 	CHECK(node->is_inside_tree());
 	CHECK_EQ(SceneTree::get_singleton()->get_root(), node->get_parent());
+	CHECK_EQ(node->get_grandparent(), nullptr);
 	CHECK_FALSE(node->get_path().is_empty());
 	CHECK_EQ(node->get_child_count(), 0);
 
@@ -232,6 +234,7 @@ TEST_CASE("[SceneTree][Node] Testing node operations with a more complex simple 
 
 	CHECK(node1_1->is_inside_tree());
 	CHECK_EQ(node1_1->get_parent(), node1);
+	CHECK_EQ(node1_1->get_grandparent(), node1->get_parent());
 	CHECK_EQ(node1->get_child_count(), 1);
 
 	CHECK_EQ(SceneTree::get_singleton()->get_root()->get_child_count(), 2);
