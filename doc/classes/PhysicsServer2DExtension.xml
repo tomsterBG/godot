@@ -895,6 +895,16 @@
 				Overridable version of [method PhysicsServer2D.joint_make_pin].
 			</description>
 		</method>
+		<method name="_joint_make_weld" qualifiers="virtual">
+			<return type="void" />
+			<param index="0" name="joint" type="RID" />
+			<param index="1" name="anchor" type="Vector2" />
+			<param index="2" name="body_a" type="RID" />
+			<param index="3" name="body_b" type="RID" />
+			<description>
+				Overridable version of [method PhysicsServer2D.joint_make_weld].
+			</description>
+		</method>
 		<method name="_joint_set_param" qualifiers="virtual">
 			<return type="void" />
 			<param index="0" name="joint" type="RID" />

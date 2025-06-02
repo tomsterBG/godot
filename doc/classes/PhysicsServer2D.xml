@@ -845,6 +845,16 @@
 				Makes the joint a pin joint. If [param body_b] is an empty [RID], then [param body_a] is pinned to the point [param anchor] (given in global coordinates); otherwise, [param body_a] is pinned to [param body_b] at the point [param anchor] (given in global coordinates). To set the parameters which are specific to the pin joint, see [method pin_joint_set_param].
 			</description>
 		</method>
+		<method name="joint_make_weld">
+			<return type="void" />
+			<param index="0" name="joint" type="RID" />
+			<param index="1" name="anchor" type="Vector2" />
+			<param index="2" name="body_a" type="RID" />
+			<param index="3" name="body_b" type="RID" default="RID()" />
+			<description>
+				Makes the joint a weld joint.
+			</description>
+		</method>
 		<method name="joint_set_param">
 			<return type="void" />
 			<param index="0" name="joint" type="RID" />
@@ -1174,7 +1184,10 @@
 		<constant name="JOINT_TYPE_DAMPED_SPRING" value="2" enum="JointType">
 			Constant to create damped spring joints.
 		</constant>
-		<constant name="JOINT_TYPE_MAX" value="3" enum="JointType">
+		<constant name="JOINT_TYPE_WELD" value="3" enum="JointType">
+			Constant to create weld joints.
+		</constant>
+		<constant name="JOINT_TYPE_MAX" value="4" enum="JointType">
 			Represents the size of the [enum JointType] enum.
 		</constant>
 		<constant name="JOINT_PARAM_BIAS" value="0" enum="JointParam">
