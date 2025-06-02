@@ -4,7 +4,7 @@
 		A physics joint that rigidly connects two 2D physics bodies at a single point.
 	</brief_description>
 	<description>
-		A physics joint that rigidly connects two 2D physics bodies at a single point. For example, several bodies can be attached to create a complex body.[br][br][b]Note:[/b] [PinJoint2D] behaves similarly when you set [member PinJoint2D.angular_limit_lower] and [member PinJoint2D.angular_limit_upper] to [param 0], but [WeldJoint2D] is simpler and faster.
+		A physics joint that rigidly connects two 2D physics bodies at a single point. For example, several bodies can be attached to create a complex body.[br][br][b]Note:[/b] [PinJoint2D] behaves similarly when you set [member PinJoint2D.angular_limit_lower] and [member PinJoint2D.angular_limit_upper] to 0, but [WeldJoint2D] is simpler and faster.
 	</description>
 	<tutorials>
 	</tutorials>

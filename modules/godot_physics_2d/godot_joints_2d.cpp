@@ -694,7 +694,7 @@ void GodotWeldJoint2D::solve(real_t p_step) {
 	} else {
 		rel_vel = -vA;
 	}
-	
+
 	if (B) {
 		// Compute relative rotational velocity.
 		real_t wr = B->get_angular_velocity() - A->get_angular_velocity();
