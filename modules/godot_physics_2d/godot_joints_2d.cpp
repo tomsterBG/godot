@@ -673,7 +673,7 @@ bool GodotWeldJoint2D::pre_solve(real_t p_step) {
 	i_sum = 1.0 / (i_sum_local);
 	if (B) {
 		real_t angular_error = (B->get_transform().get_rotation() - A->get_transform().get_rotation()) - initial_angle;
-		angular_error = Math::wrapf((real_t)-Math_PI, (real_t)Math_PI);
+		angular_error = Math::wrapf(angular_error, (real_t)-Math_PI, (real_t)Math_PI);
 		real_t error_bias = Math::pow(1.0 - 0.15, 60.0);
 		// Calculate bias velocity.
 		bias_velocity = -CLAMP((-1.0 - Math::pow(error_bias, p_step)) * angular_error / p_step, -get_max_bias(), get_max_bias());
