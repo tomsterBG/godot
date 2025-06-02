@@ -315,6 +315,7 @@ void PhysicsServer2DExtension::_bind_methods() {
 	GDVIRTUAL_BIND(_joint_make_pin, "joint", "anchor", "body_a", "body_b");
 	GDVIRTUAL_BIND(_joint_make_groove, "joint", "a_groove1", "a_groove2", "b_anchor", "body_a", "body_b");
 	GDVIRTUAL_BIND(_joint_make_damped_spring, "joint", "anchor_a", "anchor_b", "body_a", "body_b");
+	GDVIRTUAL_BIND(_joint_make_weld, "joint", "anchor", "body_a", "body_b");
 
 	GDVIRTUAL_BIND(_pin_joint_set_flag, "joint", "flag", "enabled");
 	GDVIRTUAL_BIND(_pin_joint_get_flag, "joint", "flag");

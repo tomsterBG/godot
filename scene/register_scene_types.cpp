@@ -193,6 +193,7 @@
 #include "scene/2d/physics/joints/groove_joint_2d.h"
 #include "scene/2d/physics/joints/joint_2d.h"
 #include "scene/2d/physics/joints/pin_joint_2d.h"
+#include "scene/2d/physics/joints/weld_joint_2d.h"
 #include "scene/2d/physics/kinematic_collision_2d.h"
 #include "scene/2d/physics/physical_bone_2d.h"
 #include "scene/2d/physics/physics_body_2d.h"
@@ -836,6 +837,7 @@ void register_scene_types() {
 	GDREGISTER_CLASS(PinJoint2D);
 	GDREGISTER_CLASS(GrooveJoint2D);
 	GDREGISTER_CLASS(DampedSpringJoint2D);
+	GDREGISTER_CLASS(WeldJoint2D);
 	GDREGISTER_CLASS(TileSet);
 	GDREGISTER_ABSTRACT_CLASS(TileSetSource);
 	GDREGISTER_CLASS(TileSetAtlasSource);

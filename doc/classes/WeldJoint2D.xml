@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="WeldJoint2D" inherits="Joint2D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A physics joint that rigidly connects two 2D physics bodies at a single point.
+	</brief_description>
+	<description>
+		A physics joint that rigidly connects two 2D physics bodies at a single point. For example, several bodies can be attached to create a complex body.[br][br][b]Note:[/b] [PinJoint2D] behaves similarly when you set [member PinJoint2D.angular_limit_lower] and [member PinJoint2D.angular_limit_upper] to [param 0], but [WeldJoint2D] is simpler and faster.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+	</members>
+</class>

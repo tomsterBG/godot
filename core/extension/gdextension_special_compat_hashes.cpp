@@ -639,6 +639,7 @@ void GDExtensionSpecialCompatHashes::initialize() {
 		{ "joint_make_pin", 2288600450, 1612646186 },
 		{ "joint_make_groove", 3573265764, 481430435 },
 		{ "joint_make_damped_spring", 206603952, 1994657646 },
+		// TODO add joint_make_weld ?
 	});
 	mappings.insert("PhysicsServer3D", {
 #ifdef REAL_T_IS_DOUBLE

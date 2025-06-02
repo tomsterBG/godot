@@ -289,6 +289,7 @@ public:
 	FUNC4(joint_make_pin, RID, const Vector2 &, RID, RID);
 	FUNC6(joint_make_groove, RID, const Vector2 &, const Vector2 &, const Vector2 &, RID, RID);
 	FUNC5(joint_make_damped_spring, RID, const Vector2 &, const Vector2 &, RID, RID);
+	FUNC4(joint_make_weld, RID, const Vector2 &, RID, RID);
 
 	FUNC3(pin_joint_set_param, RID, PinJointParam, real_t);
 	FUNC2RC(real_t, pin_joint_get_param, RID, PinJointParam);

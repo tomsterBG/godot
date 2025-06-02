@@ -593,3 +593,140 @@ GodotDampedSpringJoint2D::GodotDampedSpringJoint2D(const Vector2 &p_anchor_a, co
 	A->add_constraint(this, 0);
 	B->add_constraint(this, 1);
 }
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+
+bool GodotWeldJoint2D::setup(real_t p_step) {
+	dynamic_A = (A->get_mode() > PhysicsServer2D::BODY_MODE_KINEMATIC);
+	dynamic_B = (B->get_mode() > PhysicsServer2D::BODY_MODE_KINEMATIC);
+
+	if (!dynamic_A && !dynamic_B) {
+		return false;
+	}
+
+	GodotSpace2D *space = A->get_space();
+	ERR_FAIL_NULL_V(space, false);
+
+	rA = A->get_transform().basis_xform(anchor_A);
+	rB = B ? B->get_transform().basis_xform(anchor_B) : anchor_B;
+
+	real_t B_inv_mass = B ? B->get_inv_mass() : 0.0;
+
+	Transform2D K1;
+	K1[0].x = A->get_inv_mass() + B_inv_mass;
+	K1[1].x = 0.0f;
+	K1[0].y = 0.0f;
+	K1[1].y = A->get_inv_mass() + B_inv_mass;
+
+	Vector2 r1 = A->get_transform().basis_xform(anchor_A - A->get_center_of_mass()); // used to be rA - A->get_center_of_mass()
+
+	Transform2D K2;
+	K2[0].x = A->get_inv_inertia() * r1.y * r1.y;
+	K2[1].x = -A->get_inv_inertia() * r1.x * r1.y;
+	K2[0].y = -A->get_inv_inertia() * r1.x * r1.y;
+	K2[1].y = A->get_inv_inertia() * r1.x * r1.x;
+
+	Transform2D K;
+	K[0] = K1[0] + K2[0];
+	K[1] = K1[1] + K2[1];
+
+	if (B) {
+		Vector2 r2 = B->get_transform().basis_xform(anchor_B - B->get_center_of_mass()); // used to be rB - B->get_center_of_mass()
+
+		Transform2D K3;
+		K3[0].x = B->get_inv_inertia() * r2.y * r2.y;
+		K3[1].x = -B->get_inv_inertia() * r2.x * r2.y;
+		K3[0].y = -B->get_inv_inertia() * r2.x * r2.y;
+		K3[1].y = B->get_inv_inertia() * r2.x * r2.x;
+
+		K[0] += K3[0];
+		K[1] += K3[1];
+	}
+
+	M = K.affine_inverse();
+
+	Vector2 gA = rA + A->get_transform().get_origin();
+	Vector2 gB = B ? rB + B->get_transform().get_origin() : rB;
+
+	Vector2 delta = gB - gA;
+
+	bias = delta * -(get_bias() == 0 ? space->get_constraint_bias() : get_bias()) * (1.0 / p_step);
+
+	return true;
+}
+
+bool GodotWeldJoint2D::pre_solve(real_t p_step) {
+	// Apply accumulated impulse.
+	if (dynamic_A) {
+		A->apply_impulse(-P, rA);
+	}
+	if (B && dynamic_B) {
+		B->apply_impulse(P, rB);
+	}
+
+	real_t i_sum_local = A->get_inv_inertia();
+	if (B) {
+		i_sum_local += B->get_inv_inertia();
+	}
+	i_sum = 1.0 / (i_sum_local);
+	if (B) {
+		real_t angular_error = (B->get_angle() - A->get_angle()) - initial_angle;
+		angular_error = Math::wrapf(angular_error, -Math_PI, Math_PI);
+		real_t error_bias = Math::pow(1.0 - 0.15, 60.0);
+		// Calculate bias velocity.
+		bias_velocity = -CLAMP((-1.0 - Math::pow(error_bias, p_step)) * angular_error / p_step, -get_max_bias(), get_max_bias());
+	}
+
+	return true;
+}
+
+void GodotWeldJoint2D::solve(real_t p_step) {
+	// Compute relative velocity.
+	Vector2 r1 = A->get_transform().basis_xform(anchor_A - A->get_center_of_mass());
+	Vector2 vA = A->get_linear_velocity() + Vector2(-A->get_angular_velocity() * r1.y, A->get_angular_velocity() * r1.x);
+
+	Vector2 rel_vel;
+	if (B) {
+		Vector2 r2 = B->get_transform().basis_xform(anchor_B - B->get_center_of_mass());
+		rel_vel = B->get_linear_velocity() + Vector2(-B->get_angular_velocity() * r2.y, B->get_angular_velocity() * r2.x) - vA;
+	} else {
+		rel_vel = -vA;
+	}
+	
+	if (B) {
+		// Compute relative rotational velocity.
+		real_t wr = B->get_angular_velocity() - A->get_angular_velocity();
+		// Compute normal impulse.
+		real_t j = -(bias_velocity + wr) * i_sum;
+		j_acc += j;
+		A->apply_torque_impulse(-j * A->get_inv_inertia());
+		B->apply_torque_impulse(j * B->get_inv_inertia());
+	}
+
+	Vector2 impulse = M.basis_xform(bias - rel_vel);
+
+	if (dynamic_A) {
+		A->apply_impulse(-impulse, rA);
+	}
+	if (B && dynamic_B) {
+		B->apply_impulse(impulse, rB);
+	}
+
+	P += impulse;
+}
+
+GodotWeldJoint2D::GodotWeldJoint2D(const Vector2 &p_pos, GodotBody2D *p_body_a, GodotBody2D *p_body_b) :
+		GodotJoint2D(_arr, p_body_b ? 2 : 1) {
+	A = p_body_a;
+	B = p_body_b;
+	anchor_A = p_body_a->get_inv_transform().xform(p_pos);
+	anchor_B = p_body_b ? p_body_b->get_inv_transform().xform(p_pos) : p_pos;
+
+	p_body_a->add_constraint(this, 0);
+	if (p_body_b) {
+		p_body_b->add_constraint(this, 1);
+		initial_angle = B->get_angle() - A->get_angle();
+	}
+}

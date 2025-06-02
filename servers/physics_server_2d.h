@@ -533,6 +533,7 @@ public:
 		JOINT_TYPE_PIN,
 		JOINT_TYPE_GROOVE,
 		JOINT_TYPE_DAMPED_SPRING,
+		JOINT_TYPE_WELD,
 		JOINT_TYPE_MAX
 	};
 
@@ -551,6 +552,7 @@ public:
 	virtual void joint_make_pin(RID p_joint, const Vector2 &p_anchor, RID p_body_a, RID p_body_b = RID()) = 0;
 	virtual void joint_make_groove(RID p_joint, const Vector2 &p_a_groove1, const Vector2 &p_a_groove2, const Vector2 &p_b_anchor, RID p_body_a, RID p_body_b) = 0;
 	virtual void joint_make_damped_spring(RID p_joint, const Vector2 &p_anchor_a, const Vector2 &p_anchor_b, RID p_body_a, RID p_body_b = RID()) = 0;
+	virtual void joint_make_weld(RID p_joint, const Vector2 &p_anchor, RID p_body_a, RID p_body_b = RID()) = 0;
 
 	enum PinJointParam {
 		PIN_JOINT_SOFTNESS,

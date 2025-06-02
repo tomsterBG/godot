@@ -189,4 +189,35 @@ public:
 	GodotDampedSpringJoint2D(const Vector2 &p_anchor_a, const Vector2 &p_anchor_b, GodotBody2D *p_body_a, GodotBody2D *p_body_b);
 };
 
+class GodotWeldJoint2D : public GodotJoint2D {
+	union {
+		struct {
+			GodotBody2D *A;
+			GodotBody2D *B;
+		};
+
+		GodotBody2D *_arr[2] = { nullptr, nullptr };
+	};
+// TODO review and improve, add what is needed and remove what isn't
+	Transform2D M;
+	Vector2 rA, rB;
+	Vector2 anchor_A;
+	Vector2 anchor_B;
+	Vector2 bias;
+	real_t initial_angle = 0.0;
+	real_t bias_velocity = 0.0;
+	real_t j_acc = 0.0;
+	real_t i_sum = 0.0;
+	Vector2 P;
+
+public:
+	virtual PhysicsServer2D::JointType get_type() const override { return PhysicsServer2D::JOINT_TYPE_WELD; }
+
+	virtual bool setup(real_t p_step) override;
+	virtual bool pre_solve(real_t p_step) override;
+	virtual void solve(real_t p_step) override;
+
+	GodotWeldJoint2D(const Vector2 &p_pos, GodotBody2D *p_body_a, GodotBody2D *p_body_b = nullptr);
+};
+
 #endif // GODOT_JOINTS_2D_H

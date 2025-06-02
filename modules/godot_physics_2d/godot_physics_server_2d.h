@@ -274,6 +274,7 @@ public:
 	virtual void joint_make_pin(RID p_joint, const Vector2 &p_anchor, RID p_body_a, RID p_body_b = RID()) override;
 	virtual void joint_make_groove(RID p_joint, const Vector2 &p_a_groove1, const Vector2 &p_a_groove2, const Vector2 &p_b_anchor, RID p_body_a, RID p_body_b) override;
 	virtual void joint_make_damped_spring(RID p_joint, const Vector2 &p_anchor_a, const Vector2 &p_anchor_b, RID p_body_a, RID p_body_b = RID()) override;
+	virtual void joint_make_weld(RID p_joint, const Vector2 &p_anchor, RID p_body_a, RID p_body_b = RID()) override;
 
 	virtual void pin_joint_set_flag(RID p_joint, PinJointFlag p_flag, bool p_enabled) override;
 	virtual bool pin_joint_get_flag(RID p_joint, PinJointFlag p_flag) const override;

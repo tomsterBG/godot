@@ -1158,6 +1158,25 @@ void GodotPhysicsServer2D::joint_make_damped_spring(RID p_joint, const Vector2 &
 	memdelete(prev_joint);
 }
 
+void GodotPhysicsServer2D::joint_make_weld(RID p_joint, const Vector2 &p_pos, RID p_body_a, RID p_body_b) {
+	GodotBody2D *A = body_owner.get_or_null(p_body_a);
+	ERR_FAIL_NULL(A);
+	GodotBody2D *B = nullptr;
+	if (body_owner.owns(p_body_b)) {
+		B = body_owner.get_or_null(p_body_b);
+		ERR_FAIL_NULL(B);
+	}
+
+	GodotJoint2D *prev_joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(prev_joint);
+
+	GodotJoint2D *joint = memnew(GodotWeldJoint2D(p_pos, A, B));
+
+	joint_owner.replace(p_joint, joint);
+	joint->copy_settings_from(prev_joint);
+	memdelete(prev_joint);
+}
+
 void GodotPhysicsServer2D::pin_joint_set_flag(RID p_joint, PinJointFlag p_flag, bool p_enabled) {
 	GodotJoint2D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
