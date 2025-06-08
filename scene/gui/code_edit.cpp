@@ -2148,7 +2148,6 @@ void CodeEdit::set_code_completion_prefixes(const TypedArray<String> &p_prefixes
 	for (int i = 0; i < p_prefixes.size(); i++) {
 		const String prefix = p_prefixes[i];
 
-		ERR_CONTINUE_MSG(prefix.is_empty(), "Code completion prefix cannot be empty.");
 		code_completion_prefixes.insert(prefix[0]);
 	}
 }
@@ -2687,6 +2686,20 @@ Ref<Texture2D> CodeEdit::_get_folded_eol_icon() const {
 	return theme_cache.folded_eol_icon;
 }
 
+PackedStringArray CodeEdit::get_configuration_warnings() const {
+	PackedStringArray warnings = TextEdit::get_configuration_warnings();
+
+	for (int i = 0; i < code_completion_prefixes.size(); i++) {
+		const String prefix = code_completion_prefixes[i];
+
+		if (prefix.is_empty()) {
+			warnings.push_back(RTR("Code completion prefix cannot be empty."));
+		}
+	}
+
+	return warnings;
+}
+
 void CodeEdit::_bind_methods() {
 	/* Indent management */
 	ClassDB::bind_method(D_METHOD("set_indent_size", "size"), &CodeEdit::set_indent_size);
@@ -2834,7 +2847,7 @@ void CodeEdit::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(LOCATION_LOCAL);
 	BIND_ENUM_CONSTANT(LOCATION_PARENT_MASK);
-	BIND_ENUM_CONSTANT(LOCATION_OTHER_USER_CODE)
+	BIND_ENUM_CONSTANT(LOCATION_OTHER_USER_CODE);
 	BIND_ENUM_CONSTANT(LOCATION_OTHER);
 
 	ClassDB::bind_method(D_METHOD("get_text_for_code_completion"), &CodeEdit::get_text_for_code_completion);
@@ -2857,9 +2870,10 @@ void CodeEdit::_bind_methods() {
 
 	// Overridable
 
-	GDVIRTUAL_BIND(_confirm_code_completion, "replace")
-	GDVIRTUAL_BIND(_request_code_completion, "force")
-	GDVIRTUAL_BIND(_filter_code_completion_candidates, "candidates")
+	GDVIRTUAL_BIND(_confirm_code_completion, "replace");
+	GDVIRTUAL_BIND(_request_code_completion, "force");
+	GDVIRTUAL_BIND(_filter_code_completion_candidates, "candidates");
+	GDVIRTUAL_BIND(_get_configuration_warnings);
 
 	/* Line length guidelines */
 	ClassDB::bind_method(D_METHOD("set_line_length_guidelines", "guideline_columns"), &CodeEdit::set_line_length_guidelines);
@@ -3404,7 +3418,11 @@ void CodeEdit::_set_delimiters(const TypedArray<String> &p_delimiters, Delimiter
 		String key = p_delimiters[i];
 
 		if (key.is_empty()) {
-			continue;
+			if (p_type == DelimiterType::TYPE_COMMENT) {
+				key = "#";
+			} else if (p_type == DelimiterType::TYPE_STRING) {
+				key = "\" \"";
+			}
 		}
 
 		const String start_key = key.get_slicec(' ', 0);

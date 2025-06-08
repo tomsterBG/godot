@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+// TODO: Add testcase that fails if you can't append to properties of TypedArray<String> such as delimiter_strings, delimiter_comments and code_completion_prefixes
+
 #pragma once
 
 #include "scene/gui/code_edit.h"
