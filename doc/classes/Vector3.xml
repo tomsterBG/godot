@@ -40,11 +40,18 @@
 		</constructor>
 		<constructor name="Vector3">
 			<return type="Vector3" />
+			<param index="0" name="size" type="float" />
+			<description>
+				Constructs a [Vector3] with all components set to [param size].
+			</description>
+		</constructor>
+		<constructor name="Vector3">
+			<return type="Vector3" />
 			<param index="0" name="x" type="float" />
 			<param index="1" name="y" type="float" />
 			<param index="2" name="z" type="float" />
 			<description>
-				Returns a [Vector3] with the given components.
+				Constructs a [Vector3] with the given components.
 			</description>
 		</constructor>
 	</constructors>

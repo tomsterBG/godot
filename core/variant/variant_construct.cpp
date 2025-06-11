@@ -55,6 +55,67 @@ static void add_constructor(const Vector<String> &arg_names) {
 	construct_data[T::get_base_type()].push_back(cd);
 }
 
+template <class T, class P>
+struct VectorConstructorUniform {
+	_FORCE_INLINE_ static Variant::Type get_base_type() { return GetTypeInfo<T>::VARIANT_TYPE; }
+	_FORCE_INLINE_ static int get_argument_count() { return 1; }
+	_FORCE_INLINE_ static Variant::Type get_argument_type(int p_arg) { return GetTypeInfo<P>::VARIANT_TYPE; }
+
+	_FORCE_INLINE_ static void construct(Variant &r_ret, const Variant **p_args, Callable::CallError &r_error) {
+		P val = p_args[0]->operator P();
+		if constexpr (std::is_same_v<T, Vector2>) {
+			r_ret = Vector2(val, val);
+		} else if constexpr (std::is_same_v<T, Vector2i>) {
+			r_ret = Vector2i(val, val);
+		} else if constexpr (std::is_same_v<T, Vector3>) {
+			r_ret = Vector3(val, val, val);
+		} else if constexpr (std::is_same_v<T, Vector3i>) {
+			r_ret = Vector3i(val, val, val);
+		} else if constexpr (std::is_same_v<T, Vector4>) {
+			r_ret = Vector4(val, val, val, val);
+		} else if constexpr (std::is_same_v<T, Vector4i>) {
+			r_ret = Vector4i(val, val, val, val);
+		}
+		r_error.error = Callable::CallError::CALL_OK;
+	}
+
+	_FORCE_INLINE_ static void validated_construct(Variant *r_ret, const Variant **p_args) {
+		P val = *VariantGetInternalPtr<P>::get_ptr(p_args[0]);
+		T *v = VariantGetInternalPtr<T>::get_ptr(r_ret);
+		if constexpr (std::is_same_v<T, Vector2>) {
+			*v = Vector2(val, val);
+		} else if constexpr (std::is_same_v<T, Vector2i>) {
+			*v = Vector2i(val, val);
+		} else if constexpr (std::is_same_v<T, Vector3>) {
+			*v = Vector3(val, val, val);
+		} else if constexpr (std::is_same_v<T, Vector3i>) {
+			*v = Vector3i(val, val, val);
+		} else if constexpr (std::is_same_v<T, Vector4>) {
+			*v = Vector4(val, val, val, val);
+		} else if constexpr (std::is_same_v<T, Vector4i>) {
+			*v = Vector4i(val, val, val, val);
+		}
+	}
+
+	_FORCE_INLINE_ static void ptr_construct(void *r_base, const void **p_args) {
+		P val = *reinterpret_cast<const P *>(p_args[0]);
+		T *v = reinterpret_cast<T *>(r_base);
+		if constexpr (std::is_same_v<T, Vector2>) {
+			memnew_placement(v, Vector2(val, val));
+		} else if constexpr (std::is_same_v<T, Vector2i>) {
+			memnew_placement(v, Vector2i(val, val));
+		} else if constexpr (std::is_same_v<T, Vector3>) {
+			memnew_placement(v, Vector3(val, val, val));
+		} else if constexpr (std::is_same_v<T, Vector3i>) {
+			memnew_placement(v, Vector3i(val, val, val));
+		} else if constexpr (std::is_same_v<T, Vector4>) {
+			memnew_placement(v, Vector4(val, val, val, val));
+		} else if constexpr (std::is_same_v<T, Vector4i>) {
+			memnew_placement(v, Vector4i(val, val, val, val));
+		}
+	}
+};
+
 void Variant::_register_variant_constructors() {
 	add_constructor<VariantConstructNoArgsNil>(sarray());
 	add_constructor<VariantConstructorNil>(sarray("from"));
@@ -85,11 +146,13 @@ void Variant::_register_variant_constructors() {
 	add_constructor<VariantConstructor<Vector2, Vector2>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector2, Vector2i>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector2, double, double>>(sarray("x", "y"));
+	add_constructor<VectorConstructorUniform<Vector2, double>>(sarray("size"));
 
 	add_constructor<VariantConstructNoArgs<Vector2i>>(sarray());
 	add_constructor<VariantConstructor<Vector2i, Vector2i>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector2i, Vector2>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector2i, int64_t, int64_t>>(sarray("x", "y"));
+	add_constructor<VectorConstructorUniform<Vector2i, int64_t>>(sarray("size"));
 
 	add_constructor<VariantConstructNoArgs<Rect2>>(sarray());
 	add_constructor<VariantConstructor<Rect2, Rect2>>(sarray("from"));
@@ -107,21 +170,25 @@ void Variant::_register_variant_constructors() {
 	add_constructor<VariantConstructor<Vector3, Vector3>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector3, Vector3i>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector3, double, double, double>>(sarray("x", "y", "z"));
+	add_constructor<VectorConstructorUniform<Vector3, double>>(sarray("size"));
 
 	add_constructor<VariantConstructNoArgs<Vector3i>>(sarray());
 	add_constructor<VariantConstructor<Vector3i, Vector3i>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector3i, Vector3>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector3i, int64_t, int64_t, int64_t>>(sarray("x", "y", "z"));
+	add_constructor<VectorConstructorUniform<Vector3i, int64_t>>(sarray("size"));
 
 	add_constructor<VariantConstructNoArgs<Vector4>>(sarray());
 	add_constructor<VariantConstructor<Vector4, Vector4>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector4, Vector4i>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector4, double, double, double, double>>(sarray("x", "y", "z", "w"));
+	add_constructor<VectorConstructorUniform<Vector4, double>>(sarray("size"));
 
 	add_constructor<VariantConstructNoArgs<Vector4i>>(sarray());
 	add_constructor<VariantConstructor<Vector4i, Vector4i>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector4i, Vector4>>(sarray("from"));
 	add_constructor<VariantConstructor<Vector4i, int64_t, int64_t, int64_t, int64_t>>(sarray("x", "y", "z", "w"));
+	add_constructor<VectorConstructorUniform<Vector4i, int64_t>>(sarray("size"));
 
 	add_constructor<VariantConstructNoArgs<Transform2D>>(sarray());
 	add_constructor<VariantConstructor<Transform2D, Transform2D>>(sarray("from"));

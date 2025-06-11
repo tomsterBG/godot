@@ -33,12 +33,19 @@
 		</constructor>
 		<constructor name="Vector4i">
 			<return type="Vector4i" />
+			<param index="0" name="size" type="int" />
+			<description>
+				Constructs a [Vector4i] with all components set to [param size].
+			</description>
+		</constructor>
+		<constructor name="Vector4i">
+			<return type="Vector4i" />
 			<param index="0" name="x" type="int" />
 			<param index="1" name="y" type="int" />
 			<param index="2" name="z" type="int" />
 			<param index="3" name="w" type="int" />
 			<description>
-				Returns a [Vector4i] with the given components.
+				Constructs a [Vector4i] with the given components.
 			</description>
 		</constructor>
 	</constructors>

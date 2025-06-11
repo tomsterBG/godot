@@ -36,6 +36,13 @@
 		</constructor>
 		<constructor name="Vector2i">
 			<return type="Vector2i" />
+			<param index="0" name="size" type="int" />
+			<description>
+				Constructs a new [Vector2i] with all components set to [param size].
+			</description>
+		</constructor>
+		<constructor name="Vector2i">
+			<return type="Vector2i" />
 			<param index="0" name="x" type="int" />
 			<param index="1" name="y" type="int" />
 			<description>
