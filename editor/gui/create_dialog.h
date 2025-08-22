@@ -78,6 +78,7 @@ class CreateDialog : public ConfirmationDialog {
 	HashSet<StringName> type_blacklist;
 	HashSet<StringName> custom_type_blocklist;
 
+	void _update_filter_button_state();
 	void _update_search();
 	bool _should_hide_type(const StringName &p_type) const;
 	void _add_type(const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword);

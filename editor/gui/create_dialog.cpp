@@ -41,6 +41,8 @@
 void CreateDialog::popup_create(bool p_dont_clear, bool p_replace_mode, const String &p_current_type, const String &p_current_name) {
 	_fill_type_list();
 
+	_update_filter_button_state();
+
 	if (EditorSettings::get_singleton()) {
 		const bool filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filter_enabled");
 		filter_hb->set_visible(filter_enabled);
@@ -557,6 +559,29 @@ void CreateDialog::_confirmed() {
 	_cleanup();
 }
 
+void CreateDialog::_update_filter_button_state() {
+	if (!filter_hb->is_visible() || !EditorSettings::get_singleton()) {
+		return;
+	}
+
+	bool ignore_on_search = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_ignore_filters_on_search");
+
+	if (!ignore_on_search) {
+		show_builtin_button->set_disabled(false);
+		show_custom_button->set_disabled(false);
+		return;
+	}
+
+	bool is_searching = !search_box->get_text().is_empty();
+	show_builtin_button->set_disabled(is_searching);
+	show_custom_button->set_disabled(is_searching);
+
+	if (is_searching) {
+		show_builtin_button->set_pressed(true);
+		show_custom_button->set_pressed(true);
+	}
+}
+
 void CreateDialog::_text_changed(const String &p_newtext) {
 	_update_search();
 }
@@ -894,6 +919,8 @@ CreateDialog::CreateDialog() {
 	if (EditorSettings::get_singleton()) {
 		EDITOR_DEF("docks/scene_tree/create_dialog_filter_enabled", false);
 		EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filter_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
+		EDITOR_DEF("docks/scene_tree/create_dialog_ignore_filters_on_search", true);
+		EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_ignore_filters_on_search", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 	}
 
 	VSplitContainer *vsc = memnew(VSplitContainer);
