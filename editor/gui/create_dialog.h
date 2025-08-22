@@ -32,6 +32,7 @@
 
 #include "editor/doc/editor_help.h"
 #include "scene/gui/button.h"
+#include "scene/gui/check_button.h"
 #include "scene/gui/dialogs.h"
 #include "scene/gui/item_list.h"
 #include "scene/gui/line_edit.h"
