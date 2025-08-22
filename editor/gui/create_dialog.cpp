@@ -41,11 +41,15 @@
 void CreateDialog::popup_create(bool p_dont_clear, bool p_replace_mode, const String &p_current_type, const String &p_current_name) {
 	_fill_type_list();
 
-	const bool filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filter_enabled");
-	filter_hb->set_visible(filter_enabled);
-	if (filter_enabled) {
-		show_builtin_button->set_pressed(true);
-		show_custom_button->set_pressed(true);
+	if (EditorSettings::get_singleton()) {
+		const bool filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filter_enabled");
+		filter_hb->set_visible(filter_enabled);
+		if (filter_enabled) {
+			show_builtin_button->set_pressed(true);
+			show_custom_button->set_pressed(true);
+		}
+	} else {
+		filter_hb->set_visible(false);
 	}
 
 	icon_fallback = search_options->has_theme_icon(base_type, EditorStringName(EditorIcons)) ? base_type : "Object";
@@ -251,7 +255,11 @@ void CreateDialog::_update_search() {
 
 	const String search_text = search_box->get_text();
 
-	const bool filter_enabled = EDITOR_GET("docks/scene_tree/create_dialog_filter_enabled");
+	bool filter_enabled = false;
+	if (EditorSettings::get_singleton()) {
+		filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filter_enabled");
+	}
+
 	const bool show_built_in = !filter_enabled || show_builtin_button->is_pressed();
 	const bool show_custom = !filter_enabled || show_custom_button->is_pressed();
 
@@ -883,8 +891,10 @@ CreateDialog::CreateDialog() {
 	HSplitContainer *hsc = memnew(HSplitContainer);
 	add_child(hsc, true);
 
-	EDITOR_DEF("docks/scene_tree/create_dialog_filter_enabled", false);
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filter_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
+	if (EditorSettings::get_singleton()) {
+		EDITOR_DEF("docks/scene_tree/create_dialog_filter_enabled", false);
+		EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filter_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
+	}
 
 	VSplitContainer *vsc = memnew(VSplitContainer);
 	hsc->add_child(vsc);
