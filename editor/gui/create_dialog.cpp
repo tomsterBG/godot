@@ -41,6 +41,13 @@
 void CreateDialog::popup_create(bool p_dont_clear, bool p_replace_mode, const String &p_current_type, const String &p_current_name) {
 	_fill_type_list();
 
+	const bool filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filter_enabled");
+	filter_hb->set_visible(filter_enabled);
+	if (filter_enabled) {
+		show_builtin_button->set_pressed(true);
+		show_custom_button->set_pressed(true);
+	}
+
 	icon_fallback = search_options->has_theme_icon(base_type, EditorStringName(EditorIcons)) ? base_type : "Object";
 
 	if (p_dont_clear) {
@@ -877,7 +884,7 @@ CreateDialog::CreateDialog() {
 	add_child(hsc, true);
 
 	EDITOR_DEF("docks/scene_tree/create_dialog_filter_enabled", false);
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filter_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED));
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filter_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 
 	VSplitContainer *vsc = memnew(VSplitContainer);
 	hsc->add_child(vsc);
@@ -937,7 +944,7 @@ CreateDialog::CreateDialog() {
 	search_hb->add_child(favorite);
 	vbc->add_margin_child(TTR("Search:"), search_hb);
 
-	HBoxContainer *filter_hb = memnew(HBoxContainer);
+	filter_hb = memnew(HBoxContainer);
 	vbc->add_child(filter_hb);
 
 	show_builtin_button = memnew(CheckButton);
@@ -951,9 +958,6 @@ CreateDialog::CreateDialog() {
 	show_custom_button->set_pressed(true);
 	show_custom_button->connect("toggled", callable_mp(this, &CreateDialog::_filter_type_toggled));
 	filter_hb->add_child(show_custom_button);
-
-	const bool filter_enabled = EDITOR_GET("docks/scene_tree/create_dialog_filter_enabled");
-	filter_hb->set_visible(filter_enabled);
 
 	search_options = memnew(Tree);
 	search_options->set_accessibility_name(TTRC("Matches:"));

@@ -31,6 +31,7 @@
 #pragma once
 
 #include "editor/doc/editor_help.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/check_button.h"
 #include "scene/gui/dialogs.h"
@@ -55,6 +56,7 @@ class CreateDialog : public ConfirmationDialog {
 	LineEdit *search_box = nullptr;
 	CheckButton *show_builtin_button = nullptr;
 	CheckButton *show_custom_button = nullptr;
+	HBoxContainer *filter_hb = nullptr;
 	Tree *search_options = nullptr;
 
 	String base_type;
