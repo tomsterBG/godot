@@ -244,18 +244,15 @@ void CreateDialog::_update_search() {
 
 	const String search_text = search_box->get_text();
 
-	bool filter_built_in = show_builtin_button->is_pressed();
-	bool filter_custom = show_custom_button->is_pressed();
-
 	float highest_score = 0.0f;
 	StringName best_match;
 
 	for (const TypeInfo &candidate : type_info_list) {
 		bool is_builtin = ClassDB::class_exists(candidate.type_name);
-		if (is_builtin && !filter_built_in) {
+		if (is_builtin && !show_builtin_button->is_pressed()) {
 			continue;
 		}
-		if (!is_builtin && !filter_custom) {
+		if (!is_builtin && !show_custom_button->is_pressed()) {
 			continue;
 		}
 
