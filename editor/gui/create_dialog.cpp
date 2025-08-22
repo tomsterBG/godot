@@ -277,6 +277,10 @@ void CreateDialog::_update_search() {
 	StringName best_match;
 
 	for (const TypeInfo &candidate : type_info_list) {
+		if (!selectable_types.has(candidate.type_name)) {
+			continue;
+		}
+
 		String match_keyword;
 
 		// First check if the name matches. If it does not, try the search keywords.
