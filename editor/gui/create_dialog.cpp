@@ -44,7 +44,7 @@ void CreateDialog::popup_create(bool p_dont_clear, bool p_replace_mode, const St
 	_update_filter_button_state();
 
 	if (EditorSettings::get_singleton()) {
-		const bool filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filter_enabled");
+		const bool filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filters");
 		filter_hb->set_visible(filter_enabled);
 		if (filter_enabled) {
 			show_builtin_button->set_pressed(true);
@@ -260,7 +260,7 @@ void CreateDialog::_update_search() {
 
 	bool filter_enabled = false;
 	if (EditorSettings::get_singleton()) {
-		filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filter_enabled");
+		filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filters");
 	}
 
 	const bool show_built_in = !filter_enabled || show_builtin_button->is_pressed();
@@ -591,6 +591,7 @@ void CreateDialog::_update_filter_button_state() {
 }
 
 void CreateDialog::_text_changed(const String &p_newtext) {
+	_update_filter_button_state()
 	_update_search();
 }
 
@@ -925,8 +926,8 @@ CreateDialog::CreateDialog() {
 	add_child(hsc, true);
 
 	if (EditorSettings::get_singleton()) {
-		EDITOR_DEF("docks/scene_tree/create_dialog_filter_enabled", false);
-		EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filter_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
+		EDITOR_DEF("docks/scene_tree/create_dialog_filters", false);
+		EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filters", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 		EDITOR_DEF("docks/scene_tree/create_dialog_ignore_filters_on_search", true);
 		EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_ignore_filters_on_search", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 	}
