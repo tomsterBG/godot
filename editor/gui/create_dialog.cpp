@@ -260,8 +260,8 @@ void CreateDialog::_update_search() {
 	if (EditorSettings::get_singleton()) {
 		filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filters");
 	}
-	const bool show_built_in = !filter_enabled || show_builtin_button->is_pressed();
-	const bool show_custom = !filter_enabled || show_custom_button->is_pressed();
+	const bool show_built_in = !filter_enabled || EditorSettings::get_singleton()->get_project_metadata("create_dialog", "built_in_filter", true);
+	const bool show_custom = !filter_enabled || EditorSettings::get_singleton()->get_project_metadata("create_dialog", "custom_filter", true);
 
 	for (const TypeInfo &candidate : type_info_list) {
 		bool is_builtin = ClassDB::class_exists(candidate.type_name);
