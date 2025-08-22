@@ -244,15 +244,19 @@ void CreateDialog::_update_search() {
 
 	const String search_text = search_box->get_text();
 
+	const bool filter_enabled = EDITOR_GET("docks/scene_tree/create_dialog_filter_enabled");
+	const bool show_built_in = !filter_enabled || show_builtin_button->is_pressed();
+	const bool show_custom = !filter_enabled || show_custom_button->is_pressed();
+
 	float highest_score = 0.0f;
 	StringName best_match;
 
 	for (const TypeInfo &candidate : type_info_list) {
 		bool is_builtin = ClassDB::class_exists(candidate.type_name);
-		if (is_builtin && !show_builtin_button->is_pressed()) {
+		if (is_builtin && !show_built_in) {
 			continue;
 		}
-		if (!is_builtin && !show_custom_button->is_pressed()) {
+		if (!is_builtin && !show_custom) {
 			continue;
 		}
 
@@ -870,7 +874,10 @@ CreateDialog::CreateDialog() {
 	type_blacklist.insert("ScriptCreateDialog"); // This is an exposed editor Node that doesn't have an Editor prefix.
 
 	HSplitContainer *hsc = memnew(HSplitContainer);
-	add_child(hsc);
+	add_child(hsc, true);
+
+	EDITOR_DEF("docks/scene_tree/create_dialog_filter_enabled", false);
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::BOOL, "docks/scene_tree/create_dialog_filter_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED));
 
 	VSplitContainer *vsc = memnew(VSplitContainer);
 	hsc->add_child(vsc);
@@ -931,22 +938,22 @@ CreateDialog::CreateDialog() {
 	vbc->add_margin_child(TTR("Search:"), search_hb);
 
 	HBoxContainer *filter_hb = memnew(HBoxContainer);
-	filter_hb->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
 	vbc->add_child(filter_hb);
 
 	show_builtin_button = memnew(CheckButton);
 	show_builtin_button->set_text(TTR("Built-in"));
-	show_builtin_button->set_toggle_mode(true);
 	show_builtin_button->set_pressed(true);
 	show_builtin_button->connect("toggled", callable_mp(this, &CreateDialog::_filter_type_toggled));
 	filter_hb->add_child(show_builtin_button);
 
 	show_custom_button = memnew(CheckButton);
 	show_custom_button->set_text(TTR("Custom"));
-	show_custom_button->set_toggle_mode(true);
 	show_custom_button->set_pressed(true);
 	show_custom_button->connect("toggled", callable_mp(this, &CreateDialog::_filter_type_toggled));
 	filter_hb->add_child(show_custom_button);
+
+	const bool filter_enabled = EDITOR_GET("docks/scene_tree/create_dialog_filter_enabled");
+	filter_hb->set_visible(filter_enabled);
 
 	search_options = memnew(Tree);
 	search_options->set_accessibility_name(TTRC("Matches:"));
