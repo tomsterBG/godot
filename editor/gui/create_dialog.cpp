@@ -591,7 +591,7 @@ void CreateDialog::_update_filter_button_state() {
 }
 
 void CreateDialog::_text_changed(const String &p_newtext) {
-	_update_filter_button_state()
+	_update_filter_button_state();
 	_update_search();
 }
 
