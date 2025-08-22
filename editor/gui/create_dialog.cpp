@@ -244,10 +244,21 @@ void CreateDialog::_update_search() {
 
 	const String search_text = search_box->get_text();
 
+	bool filter_built_in = show_builtin_button->is_pressed();
+	bool filter_custom = show_custom_button->is_pressed();
+
 	float highest_score = 0.0f;
 	StringName best_match;
 
 	for (const TypeInfo &candidate : type_info_list) {
+		bool is_builtin = ClassDB::class_exists(candidate.type_name);
+		if (is_builtin && !filter_built_in) {
+			continue;
+		}
+		if (!is_builtin && !filter_custom) {
+			continue;
+		}
+
 		String match_keyword;
 
 		// First check if the name matches. If it does not, try the search keywords.
@@ -271,7 +282,7 @@ void CreateDialog::_update_search() {
 			continue;
 		}
 
-		_add_type(candidate.type_name, ClassDB::class_exists(candidate.type_name) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, match_keyword);
+		_add_type(candidate.type_name, is_builtin ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, match_keyword);
 
 		if (score > highest_score) {
 			highest_score = score;
@@ -689,6 +700,10 @@ void CreateDialog::_favorite_toggled() {
 	_save_and_update_favorite_list();
 }
 
+void CreateDialog::_filter_type_toggled(bool p_pressed) {
+	_update_search();
+}
+
 void CreateDialog::_history_selected(int p_idx) {
 	search_box->set_text(recent->get_item_text(p_idx).get_slicec(' ', 0));
 	favorites->deselect_all();
@@ -917,6 +932,24 @@ CreateDialog::CreateDialog() {
 	favorite->connect(SceneStringName(pressed), callable_mp(this, &CreateDialog::_favorite_toggled));
 	search_hb->add_child(favorite);
 	vbc->add_margin_child(TTR("Search:"), search_hb);
+
+	HBoxContainer *filter_hb = memnew(HBoxContainer);
+	filter_hb->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
+	vbc->add_child(filter_hb);
+
+	show_builtin_button = memnew(CheckButton);
+	show_builtin_button->set_text(TTR("Built-in"));
+	show_builtin_button->set_toggle_mode(true);
+	show_builtin_button->set_pressed(true);
+	show_builtin_button->connect("toggled", callable_mp(this, &CreateDialog::_filter_type_toggled));
+	filter_hb->add_child(show_builtin_button);
+
+	show_custom_button = memnew(CheckButton);
+	show_custom_button->set_text(TTR("Custom"));
+	show_custom_button->set_toggle_mode(true);
+	show_custom_button->set_pressed(true);
+	show_custom_button->connect("toggled", callable_mp(this, &CreateDialog::_filter_type_toggled));
+	filter_hb->add_child(show_custom_button);
 
 	search_options = memnew(Tree);
 	search_options->set_accessibility_name(TTRC("Matches:"));
