@@ -253,31 +253,30 @@ void CreateDialog::_update_search() {
 	root->set_text(0, base_type);
 	root->set_icon(0, search_options->get_editor_theme_icon(icon_fallback));
 	search_options_types[base_type] = root;
-	_configure_search_option_item(root, base_type, ClassDB::class_exists(base_type) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, "", true);
+	_configure_search_option_item(root, base_type, ClassDB::class_exists(base_type) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, "");
 
-	const String search_text = search_box->get_text();
-	matched_types.clear();
-
+	selectable_types.clear();
 	bool filter_enabled = false;
 	if (EditorSettings::get_singleton()) {
 		filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filters");
 	}
-
 	const bool show_built_in = !filter_enabled || show_builtin_button->is_pressed();
 	const bool show_custom = !filter_enabled || show_custom_button->is_pressed();
 
+	for (const TypeInfo &candidate : type_info_list) {
+		bool is_builtin = ClassDB::class_exists(candidate.type_name);
+		if ((is_builtin && show_built_in) || (!is_builtin && show_custom)) {
+			selectable_types.insert(candidate.type_name);
+		}
+	}
+
+	const String search_text = search_box->get_text();
+
+	HashSet<StringName> search_matches;
 	float highest_score = 0.0f;
 	StringName best_match;
 
 	for (const TypeInfo &candidate : type_info_list) {
-		bool is_builtin = ClassDB::class_exists(candidate.type_name);
-		if (is_builtin && !show_built_in) {
-			continue;
-		}
-		if (!is_builtin && !show_custom) {
-			continue;
-		}
-
 		String match_keyword;
 
 		// First check if the name matches. If it does not, try the search keywords.
@@ -286,7 +285,6 @@ void CreateDialog::_update_search() {
 			for (const String &keyword : candidate.search_keywords) {
 				score = _score_type(keyword, search_text);
 
-				// Reduce the score of keywords, since they are an indirect match.
 				score *= 0.1f;
 
 				if (score >= 0.0f) {
@@ -296,13 +294,11 @@ void CreateDialog::_update_search() {
 			}
 		}
 
-		// Search did not match.
 		if (score < 0.0f) {
 			continue;
 		}
 
-		_add_type(candidate.type_name, is_builtin ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, match_keyword);
-		matched_types.insert(candidate.type_name);
+		search_matches.insert(candidate.type_name);
 
 		if (score > highest_score) {
 			highest_score = score;
@@ -310,7 +306,7 @@ void CreateDialog::_update_search() {
 		}
 	}
 
-	for (const StringName &type : matched_types) {
+	for (const StringName &type : search_matches) {
 		_add_type(type, ClassDB::class_exists(type) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, "");
 	}
 
@@ -382,11 +378,10 @@ void CreateDialog::_add_type(const StringName &p_type, TypeCategory p_type_categ
 
 	TreeItem *item = search_options->create_item(search_options_types[inherits]);
 	search_options_types[p_type] = item;
-	bool is_match = matched_types.has(p_type);
-	_configure_search_option_item(item, p_type, p_type_category, p_match_keyword, is_match);
+	_configure_search_option_item(item, p_type, p_type_category, p_match_keyword);
 }
 
-void CreateDialog::_configure_search_option_item(TreeItem *r_item, const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword, bool p_is_match) {
+void CreateDialog::_configure_search_option_item(TreeItem *r_item, const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword) {
 	bool script_type = ScriptServer::is_global_class(p_type);
 	bool is_abstract = false;
 	bool is_custom_type = false;
@@ -435,7 +430,7 @@ void CreateDialog::_configure_search_option_item(TreeItem *r_item, const StringN
 
 	bool can_instantiate = (p_type_category == TypeCategory::CPP_TYPE && ClassDB::can_instantiate(p_type)) ||
 			(p_type_category == TypeCategory::OTHER_TYPE && !(!allow_abstract_scripts && is_abstract));
-	bool instantiable = p_is_match && can_instantiate && !(ClassDB::class_exists(p_type) && ClassDB::is_virtual(p_type));
+	bool instantiable = selectable_types.has(p_type) && can_instantiate && !(ClassDB::class_exists(p_type) && ClassDB::is_virtual(p_type));
 
 	r_item->set_meta(SNAME("__instantiable"), instantiable);
 	r_item->set_selectable(0, instantiable);
@@ -572,7 +567,7 @@ void CreateDialog::_update_filter_button_state() {
 		return;
 	}
 
-	bool ignore_on_search = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_ignore_filters_on_search");
+	const bool ignore_on_search = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_ignore_filters_on_search");
 
 	if (!ignore_on_search) {
 		show_builtin_button->set_disabled(false);
@@ -580,7 +575,7 @@ void CreateDialog::_update_filter_button_state() {
 		return;
 	}
 
-	bool is_searching = !search_box->get_text().is_empty();
+	const bool is_searching = !search_box->get_text().is_empty();
 	show_builtin_button->set_disabled(is_searching);
 	show_custom_button->set_disabled(is_searching);
 

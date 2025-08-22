@@ -77,7 +77,7 @@ class CreateDialog : public ConfirmationDialog {
 	List<TypeInfo> type_info_list;
 	HashSet<StringName> type_blacklist;
 	HashSet<StringName> custom_type_blocklist;
-	HashSet<StringName> matched_types;
+	HashSet<StringName> selectable_types;
 
 	void _update_filter_button_state();
 	void _update_search();
