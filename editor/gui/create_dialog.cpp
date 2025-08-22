@@ -243,9 +243,6 @@ void CreateDialog::_update_search() {
 	_configure_search_option_item(root, base_type, ClassDB::class_exists(base_type) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, "");
 
 	const String search_text = search_box->get_text();
- 
-	bool filter_built_in = show_builtin_button->is_pressed();
-	bool filter_custom = show_custom_button->is_pressed();
 
 	bool filter_built_in = show_builtin_button->is_pressed();
 	bool filter_custom = show_custom_button->is_pressed();
