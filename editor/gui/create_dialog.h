@@ -52,6 +52,8 @@ class CreateDialog : public ConfirmationDialog {
 	};
 
 	LineEdit *search_box = nullptr;
+	CheckButton *show_builtin_button = nullptr;
+	CheckButton *show_custom_button = nullptr;
 	Tree *search_options = nullptr;
 
 	String base_type;
@@ -93,6 +95,7 @@ class CreateDialog : public ConfirmationDialog {
 	void _confirmed();
 	virtual void cancel_pressed() override;
 
+	void _filter_type_toggled(bool p_pressed);
 	void _favorite_toggled();
 
 	void _history_selected(int p_idx);
