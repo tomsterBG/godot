@@ -47,8 +47,8 @@ void CreateDialog::popup_create(bool p_dont_clear, bool p_replace_mode, const St
 		const bool filter_enabled = EditorSettings::get_singleton()->get_setting("docks/scene_tree/create_dialog_filters");
 		filter_hb->set_visible(filter_enabled);
 		if (filter_enabled) {
-			show_builtin_button->set_pressed(true);
-			show_custom_button->set_pressed(true);
+			show_builtin_button->set_pressed(EditorSettings::get_singleton()->get_project_metadata("create_dialog", "built_in_filter", true));
+			show_custom_button->set_pressed(EditorSettings::get_singleton()->get_project_metadata("create_dialog", "custom_filter", true));
 		}
 	} else {
 		filter_hb->set_visible(false);
@@ -579,6 +579,9 @@ void CreateDialog::_update_filter_button_state() {
 		return;
 	}
 
+	const bool is_builtin_filtered = EditorSettings::get_singleton()->get_project_metadata("create_dialog", "built_in_filter", true);
+	const bool is_custom_filtered = EditorSettings::get_singleton()->get_project_metadata("create_dialog", "custom_filter", true);
+
 	const bool is_searching = !search_box->get_text().is_empty();
 	show_builtin_button->set_disabled(is_searching);
 	show_custom_button->set_disabled(is_searching);
@@ -586,6 +589,11 @@ void CreateDialog::_update_filter_button_state() {
 	if (is_searching) {
 		show_builtin_button->set_pressed(true);
 		show_custom_button->set_pressed(true);
+		EditorSettings::get_singleton()->set_project_metadata("create_dialog", "built_in_filter", is_builtin_filtered);
+		EditorSettings::get_singleton()->set_project_metadata("create_dialog", "custom_filter", is_custom_filtered);
+	} else {
+		show_builtin_button->set_pressed(is_builtin_filtered);
+		show_custom_button->set_pressed(is_custom_filtered);
 	}
 }
 
@@ -749,7 +757,13 @@ void CreateDialog::_favorite_toggled() {
 	_save_and_update_favorite_list();
 }
 
-void CreateDialog::_filter_type_toggled(bool p_pressed) {
+void CreateDialog::_builtin_toggled(bool p_pressed) {
+	EditorSettings::get_singleton()->set_project_metadata("create_dialog", "built_in_filter", p_pressed);
+	_update_search();
+}
+
+void CreateDialog::_custom_toggled(bool p_pressed) {
+	EditorSettings::get_singleton()->set_project_metadata("create_dialog", "custom_filter", p_pressed);
 	_update_search();
 }
 
@@ -995,13 +1009,13 @@ CreateDialog::CreateDialog() {
 	show_builtin_button = memnew(CheckButton);
 	show_builtin_button->set_text(TTR("Built-in"));
 	show_builtin_button->set_pressed(true);
-	show_builtin_button->connect("toggled", callable_mp(this, &CreateDialog::_filter_type_toggled));
+	show_builtin_button->connect("toggled", callable_mp(this, &CreateDialog::_builtin_toggled));
 	filter_hb->add_child(show_builtin_button);
 
 	show_custom_button = memnew(CheckButton);
 	show_custom_button->set_text(TTR("Custom"));
 	show_custom_button->set_pressed(true);
-	show_custom_button->connect("toggled", callable_mp(this, &CreateDialog::_filter_type_toggled));
+	show_custom_button->connect("toggled", callable_mp(this, &CreateDialog::_custom_toggled));
 	filter_hb->add_child(show_custom_button);
 
 	search_options = memnew(Tree);

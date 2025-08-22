@@ -100,7 +100,8 @@ class CreateDialog : public ConfirmationDialog {
 	void _confirmed();
 	virtual void cancel_pressed() override;
 
-	void _filter_type_toggled(bool p_pressed);
+	void _builtin_toggled(bool p_pressed);
+	void _custom_toggled(bool p_pressed);
 	void _favorite_toggled();
 
 	void _history_selected(int p_idx);
