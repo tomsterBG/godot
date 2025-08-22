@@ -253,9 +253,10 @@ void CreateDialog::_update_search() {
 	root->set_text(0, base_type);
 	root->set_icon(0, search_options->get_editor_theme_icon(icon_fallback));
 	search_options_types[base_type] = root;
-	_configure_search_option_item(root, base_type, ClassDB::class_exists(base_type) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, "");
+	_configure_search_option_item(root, base_type, ClassDB::class_exists(base_type) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, "", true);
 
 	const String search_text = search_box->get_text();
+	matched_types.clear();
 
 	bool filter_enabled = false;
 	if (EditorSettings::get_singleton()) {
@@ -301,11 +302,16 @@ void CreateDialog::_update_search() {
 		}
 
 		_add_type(candidate.type_name, is_builtin ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, match_keyword);
+		matched_types.insert(candidate.type_name);
 
 		if (score > highest_score) {
 			highest_score = score;
 			best_match = candidate.type_name;
 		}
+	}
+
+	for (const StringName &type : matched_types) {
+		_add_type(type, ClassDB::class_exists(type) ? TypeCategory::CPP_TYPE : TypeCategory::OTHER_TYPE, "");
 	}
 
 	// Select the best result.
@@ -376,10 +382,11 @@ void CreateDialog::_add_type(const StringName &p_type, TypeCategory p_type_categ
 
 	TreeItem *item = search_options->create_item(search_options_types[inherits]);
 	search_options_types[p_type] = item;
-	_configure_search_option_item(item, p_type, p_type_category, p_match_keyword);
+	bool is_match = matched_types.has(p_type);
+	_configure_search_option_item(item, p_type, p_type_category, p_match_keyword, is_match);
 }
 
-void CreateDialog::_configure_search_option_item(TreeItem *r_item, const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword) {
+void CreateDialog::_configure_search_option_item(TreeItem *r_item, const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword, bool p_is_match) {
 	bool script_type = ScriptServer::is_global_class(p_type);
 	bool is_abstract = false;
 	bool is_custom_type = false;
@@ -428,9 +435,10 @@ void CreateDialog::_configure_search_option_item(TreeItem *r_item, const StringN
 
 	bool can_instantiate = (p_type_category == TypeCategory::CPP_TYPE && ClassDB::can_instantiate(p_type)) ||
 			(p_type_category == TypeCategory::OTHER_TYPE && !(!allow_abstract_scripts && is_abstract));
-	bool instantiable = can_instantiate && !(ClassDB::class_exists(p_type) && ClassDB::is_virtual(p_type));
+	bool instantiable = p_is_match && can_instantiate && !(ClassDB::class_exists(p_type) && ClassDB::is_virtual(p_type));
 
 	r_item->set_meta(SNAME("__instantiable"), instantiable);
+	r_item->set_selectable(0, instantiable);
 
 	r_item->set_icon(0, EditorNode::get_singleton()->get_class_icon(p_type));
 	if (!instantiable) {

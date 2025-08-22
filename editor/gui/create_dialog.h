@@ -77,12 +77,13 @@ class CreateDialog : public ConfirmationDialog {
 	List<TypeInfo> type_info_list;
 	HashSet<StringName> type_blacklist;
 	HashSet<StringName> custom_type_blocklist;
+	HashSet<StringName> matched_types;
 
 	void _update_filter_button_state();
 	void _update_search();
 	bool _should_hide_type(const StringName &p_type) const;
 	void _add_type(const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword);
-	void _configure_search_option_item(TreeItem *r_item, const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword);
+	void _configure_search_option_item(TreeItem *r_item, const StringName &p_type, TypeCategory p_type_category, const String &p_match_keyword, bool p_is_match);
 	float _score_type(const String &p_type, const String &p_search) const;
 	bool _is_type_preferred(const String &p_type) const;
 	void _script_button_clicked(TreeItem *p_item, int p_column, int p_button_id, MouseButton p_mouse_button_index);
