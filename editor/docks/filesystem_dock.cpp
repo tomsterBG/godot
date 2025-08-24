@@ -4150,7 +4150,7 @@ void FileSystemDock::_load_layout_from_config(Ref<ConfigFile> p_layout, const St
 
 FileSystemDock::FileSystemDock() {
 	singleton = this;
-	set_name("FileSystem");
+	set_name("Files");
 	current_path = "res://";
 
 	ProjectSettings::get_singleton()->add_hidden_prefix("file_customization/");
