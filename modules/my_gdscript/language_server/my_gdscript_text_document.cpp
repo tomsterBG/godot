@@ -63,7 +63,7 @@ void MyGDScriptTextDocument::_bind_methods() {
 }
 
 void MyGDScriptTextDocument::didOpen(const Variant &p_param) {
-	LSP::TextDocumentItem doc = load_document_item(p_param);
+	MyGDLSP::TextDocumentItem doc = load_document_item(p_param);
 	sync_script_content(doc.uri, doc.text);
 }
 
@@ -73,11 +73,11 @@ void MyGDScriptTextDocument::didClose(const Variant &p_param) {
 }
 
 void MyGDScriptTextDocument::didChange(const Variant &p_param) {
-	LSP::TextDocumentItem doc = load_document_item(p_param);
+	MyGDLSP::TextDocumentItem doc = load_document_item(p_param);
 	Dictionary dict = p_param;
 	Array contentChanges = dict["contentChanges"];
 	for (int i = 0; i < contentChanges.size(); ++i) {
-		LSP::TextDocumentContentChangeEvent evt;
+		MyGDLSP::TextDocumentContentChangeEvent evt;
 		evt.load(contentChanges[i]);
 		doc.text = evt.text;
 	}
@@ -85,7 +85,7 @@ void MyGDScriptTextDocument::didChange(const Variant &p_param) {
 }
 
 void MyGDScriptTextDocument::willSaveWaitUntil(const Variant &p_param) {
-	LSP::TextDocumentItem doc = load_document_item(p_param);
+	MyGDLSP::TextDocumentItem doc = load_document_item(p_param);
 
 	String path = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->get_file_path(doc.uri);
 	Ref<Script> scr = ResourceLoader::load(path);
@@ -95,7 +95,7 @@ void MyGDScriptTextDocument::willSaveWaitUntil(const Variant &p_param) {
 }
 
 void MyGDScriptTextDocument::didSave(const Variant &p_param) {
-	LSP::TextDocumentItem doc = load_document_item(p_param);
+	MyGDLSP::TextDocumentItem doc = load_document_item(p_param);
 	Dictionary dict = p_param;
 	String text = dict["text"];
 
@@ -126,14 +126,14 @@ void MyGDScriptTextDocument::reload_script(Ref<MyGDScript> p_to_reload_script) {
 	ScriptEditor::get_singleton()->trigger_live_script_reload(p_to_reload_script->get_path());
 }
 
-LSP::TextDocumentItem MyGDScriptTextDocument::load_document_item(const Variant &p_param) {
-	LSP::TextDocumentItem doc;
+MyGDLSP::TextDocumentItem MyGDScriptTextDocument::load_document_item(const Variant &p_param) {
+	MyGDLSP::TextDocumentItem doc;
 	Dictionary params = p_param;
 	doc.load(params["textDocument"]);
 	return doc;
 }
 
-void MyGDScriptTextDocument::notify_client_show_symbol(const LSP::DocumentSymbol *symbol) {
+void MyGDScriptTextDocument::notify_client_show_symbol(const MyGDLSP::DocumentSymbol *symbol) {
 	ERR_FAIL_NULL(symbol);
 	MyGDScriptLanguageProtocol::get_singleton()->notify_client("my_gdscript/show_native_symbol", symbol->to_json(true));
 }
@@ -143,9 +143,9 @@ void MyGDScriptTextDocument::initialize() {
 		for (const KeyValue<StringName, ClassMembers> &E : MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->native_members) {
 			const ClassMembers &members = E.value;
 
-			for (const KeyValue<String, const LSP::DocumentSymbol *> &F : members) {
-				const LSP::DocumentSymbol *symbol = members.get(F.key);
-				LSP::CompletionItem item = symbol->make_completion_item();
+			for (const KeyValue<String, const MyGDLSP::DocumentSymbol *> &F : members) {
+				const MyGDLSP::DocumentSymbol *symbol = members.get(F.key);
+				MyGDLSP::CompletionItem item = symbol->make_completion_item();
 				item.data = JOIN_SYMBOLS(String(E.key), F.key);
 				native_member_completions.push_back(item.to_json());
 			}
@@ -156,10 +156,10 @@ void MyGDScriptTextDocument::initialize() {
 Variant MyGDScriptTextDocument::nativeSymbol(const Dictionary &p_params) {
 	Variant ret;
 
-	LSP::NativeSymbolInspectParams params;
+	MyGDLSP::NativeSymbolInspectParams params;
 	params.load(p_params);
 
-	if (const LSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_native_symbol(params)) {
+	if (const MyGDLSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_native_symbol(params)) {
 		ret = symbol->to_json(true);
 		notify_client_show_symbol(symbol);
 	}
@@ -173,7 +173,7 @@ Array MyGDScriptTextDocument::documentSymbol(const Dictionary &p_params) {
 	String path = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->get_file_path(uri);
 	Array arr;
 	if (HashMap<String, ExtendMyGDScriptParser *>::ConstIterator parser = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->scripts.find(path)) {
-		LSP::DocumentSymbol symbol = parser->value->get_symbols();
+		MyGDLSP::DocumentSymbol symbol = parser->value->get_symbols();
 		arr.push_back(symbol.to_json(true));
 	}
 	return arr;
@@ -182,7 +182,7 @@ Array MyGDScriptTextDocument::documentSymbol(const Dictionary &p_params) {
 Array MyGDScriptTextDocument::completion(const Dictionary &p_params) {
 	Array arr;
 
-	LSP::CompletionParams params;
+	MyGDLSP::CompletionParams params;
 	params.load(p_params);
 	Dictionary request_data = params.to_json();
 
@@ -194,41 +194,41 @@ Array MyGDScriptTextDocument::completion(const Dictionary &p_params) {
 		arr.resize(options.size());
 
 		for (const ScriptLanguage::CodeCompletionOption &option : options) {
-			LSP::CompletionItem item;
+			MyGDLSP::CompletionItem item;
 			item.label = option.display;
 			item.data = request_data;
 			item.insertText = option.insert_text;
 
 			switch (option.kind) {
 				case ScriptLanguage::CODE_COMPLETION_KIND_ENUM:
-					item.kind = LSP::CompletionItemKind::Enum;
+					item.kind = MyGDLSP::CompletionItemKind::Enum;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_CLASS:
-					item.kind = LSP::CompletionItemKind::Class;
+					item.kind = MyGDLSP::CompletionItemKind::Class;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_MEMBER:
-					item.kind = LSP::CompletionItemKind::Property;
+					item.kind = MyGDLSP::CompletionItemKind::Property;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_FUNCTION:
-					item.kind = LSP::CompletionItemKind::Method;
+					item.kind = MyGDLSP::CompletionItemKind::Method;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_SIGNAL:
-					item.kind = LSP::CompletionItemKind::Event;
+					item.kind = MyGDLSP::CompletionItemKind::Event;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_CONSTANT:
-					item.kind = LSP::CompletionItemKind::Constant;
+					item.kind = MyGDLSP::CompletionItemKind::Constant;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_VARIABLE:
-					item.kind = LSP::CompletionItemKind::Variable;
+					item.kind = MyGDLSP::CompletionItemKind::Variable;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_FILE_PATH:
-					item.kind = LSP::CompletionItemKind::File;
+					item.kind = MyGDLSP::CompletionItemKind::File;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_NODE_PATH:
-					item.kind = LSP::CompletionItemKind::Snippet;
+					item.kind = MyGDLSP::CompletionItemKind::Snippet;
 					break;
 				case ScriptLanguage::CODE_COMPLETION_KIND_PLAIN_TEXT:
-					item.kind = LSP::CompletionItemKind::Text;
+					item.kind = MyGDLSP::CompletionItemKind::Text;
 					break;
 				default: {
 				}
@@ -242,7 +242,7 @@ Array MyGDScriptTextDocument::completion(const Dictionary &p_params) {
 }
 
 Dictionary MyGDScriptTextDocument::rename(const Dictionary &p_params) {
-	LSP::TextDocumentPositionParams params;
+	MyGDLSP::TextDocumentPositionParams params;
 	params.load(p_params);
 	String new_name = p_params["newName"];
 
@@ -250,11 +250,11 @@ Dictionary MyGDScriptTextDocument::rename(const Dictionary &p_params) {
 }
 
 Variant MyGDScriptTextDocument::prepareRename(const Dictionary &p_params) {
-	LSP::TextDocumentPositionParams params;
+	MyGDLSP::TextDocumentPositionParams params;
 	params.load(p_params);
 
-	LSP::DocumentSymbol symbol;
-	LSP::Range range;
+	MyGDLSP::DocumentSymbol symbol;
+	MyGDLSP::Range range;
 	if (MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->can_rename(params, symbol, range)) {
 		return Variant(range.to_json());
 	}
@@ -266,16 +266,16 @@ Variant MyGDScriptTextDocument::prepareRename(const Dictionary &p_params) {
 Array MyGDScriptTextDocument::references(const Dictionary &p_params) {
 	Array res;
 
-	LSP::ReferenceParams params;
+	MyGDLSP::ReferenceParams params;
 	params.load(p_params);
 
-	const LSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(params);
+	const MyGDLSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(params);
 	if (symbol) {
-		Vector<LSP::Location> usages = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->find_all_usages(*symbol);
+		Vector<MyGDLSP::Location> usages = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->find_all_usages(*symbol);
 		res.resize(usages.size());
 		int declaration_adjustment = 0;
 		for (int i = 0; i < usages.size(); i++) {
-			LSP::Location usage = usages[i];
+			MyGDLSP::Location usage = usages[i];
 			if (!params.context.includeDeclaration && usage.range == symbol->range) {
 				declaration_adjustment++;
 				continue;
@@ -292,17 +292,17 @@ Array MyGDScriptTextDocument::references(const Dictionary &p_params) {
 }
 
 Dictionary MyGDScriptTextDocument::resolve(const Dictionary &p_params) {
-	LSP::CompletionItem item;
+	MyGDLSP::CompletionItem item;
 	item.load(p_params);
 
-	LSP::CompletionParams params;
+	MyGDLSP::CompletionParams params;
 	Variant data = p_params["data"];
 
-	const LSP::DocumentSymbol *symbol = nullptr;
+	const MyGDLSP::DocumentSymbol *symbol = nullptr;
 
 	if (data.get_type() == Variant::DICTIONARY) {
 		params.load(p_params["data"]);
-		symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(params, item.label, item.kind == LSP::CompletionItemKind::Method || item.kind == LSP::CompletionItemKind::Function);
+		symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(params, item.label, item.kind == MyGDLSP::CompletionItemKind::Method || item.kind == MyGDLSP::CompletionItemKind::Function);
 
 	} else if (data.is_string()) {
 		String query = data;
@@ -318,7 +318,7 @@ Dictionary MyGDScriptTextDocument::resolve(const Dictionary &p_params) {
 			}
 
 			if (const ClassMembers *members = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->native_members.getptr(class_name)) {
-				if (const LSP::DocumentSymbol *const *member = members->getptr(member_name)) {
+				if (const MyGDLSP::DocumentSymbol *const *member = members->getptr(member_name)) {
 					symbol = *member;
 				}
 			}
@@ -335,15 +335,15 @@ Dictionary MyGDScriptTextDocument::resolve(const Dictionary &p_params) {
 		item.documentation = symbol->render();
 	}
 
-	if (item.kind == LSP::CompletionItemKind::Event) {
-		if (params.context.triggerKind == LSP::CompletionTriggerKind::TriggerCharacter && (params.context.triggerCharacter == "(")) {
+	if (item.kind == MyGDLSP::CompletionItemKind::Event) {
+		if (params.context.triggerKind == MyGDLSP::CompletionTriggerKind::TriggerCharacter && (params.context.triggerCharacter == "(")) {
 			const String quote_style = EDITOR_GET("text_editor/completion/use_single_quotes") ? "'" : "\"";
 			item.insertText = item.label.quote(quote_style);
 		}
 	}
 
-	if (item.kind == LSP::CompletionItemKind::Method) {
-		bool is_trigger_character = params.context.triggerKind == LSP::CompletionTriggerKind::TriggerCharacter;
+	if (item.kind == MyGDLSP::CompletionItemKind::Method) {
+		bool is_trigger_character = params.context.triggerKind == MyGDLSP::CompletionTriggerKind::TriggerCharacter;
 		bool is_quote_character = params.context.triggerCharacter == "\"" || params.context.triggerCharacter == "'";
 
 		if (is_trigger_character && is_quote_character && item.insertText.is_quoted()) {
@@ -367,12 +367,12 @@ Array MyGDScriptTextDocument::codeLens(const Dictionary &p_params) {
 Array MyGDScriptTextDocument::documentLink(const Dictionary &p_params) {
 	Array ret;
 
-	LSP::DocumentLinkParams params;
+	MyGDLSP::DocumentLinkParams params;
 	params.load(p_params);
 
-	List<LSP::DocumentLink> links;
+	List<MyGDLSP::DocumentLink> links;
 	MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_document_links(params.textDocument.uri, links);
-	for (const LSP::DocumentLink &E : links) {
+	for (const MyGDLSP::DocumentLink &E : links) {
 		ret.push_back(E.to_json());
 	}
 	return ret;
@@ -384,12 +384,12 @@ Array MyGDScriptTextDocument::colorPresentation(const Dictionary &p_params) {
 }
 
 Variant MyGDScriptTextDocument::hover(const Dictionary &p_params) {
-	LSP::TextDocumentPositionParams params;
+	MyGDLSP::TextDocumentPositionParams params;
 	params.load(p_params);
 
-	const LSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(params);
+	const MyGDLSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(params);
 	if (symbol) {
-		LSP::Hover hover;
+		MyGDLSP::Hover hover;
 		hover.contents = symbol->render();
 		hover.range.start = params.position;
 		hover.range.end = params.position;
@@ -398,10 +398,10 @@ Variant MyGDScriptTextDocument::hover(const Dictionary &p_params) {
 	} else if (MyGDScriptLanguageProtocol::get_singleton()->is_smart_resolve_enabled()) {
 		Dictionary ret;
 		Array contents;
-		List<const LSP::DocumentSymbol *> list;
+		List<const MyGDLSP::DocumentSymbol *> list;
 		MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_related_symbols(params, list);
-		for (const LSP::DocumentSymbol *&E : list) {
-			if (const LSP::DocumentSymbol *s = E) {
+		for (const MyGDLSP::DocumentSymbol *&E : list) {
+			if (const MyGDLSP::DocumentSymbol *s = E) {
 				contents.push_back(s->render().value);
 			}
 		}
@@ -413,38 +413,38 @@ Variant MyGDScriptTextDocument::hover(const Dictionary &p_params) {
 }
 
 Array MyGDScriptTextDocument::definition(const Dictionary &p_params) {
-	LSP::TextDocumentPositionParams params;
+	MyGDLSP::TextDocumentPositionParams params;
 	params.load(p_params);
-	List<const LSP::DocumentSymbol *> symbols;
+	List<const MyGDLSP::DocumentSymbol *> symbols;
 	Array arr = find_symbols(params, symbols);
 	return arr;
 }
 
 Variant MyGDScriptTextDocument::declaration(const Dictionary &p_params) {
-	LSP::TextDocumentPositionParams params;
+	MyGDLSP::TextDocumentPositionParams params;
 	params.load(p_params);
-	List<const LSP::DocumentSymbol *> symbols;
+	List<const MyGDLSP::DocumentSymbol *> symbols;
 	Array arr = find_symbols(params, symbols);
 	if (arr.is_empty() && !symbols.is_empty() && !symbols.front()->get()->native_class.is_empty()) { // Find a native symbol
-		const LSP::DocumentSymbol *symbol = symbols.front()->get();
+		const MyGDLSP::DocumentSymbol *symbol = symbols.front()->get();
 		if (MyGDScriptLanguageProtocol::get_singleton()->is_goto_native_symbols_enabled()) {
 			String id;
 			switch (symbol->kind) {
-				case LSP::SymbolKind::Class:
+				case MyGDLSP::SymbolKind::Class:
 					id = "class_name:" + symbol->name;
 					break;
-				case LSP::SymbolKind::Constant:
+				case MyGDLSP::SymbolKind::Constant:
 					id = "class_constant:" + symbol->native_class + ":" + symbol->name;
 					break;
-				case LSP::SymbolKind::Property:
-				case LSP::SymbolKind::Variable:
+				case MyGDLSP::SymbolKind::Property:
+				case MyGDLSP::SymbolKind::Variable:
 					id = "class_property:" + symbol->native_class + ":" + symbol->name;
 					break;
-				case LSP::SymbolKind::Enum:
+				case MyGDLSP::SymbolKind::Enum:
 					id = "class_enum:" + symbol->native_class + ":" + symbol->name;
 					break;
-				case LSP::SymbolKind::Method:
-				case LSP::SymbolKind::Function:
+				case MyGDLSP::SymbolKind::Method:
+				case MyGDLSP::SymbolKind::Function:
 					id = "class_method:" + symbol->native_class + ":" + symbol->name;
 					break;
 				default:
@@ -462,10 +462,10 @@ Variant MyGDScriptTextDocument::declaration(const Dictionary &p_params) {
 Variant MyGDScriptTextDocument::signatureHelp(const Dictionary &p_params) {
 	Variant ret;
 
-	LSP::TextDocumentPositionParams params;
+	MyGDLSP::TextDocumentPositionParams params;
 	params.load(p_params);
 
-	LSP::SignatureHelp s;
+	MyGDLSP::SignatureHelp s;
 	if (OK == MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_signature(params, s)) {
 		ret = s.to_json();
 	}
@@ -488,11 +488,11 @@ void MyGDScriptTextDocument::show_native_symbol_in_editor(const String &p_symbol
 	DisplayServer::get_singleton()->window_move_to_foreground();
 }
 
-Array MyGDScriptTextDocument::find_symbols(const LSP::TextDocumentPositionParams &p_location, List<const LSP::DocumentSymbol *> &r_list) {
+Array MyGDScriptTextDocument::find_symbols(const MyGDLSP::TextDocumentPositionParams &p_location, List<const MyGDLSP::DocumentSymbol *> &r_list) {
 	Array arr;
-	const LSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(p_location);
+	const MyGDLSP::DocumentSymbol *symbol = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_symbol(p_location);
 	if (symbol) {
-		LSP::Location location;
+		MyGDLSP::Location location;
 		location.uri = symbol->uri;
 		if (!location.uri.is_empty()) {
 			location.range = symbol->selectionRange;
@@ -503,12 +503,12 @@ Array MyGDScriptTextDocument::find_symbols(const LSP::TextDocumentPositionParams
 			r_list.push_back(symbol);
 		}
 	} else if (MyGDScriptLanguageProtocol::get_singleton()->is_smart_resolve_enabled()) {
-		List<const LSP::DocumentSymbol *> list;
+		List<const MyGDLSP::DocumentSymbol *> list;
 		MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->resolve_related_symbols(p_location, list);
-		for (const LSP::DocumentSymbol *&E : list) {
-			if (const LSP::DocumentSymbol *s = E) {
+		for (const MyGDLSP::DocumentSymbol *&E : list) {
+			if (const MyGDLSP::DocumentSymbol *s = E) {
 				if (!s->uri.is_empty()) {
-					LSP::Location location;
+					MyGDLSP::Location location;
 					location.uri = s->uri;
 					location.range = s->selectionRange;
 					arr.push_back(location.to_json());

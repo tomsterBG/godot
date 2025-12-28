@@ -48,15 +48,15 @@ protected:
 	static void _bind_methods();
 	void remove_cache_parser(const String &p_path);
 	bool initialized = false;
-	HashMap<StringName, LSP::DocumentSymbol> native_symbols;
+	HashMap<StringName, MyGDLSP::DocumentSymbol> native_symbols;
 
 	// Absolute paths that are known to point to res://
 	HashSet<String> absolute_res_paths;
 
-	const LSP::DocumentSymbol *get_native_symbol(const String &p_class, const String &p_member = "") const;
-	const LSP::DocumentSymbol *get_script_symbol(const String &p_path) const;
-	const LSP::DocumentSymbol *get_parameter_symbol(const LSP::DocumentSymbol *p_parent, const String &symbol_identifier);
-	const LSP::DocumentSymbol *get_local_symbol_at(const ExtendMyGDScriptParser *p_parser, const String &p_symbol_identifier, const LSP::Position p_position);
+	const MyGDLSP::DocumentSymbol *get_native_symbol(const String &p_class, const String &p_member = "") const;
+	const MyGDLSP::DocumentSymbol *get_script_symbol(const String &p_path) const;
+	const MyGDLSP::DocumentSymbol *get_parameter_symbol(const MyGDLSP::DocumentSymbol *p_parent, const String &symbol_identifier);
+	const MyGDLSP::DocumentSymbol *get_local_symbol_at(const ExtendMyGDScriptParser *p_parser, const String &p_symbol_identifier, const MyGDLSP::Position p_position);
 
 	void reload_all_workspace_scripts();
 
@@ -85,19 +85,19 @@ public:
 	String get_file_uri(const String &p_path) const;
 
 	void publish_diagnostics(const String &p_path);
-	void completion(const LSP::CompletionParams &p_params, List<ScriptLanguage::CodeCompletionOption> *r_options);
+	void completion(const MyGDLSP::CompletionParams &p_params, List<ScriptLanguage::CodeCompletionOption> *r_options);
 
-	const LSP::DocumentSymbol *resolve_symbol(const LSP::TextDocumentPositionParams &p_doc_pos, const String &p_symbol_name = "", bool p_func_required = false);
-	void resolve_related_symbols(const LSP::TextDocumentPositionParams &p_doc_pos, List<const LSP::DocumentSymbol *> &r_list);
-	const LSP::DocumentSymbol *resolve_native_symbol(const LSP::NativeSymbolInspectParams &p_params);
-	void resolve_document_links(const String &p_uri, List<LSP::DocumentLink> &r_list);
+	const MyGDLSP::DocumentSymbol *resolve_symbol(const MyGDLSP::TextDocumentPositionParams &p_doc_pos, const String &p_symbol_name = "", bool p_func_required = false);
+	void resolve_related_symbols(const MyGDLSP::TextDocumentPositionParams &p_doc_pos, List<const MyGDLSP::DocumentSymbol *> &r_list);
+	const MyGDLSP::DocumentSymbol *resolve_native_symbol(const MyGDLSP::NativeSymbolInspectParams &p_params);
+	void resolve_document_links(const String &p_uri, List<MyGDLSP::DocumentLink> &r_list);
 	Dictionary generate_script_api(const String &p_path);
-	Error resolve_signature(const LSP::TextDocumentPositionParams &p_doc_pos, LSP::SignatureHelp &r_signature);
+	Error resolve_signature(const MyGDLSP::TextDocumentPositionParams &p_doc_pos, MyGDLSP::SignatureHelp &r_signature);
 	void didDeleteFiles(const Dictionary &p_params);
-	Dictionary rename(const LSP::TextDocumentPositionParams &p_doc_pos, const String &new_name);
-	bool can_rename(const LSP::TextDocumentPositionParams &p_doc_pos, LSP::DocumentSymbol &r_symbol, LSP::Range &r_range);
-	Vector<LSP::Location> find_usages_in_file(const LSP::DocumentSymbol &p_symbol, const String &p_file_path);
-	Vector<LSP::Location> find_all_usages(const LSP::DocumentSymbol &p_symbol);
+	Dictionary rename(const MyGDLSP::TextDocumentPositionParams &p_doc_pos, const String &new_name);
+	bool can_rename(const MyGDLSP::TextDocumentPositionParams &p_doc_pos, MyGDLSP::DocumentSymbol &r_symbol, MyGDLSP::Range &r_range);
+	Vector<MyGDLSP::Location> find_usages_in_file(const MyGDLSP::DocumentSymbol &p_symbol, const String &p_file_path);
+	Vector<MyGDLSP::Location> find_all_usages(const MyGDLSP::DocumentSymbol &p_symbol);
 
 	MyGDScriptWorkspace();
 	~MyGDScriptWorkspace();

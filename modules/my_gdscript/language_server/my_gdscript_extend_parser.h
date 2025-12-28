@@ -50,12 +50,12 @@
 #define JOIN_SYMBOLS(p_path, name) ((p_path) + SYMBOL_SEPARATOR + (name))
 #endif
 
-typedef HashMap<String, const LSP::DocumentSymbol *> ClassMembers;
+typedef HashMap<String, const MyGDLSP::DocumentSymbol *> ClassMembers;
 
 /**
- * Represents a Position as used by MyGDScript Parser. Used for conversion to and from `LSP::Position`.
+ * Represents a Position as used by MyGDScript Parser. Used for conversion to and from `MyGDLSP::Position`.
  *
- * Difference to `LSP::Position`:
+ * Difference to `MyGDLSP::Position`:
  * * Line & Char/column: 1-based
  * 		* LSP: both 0-based
  * * Tabs are expanded to columns using tab size (`text_editor/behavior/indent/size`).
@@ -72,17 +72,17 @@ typedef HashMap<String, const LSP::DocumentSymbol *> ClassMembers;
  * * LSP: `character=8`
  * 	* Note: counting starts at `0`
  */
-struct GodotPosition {
+struct MyGDPosition {
 	int line;
 	int column;
 
-	GodotPosition(int p_line, int p_column) :
+	MyGDPosition(int p_line, int p_column) :
 			line(p_line), column(p_column) {}
 
-	LSP::Position to_lsp(const Vector<String> &p_lines) const;
-	static GodotPosition from_lsp(const LSP::Position p_pos, const Vector<String> &p_lines);
+	MyGDLSP::Position to_lsp(const Vector<String> &p_lines) const;
+	static MyGDPosition from_lsp(const MyGDLSP::Position p_pos, const Vector<String> &p_lines);
 
-	bool operator==(const GodotPosition &p_other) const {
+	bool operator==(const MyGDPosition &p_other) const {
 		return line == p_other.line && column == p_other.column;
 	}
 
@@ -91,17 +91,17 @@ struct GodotPosition {
 	}
 };
 
-struct GodotRange {
-	GodotPosition start;
-	GodotPosition end;
+struct MyGDRange {
+	MyGDPosition start;
+	MyGDPosition end;
 
-	GodotRange(GodotPosition p_start, GodotPosition p_end) :
+	MyGDRange(MyGDPosition p_start, MyGDPosition p_end) :
 			start(p_start), end(p_end) {}
 
-	LSP::Range to_lsp(const Vector<String> &p_lines) const;
-	static GodotRange from_lsp(const LSP::Range &p_range, const Vector<String> &p_lines);
+	MyGDLSP::Range to_lsp(const Vector<String> &p_lines) const;
+	static MyGDRange from_lsp(const MyGDLSP::Range &p_range, const Vector<String> &p_lines);
 
-	bool operator==(const GodotRange &p_other) const {
+	bool operator==(const MyGDRange &p_other) const {
 		return start == p_other.start && end == p_other.end;
 	}
 
@@ -114,41 +114,41 @@ class ExtendMyGDScriptParser : public MyGDScriptParser {
 	String path;
 	Vector<String> lines;
 
-	LSP::DocumentSymbol class_symbol;
-	Vector<LSP::Diagnostic> diagnostics;
-	List<LSP::DocumentLink> document_links;
+	MyGDLSP::DocumentSymbol class_symbol;
+	Vector<MyGDLSP::Diagnostic> diagnostics;
+	List<MyGDLSP::DocumentLink> document_links;
 	ClassMembers members;
 	HashMap<String, ClassMembers> inner_classes;
 
-	LSP::Range range_of_node(const MyGDScriptParser::Node *p_node) const;
+	MyGDLSP::Range range_of_node(const MyGDScriptParser::Node *p_node) const;
 
 	void update_diagnostics();
 
 	void update_symbols();
 	void update_document_links(const String &p_code);
-	void parse_class_symbol(const MyGDScriptParser::ClassNode *p_class, LSP::DocumentSymbol &r_symbol);
-	void parse_function_symbol(const MyGDScriptParser::FunctionNode *p_func, LSP::DocumentSymbol &r_symbol);
+	void parse_class_symbol(const MyGDScriptParser::ClassNode *p_class, MyGDLSP::DocumentSymbol &r_symbol);
+	void parse_function_symbol(const MyGDScriptParser::FunctionNode *p_func, MyGDLSP::DocumentSymbol &r_symbol);
 
 	Dictionary dump_function_api(const MyGDScriptParser::FunctionNode *p_func) const;
 	Dictionary dump_class_api(const MyGDScriptParser::ClassNode *p_class) const;
 
-	const LSP::DocumentSymbol *search_symbol_defined_at_line(int p_line, const LSP::DocumentSymbol &p_parent, const String &p_symbol_name = "") const;
+	const MyGDLSP::DocumentSymbol *search_symbol_defined_at_line(int p_line, const MyGDLSP::DocumentSymbol &p_parent, const String &p_symbol_name = "") const;
 
 	Array member_completions;
 
 public:
 	_FORCE_INLINE_ const String &get_path() const { return path; }
 	_FORCE_INLINE_ const Vector<String> &get_lines() const { return lines; }
-	_FORCE_INLINE_ const LSP::DocumentSymbol &get_symbols() const { return class_symbol; }
-	_FORCE_INLINE_ const Vector<LSP::Diagnostic> &get_diagnostics() const { return diagnostics; }
+	_FORCE_INLINE_ const MyGDLSP::DocumentSymbol &get_symbols() const { return class_symbol; }
+	_FORCE_INLINE_ const Vector<MyGDLSP::Diagnostic> &get_diagnostics() const { return diagnostics; }
 	_FORCE_INLINE_ const ClassMembers &get_members() const { return members; }
 	_FORCE_INLINE_ const HashMap<String, ClassMembers> &get_inner_classes() const { return inner_classes; }
 
-	Error get_left_function_call(const LSP::Position &p_position, LSP::Position &r_func_pos, int &r_arg_index) const;
+	Error get_left_function_call(const MyGDLSP::Position &p_position, MyGDLSP::Position &r_func_pos, int &r_arg_index) const;
 
-	String get_text_for_completion(const LSP::Position &p_cursor) const;
-	String get_text_for_lookup_symbol(const LSP::Position &p_cursor, const String &p_symbol = "", bool p_func_required = false) const;
-	String get_identifier_under_position(const LSP::Position &p_position, LSP::Range &r_range) const;
+	String get_text_for_completion(const MyGDLSP::Position &p_cursor) const;
+	String get_text_for_lookup_symbol(const MyGDLSP::Position &p_cursor, const String &p_symbol = "", bool p_func_required = false) const;
+	String get_identifier_under_position(const MyGDLSP::Position &p_position, MyGDLSP::Range &r_range) const;
 	String get_uri() const;
 
 	/**
@@ -159,9 +159,9 @@ public:
 	 * -> Without `p_symbol_name`: returns `handle_arg`. Even if parameter (`arg`) is wanted.
 	 *    With `p_symbol_name`: symbol name MUST match `p_symbol_name`: returns `arg`.
 	 */
-	const LSP::DocumentSymbol *get_symbol_defined_at_line(int p_line, const String &p_symbol_name = "") const;
-	const LSP::DocumentSymbol *get_member_symbol(const String &p_name, const String &p_subclass = "") const;
-	const List<LSP::DocumentLink> &get_document_links() const;
+	const MyGDLSP::DocumentSymbol *get_symbol_defined_at_line(int p_line, const String &p_symbol_name = "") const;
+	const MyGDLSP::DocumentSymbol *get_member_symbol(const String &p_name, const String &p_subclass = "") const;
+	const List<MyGDLSP::DocumentLink> &get_document_links() const;
 
 	const Array &get_member_completions();
 	Dictionary generate_api() const;

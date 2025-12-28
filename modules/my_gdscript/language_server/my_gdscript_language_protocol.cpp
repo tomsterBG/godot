@@ -169,7 +169,7 @@ void MyGDScriptLanguageProtocol::_bind_methods() {
 }
 
 Dictionary MyGDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
-	LSP::InitializeResult ret;
+	MyGDLSP::InitializeResult ret;
 
 	{
 		// Warn if the workspace root does not match with the project that is currently open in Godot,
@@ -185,8 +185,8 @@ Dictionary MyGDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
 		}
 
 		if (ProjectSettings::get_singleton()->localize_path(root) != "res://") {
-			LSP::ShowMessageParams params{
-				LSP::MessageType::Warning,
+			MyGDLSP::ShowMessageParams params{
+				MyGDLSP::MessageType::Warning,
 				"The MyGDScript Language Server might not work correctly with other projects than the one opened in Godot."
 			};
 			notify_client("window/showMessage", params.to_json());
@@ -233,11 +233,11 @@ Dictionary MyGDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
 }
 
 void MyGDScriptLanguageProtocol::initialized(const Variant &p_params) {
-	LSP::GodotCapabilities capabilities;
+	MyGDLSP::GodotCapabilities capabilities;
 
 	DocTools *doc = EditorHelp::get_doc_data();
 	for (const KeyValue<String, DocData::ClassDoc> &E : doc->class_list) {
-		LSP::GodotNativeClassInfo gdclass;
+		MyGDLSP::GodotNativeClassInfo gdclass;
 		gdclass.name = E.value.name;
 		gdclass.class_doc = &(E.value);
 		if (ClassDB::ClassInfo *ptr = ClassDB::classes.getptr(StringName(E.value.name))) {

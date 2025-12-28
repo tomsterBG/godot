@@ -34,7 +34,7 @@
 #include "core/object/class_db.h"
 #include "core/templates/list.h"
 
-namespace LSP {
+namespace MyGDLSP {
 
 typedef String DocumentUri;
 
@@ -402,7 +402,7 @@ struct Command {
 };
 
 // Use namespace instead of enumeration to follow the LSP specifications.
-// `LSP::EnumName::EnumValue` is OK but `LSP::EnumValue` is not.
+// `MyGDLSP::EnumName::EnumValue` is OK but `MyGDLSP::EnumValue` is not.
 
 namespace TextDocumentSyncKind {
 /**
@@ -898,7 +898,7 @@ struct MarkupContent {
 };
 
 // Use namespace instead of enumeration to follow the LSP specifications
-// `LSP::EnumName::EnumValue` is OK but `LSP::EnumValue` is not.
+// `MyGDLSP::EnumName::EnumValue` is OK but `MyGDLSP::EnumValue` is not.
 // And here C++ compilers are unhappy with our enumeration name like `Color`, `File`, `RefCounted` etc.
 /**
  * The kind of a completion entry.
@@ -1155,7 +1155,7 @@ struct CompletionList {
 };
 
 // Use namespace instead of enumeration to follow the LSP specifications
-// `LSP::EnumName::EnumValue` is OK but `LSP::EnumValue` is not
+// `MyGDLSP::EnumName::EnumValue` is OK but `MyGDLSP::EnumValue` is not
 // And here C++ compilers are unhappy with our enumeration name like `String`, `Array`, `Object` etc
 /**
  * A symbol kind.
@@ -1296,7 +1296,7 @@ struct DocumentSymbol {
 	}
 
 	_FORCE_INLINE_ CompletionItem make_completion_item(bool resolved = false) const {
-		LSP::CompletionItem item;
+		MyGDLSP::CompletionItem item;
 		item.label = name;
 
 		if (resolved) {
@@ -1304,33 +1304,33 @@ struct DocumentSymbol {
 		}
 
 		switch (kind) {
-			case LSP::SymbolKind::Enum:
-				item.kind = LSP::CompletionItemKind::Enum;
+			case MyGDLSP::SymbolKind::Enum:
+				item.kind = MyGDLSP::CompletionItemKind::Enum;
 				break;
-			case LSP::SymbolKind::Class:
-				item.kind = LSP::CompletionItemKind::Class;
+			case MyGDLSP::SymbolKind::Class:
+				item.kind = MyGDLSP::CompletionItemKind::Class;
 				break;
-			case LSP::SymbolKind::Property:
-				item.kind = LSP::CompletionItemKind::Property;
+			case MyGDLSP::SymbolKind::Property:
+				item.kind = MyGDLSP::CompletionItemKind::Property;
 				break;
-			case LSP::SymbolKind::Method:
-			case LSP::SymbolKind::Function:
-				item.kind = LSP::CompletionItemKind::Method;
+			case MyGDLSP::SymbolKind::Method:
+			case MyGDLSP::SymbolKind::Function:
+				item.kind = MyGDLSP::CompletionItemKind::Method;
 				break;
-			case LSP::SymbolKind::Event:
-				item.kind = LSP::CompletionItemKind::Event;
+			case MyGDLSP::SymbolKind::Event:
+				item.kind = MyGDLSP::CompletionItemKind::Event;
 				break;
-			case LSP::SymbolKind::Constant:
-				item.kind = LSP::CompletionItemKind::Constant;
+			case MyGDLSP::SymbolKind::Constant:
+				item.kind = MyGDLSP::CompletionItemKind::Constant;
 				break;
-			case LSP::SymbolKind::Variable:
-				item.kind = LSP::CompletionItemKind::Variable;
+			case MyGDLSP::SymbolKind::Variable:
+				item.kind = MyGDLSP::CompletionItemKind::Variable;
 				break;
-			case LSP::SymbolKind::File:
-				item.kind = LSP::CompletionItemKind::File;
+			case MyGDLSP::SymbolKind::File:
+				item.kind = MyGDLSP::CompletionItemKind::File;
 				break;
 			default:
-				item.kind = LSP::CompletionItemKind::Text;
+				item.kind = MyGDLSP::CompletionItemKind::Text;
 				break;
 		}
 
@@ -1989,4 +1989,4 @@ static String marked_documentation(const String &p_bbcode) {
 	}
 	return markdown;
 }
-} // namespace LSP
+} // namespace MyGDLSP
