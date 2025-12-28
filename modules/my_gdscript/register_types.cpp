@@ -66,9 +66,9 @@
 #include "tests/test_macros.h"
 #endif
 
-MyGDScriptLanguage *script_language_gd = nullptr;
-Ref<ResourceFormatLoaderMyGDScript> resource_loader_gd;
-Ref<ResourceFormatSaverMyGDScript> resource_saver_gd;
+MyGDScriptLanguage *my_script_language_gd = nullptr;
+Ref<ResourceFormatLoaderMyGDScript> my_resource_loader_gd;
+Ref<ResourceFormatSaverMyGDScript> my_resource_saver_gd;
 MyGDScriptCache *my_gdscript_cache = nullptr;
 
 #ifdef TOOLS_ENABLED
@@ -127,7 +127,7 @@ static void _editor_init() {
 #endif
 
 #ifndef MY_GDSCRIPT_NO_LSP
-	register_lsp_types();
+	register_my_gdscript_lsp_types();
 	MyGDScriptLanguageServer *lsp_plugin = memnew(MyGDScriptLanguageServer);
 	EditorNode::get_singleton()->add_editor_plugin(lsp_plugin);
 	Engine::get_singleton()->add_singleton(Engine::Singleton("MyGDScriptLanguageProtocol", MyGDScriptLanguageProtocol::get_singleton()));
@@ -140,14 +140,14 @@ void initialize_my_gdscript_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		GDREGISTER_CLASS(MyGDScript);
 
-		script_language_gd = memnew(MyGDScriptLanguage);
-		ScriptServer::register_language(script_language_gd);
+		my_script_language_gd = memnew(MyGDScriptLanguage);
+		ScriptServer::register_language(my_script_language_gd);
 
-		resource_loader_gd.instantiate();
-		ResourceLoader::add_resource_format_loader(resource_loader_gd);
+		my_resource_loader_gd.instantiate();
+		ResourceLoader::add_resource_format_loader(my_resource_loader_gd);
 
-		resource_saver_gd.instantiate();
-		ResourceSaver::add_resource_format_saver(resource_saver_gd);
+		my_resource_saver_gd.instantiate();
+		ResourceSaver::add_resource_format_saver(my_resource_saver_gd);
 
 		my_gdscript_cache = memnew(MyGDScriptCache);
 
@@ -168,21 +168,21 @@ void initialize_my_gdscript_module(ModuleInitializationLevel p_level) {
 
 void uninitialize_my_gdscript_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
-		ScriptServer::unregister_language(script_language_gd);
+		ScriptServer::unregister_language(my_script_language_gd);
 
 		if (my_gdscript_cache) {
 			memdelete(my_gdscript_cache);
 		}
 
-		if (script_language_gd) {
-			memdelete(script_language_gd);
+		if (my_script_language_gd) {
+			memdelete(my_script_language_gd);
 		}
 
-		ResourceLoader::remove_resource_format_loader(resource_loader_gd);
-		resource_loader_gd.unref();
+		ResourceLoader::remove_resource_format_loader(my_resource_loader_gd);
+		my_resource_loader_gd.unref();
 
-		ResourceSaver::remove_resource_format_saver(resource_saver_gd);
-		resource_saver_gd.unref();
+		ResourceSaver::remove_resource_format_saver(my_resource_saver_gd);
+		my_resource_saver_gd.unref();
 
 		MyGDScriptParser::cleanup();
 		MyGDScriptUtilityFunctions::unregister_functions();

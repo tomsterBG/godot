@@ -207,7 +207,7 @@ String MyGDScriptFunction::_get_callable_call_error(const String &p_where, const
 	}
 }
 
-void (*type_init_function_table[])(Variant *) = {
+void (*my_gd_type_init_function_table[])(Variant *) = {
 	nullptr, // NIL (shouldn't be called).
 	&VariantInitializer<bool>::init, // BOOL.
 	&VariantInitializer<int64_t>::init, // INT.
@@ -640,7 +640,7 @@ Variant MyGDScriptFunction::call(MyGDScriptInstance *p_instance, const Variant *
 		}
 
 		for (const KeyValue<int, Variant::Type> &E : temporary_slots) {
-			type_init_function_table[E.value](&stack[E.key]);
+			my_gd_type_init_function_table[E.value](&stack[E.key]);
 		}
 	}
 

@@ -120,7 +120,7 @@ void MyGDScriptLanguageServer::stop() {
 	EditorNode::get_log()->add_message("--- MyGDScript language server stopped ---", EditorLog::MSG_TYPE_EDITOR);
 }
 
-void register_lsp_types() {
+void register_my_gdscript_lsp_types() {
 	GDREGISTER_CLASS(MyGDScriptLanguageProtocol);
 	GDREGISTER_CLASS(MyGDScriptTextDocument);
 	GDREGISTER_CLASS(MyGDScriptWorkspace);

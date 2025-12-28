@@ -73,7 +73,7 @@ public:
 
 	HashMap<String, ExtendMyGDScriptParser *> scripts;
 	HashMap<String, ExtendMyGDScriptParser *> parse_results;
-	HashMap<StringName, ClassMembers> native_members;
+	HashMap<StringName, MyGDClassMembers> native_members;
 
 public:
 	Error initialize();

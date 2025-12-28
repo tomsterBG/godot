@@ -97,7 +97,7 @@ class MyGDScriptCache {
 	bool cleared = false;
 
 public:
-	static const int BINARY_MUTEX_TAG = 2;
+	static const int BINARY_MUTEX_TAG = 4;
 
 private:
 	static SafeBinaryMutex<BINARY_MUTEX_TAG> mutex;

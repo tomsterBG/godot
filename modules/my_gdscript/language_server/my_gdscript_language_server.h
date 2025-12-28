@@ -60,4 +60,4 @@ public:
 	void stop();
 };
 
-void register_lsp_types();
+void register_my_gdscript_lsp_types();

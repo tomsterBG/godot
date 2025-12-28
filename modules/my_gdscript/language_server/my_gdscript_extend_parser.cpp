@@ -183,7 +183,7 @@ void ExtendMyGDScriptParser::update_symbols() {
 
 			// Cache level one inner classes.
 			if (symbol.kind == MyGDLSP::SymbolKind::Class) {
-				ClassMembers inner_class;
+				MyGDClassMembers inner_class;
 				for (int j = 0; j < symbol.children.size(); j++) {
 					const MyGDLSP::DocumentSymbol &s = symbol.children[j];
 					inner_class.insert(s.name, &s);
@@ -845,7 +845,7 @@ const MyGDLSP::DocumentSymbol *ExtendMyGDScriptParser::get_member_symbol(const S
 			return *ptr;
 		}
 	} else {
-		if (const ClassMembers *_class = inner_classes.getptr(p_subclass)) {
+		if (const MyGDClassMembers *_class = inner_classes.getptr(p_subclass)) {
 			const MyGDLSP::DocumentSymbol *const *ptr = _class->getptr(p_name);
 			if (ptr) {
 				return *ptr;
@@ -869,8 +869,8 @@ const Array &ExtendMyGDScriptParser::get_member_completions() {
 			member_completions.push_back(item.to_json());
 		}
 
-		for (const KeyValue<String, ClassMembers> &E : inner_classes) {
-			const ClassMembers *inner_class = &E.value;
+		for (const KeyValue<String, MyGDClassMembers> &E : inner_classes) {
+			const MyGDClassMembers *inner_class = &E.value;
 
 			for (const KeyValue<String, const MyGDLSP::DocumentSymbol *> &F : *inner_class) {
 				const MyGDLSP::DocumentSymbol *symbol = F.value;

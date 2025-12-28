@@ -140,8 +140,8 @@ void MyGDScriptTextDocument::notify_client_show_symbol(const MyGDLSP::DocumentSy
 
 void MyGDScriptTextDocument::initialize() {
 	if (MyGDScriptLanguageProtocol::get_singleton()->is_smart_resolve_enabled()) {
-		for (const KeyValue<StringName, ClassMembers> &E : MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->native_members) {
-			const ClassMembers &members = E.value;
+		for (const KeyValue<StringName, MyGDClassMembers> &E : MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->native_members) {
+			const MyGDClassMembers &members = E.value;
 
 			for (const KeyValue<String, const MyGDLSP::DocumentSymbol *> &F : members) {
 				const MyGDLSP::DocumentSymbol *symbol = members.get(F.key);
@@ -317,7 +317,7 @@ Dictionary MyGDScriptTextDocument::resolve(const Dictionary &p_params) {
 				inner_class_name = param_symbols[1];
 			}
 
-			if (const ClassMembers *members = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->native_members.getptr(class_name)) {
+			if (const MyGDClassMembers *members = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->native_members.getptr(class_name)) {
 				if (const MyGDLSP::DocumentSymbol *const *member = members->getptr(member_name)) {
 					symbol = *member;
 				}

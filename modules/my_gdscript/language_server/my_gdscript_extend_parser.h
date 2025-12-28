@@ -50,7 +50,7 @@
 #define JOIN_SYMBOLS(p_path, name) ((p_path) + SYMBOL_SEPARATOR + (name))
 #endif
 
-typedef HashMap<String, const MyGDLSP::DocumentSymbol *> ClassMembers;
+typedef HashMap<String, const MyGDLSP::DocumentSymbol *> MyGDClassMembers;
 
 /**
  * Represents a Position as used by MyGDScript Parser. Used for conversion to and from `MyGDLSP::Position`.
@@ -117,8 +117,8 @@ class ExtendMyGDScriptParser : public MyGDScriptParser {
 	MyGDLSP::DocumentSymbol class_symbol;
 	Vector<MyGDLSP::Diagnostic> diagnostics;
 	List<MyGDLSP::DocumentLink> document_links;
-	ClassMembers members;
-	HashMap<String, ClassMembers> inner_classes;
+	MyGDClassMembers members;
+	HashMap<String, MyGDClassMembers> inner_classes;
 
 	MyGDLSP::Range range_of_node(const MyGDScriptParser::Node *p_node) const;
 
@@ -141,8 +141,8 @@ public:
 	_FORCE_INLINE_ const Vector<String> &get_lines() const { return lines; }
 	_FORCE_INLINE_ const MyGDLSP::DocumentSymbol &get_symbols() const { return class_symbol; }
 	_FORCE_INLINE_ const Vector<MyGDLSP::Diagnostic> &get_diagnostics() const { return diagnostics; }
-	_FORCE_INLINE_ const ClassMembers &get_members() const { return members; }
-	_FORCE_INLINE_ const HashMap<String, ClassMembers> &get_inner_classes() const { return inner_classes; }
+	_FORCE_INLINE_ const MyGDClassMembers &get_members() const { return members; }
+	_FORCE_INLINE_ const HashMap<String, MyGDClassMembers> &get_inner_classes() const { return inner_classes; }
 
 	Error get_left_function_call(const MyGDLSP::Position &p_position, MyGDLSP::Position &r_func_pos, int &r_arg_index) const;
 

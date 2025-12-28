@@ -419,7 +419,7 @@ Error MyGDScriptWorkspace::initialize() {
 
 	if (MyGDScriptLanguageProtocol::get_singleton()->is_smart_resolve_enabled()) {
 		for (const KeyValue<StringName, MyGDLSP::DocumentSymbol> &E : native_symbols) {
-			ClassMembers members;
+			MyGDClassMembers members;
 			const MyGDLSP::DocumentSymbol &class_symbol = E.value;
 			for (int i = 0; i < class_symbol.children.size(); i++) {
 				const MyGDLSP::DocumentSymbol &symbol = class_symbol.children[i];
@@ -844,8 +844,8 @@ void MyGDScriptWorkspace::resolve_related_symbols(const MyGDLSP::TextDocumentPos
 		MyGDLSP::Range range;
 		symbol_identifier = parser->get_identifier_under_position(p_doc_pos.position, range);
 
-		for (const KeyValue<StringName, ClassMembers> &E : native_members) {
-			const ClassMembers &members = native_members.get(E.key);
+		for (const KeyValue<StringName, MyGDClassMembers> &E : native_members) {
+			const MyGDClassMembers &members = native_members.get(E.key);
 			if (const MyGDLSP::DocumentSymbol *const *symbol = members.getptr(symbol_identifier)) {
 				r_list.push_back(*symbol);
 			}
@@ -853,13 +853,13 @@ void MyGDScriptWorkspace::resolve_related_symbols(const MyGDLSP::TextDocumentPos
 
 		for (const KeyValue<String, ExtendMyGDScriptParser *> &E : scripts) {
 			const ExtendMyGDScriptParser *scr = E.value;
-			const ClassMembers &members = scr->get_members();
+			const MyGDClassMembers &members = scr->get_members();
 			if (const MyGDLSP::DocumentSymbol *const *symbol = members.getptr(symbol_identifier)) {
 				r_list.push_back(*symbol);
 			}
 
-			for (const KeyValue<String, ClassMembers> &F : scr->get_inner_classes()) {
-				const ClassMembers *inner_class = &F.value;
+			for (const KeyValue<String, MyGDClassMembers> &F : scr->get_inner_classes()) {
+				const MyGDClassMembers *inner_class = &F.value;
 				if (const MyGDLSP::DocumentSymbol *const *symbol = inner_class->getptr(symbol_identifier)) {
 					r_list.push_back(*symbol);
 				}
