@@ -1,4 +1,4 @@
-const External3 = preload("external_parser_script3.notest.gd")
+const External3 = preload("external_parser_script3.notest.mygd")
 
 var test2 := "test2"
 

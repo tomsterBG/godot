@@ -17,7 +17,7 @@
 			<description>
 				Returns a new instance of the script.
 				[codeblock]
-				var MyClass = load("myclass.gd")
+				var MyClass = load("myclass.mygd")
 				var instance = MyClass.new()
 				print(instance.get_script() == MyClass) # Prints true
 				[/codeblock]

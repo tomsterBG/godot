@@ -3,4 +3,4 @@ func test():
 
 var v = A.v
 
-const A = preload("cyclic_ref_external_a.notest.gd")
+const A = preload("cyclic_ref_external_a.notest.mygd")

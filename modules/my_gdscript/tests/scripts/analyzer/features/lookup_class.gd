@@ -11,7 +11,7 @@ class Y extends X:
 			print(Q)
 
 # External class lookup
-const External: = preload("lookup_class_external.notest.gd")
+const External: = preload("lookup_class_external.notest.mygd")
 
 class Internal extends External.A:
 	static func check() -> void:

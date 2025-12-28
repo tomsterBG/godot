@@ -1,4 +1,4 @@
-extends "res://completion/class_a.notest.gd"
+extends "res://completion/class_a.notest.mygd"
 
 signal test_signal_1(a)
 signal test_signal_2(a: int)

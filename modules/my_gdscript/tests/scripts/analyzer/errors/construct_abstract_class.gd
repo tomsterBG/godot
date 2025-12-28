@@ -1,6 +1,6 @@
 extends RefCounted
 
-const AbstractScript = preload("./construct_abstract_script.notest.gd")
+const AbstractScript = preload("./construct_abstract_script.notest.mygd")
 
 @abstract class AbstractClass:
 	pass

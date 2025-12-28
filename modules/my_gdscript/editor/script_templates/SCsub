@@ -5,4 +5,4 @@ Import("env")
 
 import editor.template_builders as build_template_gd
 
-env.CommandNoCache("templates.gen.h", Glob("*/*.gd"), env.Run(build_template_gd.make_templates))
+env.CommandNoCache("templates.gen.h", Glob("*/*.mygd"), env.Run(build_template_gd.make_templates))

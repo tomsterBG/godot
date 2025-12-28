@@ -276,10 +276,10 @@ bool MyGDScriptTestRunner::make_tests_for_dir(const String &p_dir) {
 			}
 		} else {
 			// `*.notest.gd` files are skipped.
-			if (next.ends_with(".notest.gd")) {
+			if (next.ends_with(".notest.mygd")) {
 				next = dir->get_next();
 				continue;
-			} else if (binary_tokens && next.ends_with(".textonly.gd")) {
+			} else if (binary_tokens && next.ends_with(".textonly.mygd")) {
 				next = dir->get_next();
 				continue;
 			} else if (next.get_extension().to_lower() == "mygd") {
@@ -302,7 +302,7 @@ bool MyGDScriptTestRunner::make_tests_for_dir(const String &p_dir) {
 				String out_file = next.get_basename() + ".out";
 				ERR_FAIL_COND_V_MSG(!is_generating && !dir->file_exists(out_file), false, "Could not find output file for " + next);
 
-				if (next.ends_with(".bin.gd")) {
+				if (next.ends_with(".bin.mygd")) {
 					// Test text mode first.
 					MyGDScriptTest text_test(current_dir.path_join(next), current_dir.path_join(out_file), source_dir);
 					tests.push_back(text_test);
@@ -362,7 +362,7 @@ static bool generate_class_index_recursive(const String &p_dir) {
 				return false;
 			}
 		} else {
-			if (!next.ends_with(".gd")) {
+			if (!next.ends_with(".mygd")) {
 				next = dir->get_next();
 				continue;
 			}
@@ -602,7 +602,7 @@ MyGDScriptTest::TestResult MyGDScriptTest::execute_test_code(bool p_is_generatin
 	}
 
 	// `*.norun.gd` files are allowed to not contain a `test()` function (no runtime testing).
-	if (source_file.ends_with(".norun.gd")) {
+	if (source_file.ends_with(".norun.mygd")) {
 		enable_stdout();
 		result.status = GDTEST_OK;
 		result.output = get_text_for_status(result.status) + "\n" + result.output;

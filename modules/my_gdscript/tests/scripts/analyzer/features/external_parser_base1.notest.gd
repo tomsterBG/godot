@@ -1,1 +1,1 @@
-extends "external_parser_base2.notest.gd"
+extends "external_parser_base2.notest.mygd"

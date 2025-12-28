@@ -1,7 +1,7 @@
-extends "external_parser_script1_base.notest.gd"
+extends "external_parser_script1_base.notest.mygd"
 
-const External2 = preload("external_parser_script2.notest.gd")
-const External1c = preload("external_parser_script1c.notest.gd")
+const External2 = preload("external_parser_script2.notest.mygd")
+const External1c = preload("external_parser_script1c.notest.mygd")
 
 @export var e1c: External1c
 

@@ -1,4 +1,4 @@
-const External = preload("external_enum_as_constant_external.notest.gd")
+const External = preload("external_enum_as_constant_external.notest.mygd")
 const MyEnum = External.MyEnum
 
 func test():

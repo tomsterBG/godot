@@ -4,7 +4,7 @@ class InnerClass:
 
 enum Enum {A = 1}
 
-const Other = preload("./local_const_as_type.notest.gd")
+const Other = preload("./local_const_as_type.notest.mygd")
 
 func test():
 	const IC = InnerClass

@@ -1,7 +1,7 @@
-const A = preload("res://completion/class_a.notest.gd")
+const A = preload("res://completion/class_a.notest.mygd")
 
 class LocalInnerClass:
-    const AInner = preload("res://completion/class_a.notest.gd")
+    const AInner = preload("res://completion/class_a.notest.mygd")
     enum LocalInnerInnerEnum {}
     class LocalInnerInnerClass:
         pass

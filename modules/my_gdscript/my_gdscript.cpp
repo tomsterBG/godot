@@ -1424,7 +1424,7 @@ MyGDScript::MyGDScript() :
 		MyGDScriptLanguage::get_singleton()->script_list.add(&script_list);
 	}
 
-	path = vformat("my_gdscript://%d.gd", get_instance_id());
+	path = vformat("my_gdscript://%d.mygd", get_instance_id());
 }
 
 void MyGDScript::_save_orphaned_subclasses(ClearData *p_clear_data) {
@@ -1494,7 +1494,7 @@ String MyGDScript::debug_get_script_name(const Ref<Script> &p_script) {
 
 String MyGDScript::canonicalize_path(const String &p_path) {
 	if (p_path.get_extension() == "mygdc") {
-		return p_path.get_basename() + ".gd";
+		return p_path.get_basename() + ".mygd";
 	}
 	return p_path;
 }

@@ -1,4 +1,4 @@
-const B = preload("preload_cyclic_reference_b.notest.gd")
+const B = preload("preload_cyclic_reference_b.notest.mygd")
 
 const WAITING_FOR = "godot"
 

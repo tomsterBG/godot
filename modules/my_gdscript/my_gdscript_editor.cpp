@@ -1661,7 +1661,7 @@ static MyGDScriptCompletionIdentifier _type_from_variant(const Variant &p_value,
 			ci.type.native_type = scr->get_instance_base_type();
 			ci.type.kind = MyGDScriptParser::DataType::SCRIPT;
 
-			if (scr->get_path().ends_with(".gd")) {
+			if (scr->get_path().ends_with(".mygd")) {
 				Ref<MyGDScriptParserRef> parser = p_context.parser->get_depended_parser_for(scr->get_path());
 				if (parser.is_valid() && parser->raise_status(MyGDScriptParserRef::INTERFACE_SOLVED) == OK) {
 					ci.type.type_source = MyGDScriptParser::DataType::ANNOTATED_EXPLICIT;
@@ -2479,7 +2479,7 @@ static bool _guess_identifier_type(MyGDScriptParser::CompletionContext &p_contex
 	// Check global scripts.
 	if (ScriptServer::is_global_class(p_identifier->name)) {
 		String script = ScriptServer::get_global_class_path(p_identifier->name);
-		if (script.to_lower().ends_with(".gd")) {
+		if (script.to_lower().ends_with(".mygd")) {
 			Ref<MyGDScriptParserRef> parser = p_context.parser->get_depended_parser_for(script);
 			if (parser.is_valid() && parser->raise_status(MyGDScriptParserRef::INTERFACE_SOLVED) == OK) {
 				r_type.type.type_source = MyGDScriptParser::DataType::ANNOTATED_EXPLICIT;
@@ -4484,9 +4484,9 @@ static Error _lookup_symbol_from_base(const MyGDScriptParser::DataType &p_base, 
 					const ProjectSettings::AutoloadInfo &autoload = ProjectSettings::get_singleton()->get_autoload(p_symbol);
 					if (autoload.is_singleton) {
 						String scr_path = autoload.path;
-						if (!scr_path.ends_with(".gd")) {
+						if (!scr_path.ends_with(".mygd")) {
 							// Not a script, try find the script anyway, may have some success.
-							scr_path = scr_path.get_basename() + ".gd";
+							scr_path = scr_path.get_basename() + ".mygd";
 						}
 
 						if (FileAccess::exists(scr_path)) {

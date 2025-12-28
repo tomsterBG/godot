@@ -1,4 +1,4 @@
-extends "inner_base.gd".InnerA.InnerAB
+extends "inner_base.mygd".InnerA.InnerAB
 
 func test():
 	super.test()

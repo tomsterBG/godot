@@ -1,4 +1,4 @@
-extends "res://completion/class_a.notest.gd"
+extends "res://completion/class_a.notest.mygd"
 
 func test():
 	super.➡

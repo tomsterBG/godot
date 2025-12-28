@@ -411,7 +411,7 @@ func f():
 		Ref<MyGDScriptWorkspace> workspace = MyGDScriptLanguageProtocol::get_singleton()->get_workspace();
 
 		{
-			String path = "res://lsp/local_variables.gd";
+			String path = "res://lsp/local_variables.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -430,7 +430,7 @@ func f():
 		}
 
 		SUBCASE("Can get correct ranges for indented variables") {
-			String path = "res://lsp/indentation.gd";
+			String path = "res://lsp/indentation.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -438,7 +438,7 @@ func f():
 		}
 
 		SUBCASE("Can get correct ranges for scopes") {
-			String path = "res://lsp/scopes.gd";
+			String path = "res://lsp/scopes.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -446,7 +446,7 @@ func f():
 		}
 
 		SUBCASE("Can get correct ranges for lambda") {
-			String path = "res://lsp/lambdas.gd";
+			String path = "res://lsp/lambdas.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -454,7 +454,7 @@ func f():
 		}
 
 		SUBCASE("Can get correct ranges for inner class") {
-			String path = "res://lsp/class.gd";
+			String path = "res://lsp/class.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -462,7 +462,7 @@ func f():
 		}
 
 		SUBCASE("Can get correct ranges for inner class") {
-			String path = "res://lsp/enums.gd";
+			String path = "res://lsp/enums.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -470,7 +470,7 @@ func f():
 		}
 
 		SUBCASE("Can get correct ranges for shadowing & shadowed variables") {
-			String path = "res://lsp/shadowing_initializer.gd";
+			String path = "res://lsp/shadowing_initializer.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -478,7 +478,7 @@ func f():
 		}
 
 		SUBCASE("Can get correct ranges for properties and getter/setter") {
-			String path = "res://lsp/properties.gd";
+			String path = "res://lsp/properties.mygd";
 			assert_no_errors_in(path);
 			String uri = workspace->get_file_uri(path);
 			Vector<InlineTestData> all_test_data = read_tests(path);
@@ -496,8 +496,8 @@ func f():
 
 		SUBCASE("selectionRange of root class must be inside range") {
 			LocalVector<String> paths = {
-				"res://lsp/first_line_comment.gd", // Comment on first line
-				"res://lsp/first_line_class_name.gd", // class_name (and thus selection range) before extends
+				"res://lsp/first_line_comment.mygd", // Comment on first line
+				"res://lsp/first_line_class_name.mygd", // class_name (and thus selection range) before extends
 			};
 
 			for (const String &path : paths) {
@@ -513,7 +513,7 @@ func f():
 		}
 
 		SUBCASE("Documentation is correctly set") {
-			String path = "res://lsp/doc_comments.gd";
+			String path = "res://lsp/doc_comments.mygd";
 			assert_no_errors_in(path);
 			MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_local_script(path);
 			ExtendMyGDScriptParser *parser = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_results[path];

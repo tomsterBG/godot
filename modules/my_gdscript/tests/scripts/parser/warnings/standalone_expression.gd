@@ -13,7 +13,7 @@ func test():
 	await 3 # The `await` operand is usually a coroutine or a signal.
 	absi(4) # A call (in general) can have side effects.
 	@warning_ignore("return_value_discarded")
-	preload("../../utils.notest.gd") # A static initializer may have side effects.
+	preload("../../utils.notest.mygd") # A static initializer may have side effects.
 	"""
 	Python-like "comment".
 	"""

@@ -2,7 +2,7 @@
 
 signal finished
 
-const scr: MyGDScript = preload("reload_suspended_function_helper.notest.gd")
+const scr: MyGDScript = preload("reload_suspended_function_helper.notest.mygd")
 
 func test():
 	@warning_ignore("UNSAFE_METHOD_ACCESS")

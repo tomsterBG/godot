@@ -1,4 +1,4 @@
-const External = preload("external_inner_class_as_constant_external.notest.gd")
+const External = preload("external_inner_class_as_constant_external.notest.mygd")
 const ExternalInnerClass = External.InnerClass
 
 func test():

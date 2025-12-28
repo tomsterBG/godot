@@ -1,4 +1,4 @@
-const preloaded: MyGDScript = preload("my_gdscript_to_preload.notest.gd")
+const preloaded: MyGDScript = preload("my_gdscript_to_preload.notest.mygd")
 
 func test():
 	var preloaded_instance: preloaded = preloaded.new()

@@ -1,6 +1,6 @@
 extends Node
 
-const A = preload("res://completion/class_a.notest.gd")
+const A = preload("res://completion/class_a.notest.mygd")
 
 func _ready() -> void:
     var a := A.new()

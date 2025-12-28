@@ -1,4 +1,4 @@
-const A = preload("out_of_order_external.gd")
+const A = preload("out_of_order_external.mygd")
 
 class Inner:
 	func fn(p1 := A.c1) -> String:

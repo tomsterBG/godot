@@ -15,7 +15,7 @@ static func check(condition: Variant) -> void:
 			var dir: String
 			for i: int in stack.get_frame_count():
 				if i == 0:
-					dir = stack.get_frame_file(i).trim_suffix("utils.notest.gd")
+					dir = stack.get_frame_file(i).trim_suffix("utils.notest.mygd")
 				else:
 					printerr("  %s:%d @ %s()" % [
 						stack.get_frame_file(i).trim_prefix(dir),

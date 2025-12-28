@@ -1,3 +1,3 @@
-extends "res://completion/class_a.notest.gd"
+extends "res://completion/class_a.notest.mygd"
 
 static func ➡

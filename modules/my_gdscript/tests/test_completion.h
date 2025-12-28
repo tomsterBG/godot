@@ -100,7 +100,7 @@ static void test_directory(const String &p_dir) {
 				continue;
 			}
 			test_directory(path.path_join(next));
-		} else if (next.ends_with(".gd") && !next.ends_with(".notest.gd")) {
+		} else if (next.ends_with(".mygd") && !next.ends_with(".notest.mygd")) {
 			Ref<FileAccess> acc = FileAccess::open(path.path_join(next), FileAccess::READ, &err);
 
 			if (err != OK) {
@@ -240,7 +240,7 @@ static void setup_global_classes(const String &p_dir) {
 	while (!next.is_empty()) {
 		if (dir->current_is_dir() && next != "." && next != "..") {
 			setup_global_classes(path.path_join(next));
-		} else if (next.ends_with(".gd")) {
+		} else if (next.ends_with(".mygd")) {
 			String base_type;
 			bool is_abstract;
 			bool is_tool;
