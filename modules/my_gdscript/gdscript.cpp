@@ -2325,7 +2325,7 @@ String MyGDScriptLanguage::get_type() const {
 }
 
 String MyGDScriptLanguage::get_extension() const {
-	return "gd";
+	return "mygd";
 }
 
 void MyGDScriptLanguage::finish() {
@@ -3050,7 +3050,7 @@ Ref<Resource> ResourceFormatLoaderMyGDScript::load(const String &p_path, const S
 }
 
 void ResourceFormatLoaderMyGDScript::get_recognized_extensions(List<String> *p_extensions) const {
-	p_extensions->push_back("gd");
+	p_extensions->push_back("mygd");
 	p_extensions->push_back("gdc");
 }
 
@@ -3060,7 +3060,7 @@ bool ResourceFormatLoaderMyGDScript::handles_type(const String &p_type) const {
 
 String ResourceFormatLoaderMyGDScript::get_resource_type(const String &p_path) const {
 	String el = p_path.get_extension().to_lower();
-	if (el == "gd" || el == "gdc") {
+	if (el == "mygd" || el == "gdc") {
 		return "MyGDScript";
 	}
 	return "";
@@ -3168,7 +3168,7 @@ Error ResourceFormatSaverMyGDScript::save(const Ref<Resource> &p_resource, const
 
 void ResourceFormatSaverMyGDScript::get_recognized_extensions(const Ref<Resource> &p_resource, List<String> *p_extensions) const {
 	if (Object::cast_to<MyGDScript>(*p_resource)) {
-		p_extensions->push_back("gd");
+		p_extensions->push_back("mygd");
 	}
 }
 
