@@ -353,10 +353,10 @@ Vector<uint8_t> MyGDScriptTokenizerBuffer::parse_code_string(const String &p_cod
 
 	// Save header.
 	buf.resize(12);
-	buf.write[0] = 'G';
-	buf.write[1] = 'D';
-	buf.write[2] = 'S';
-	buf.write[3] = 'C';
+	buf.write[0] = 'M';
+	buf.write[1] = 'Y';
+	buf.write[2] = 'G';
+	buf.write[3] = 'D';
 	encode_uint32(TOKENIZER_VERSION, &buf.write[4]);
 
 	switch (p_compress_mode) {
