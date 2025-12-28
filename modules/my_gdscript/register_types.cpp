@@ -108,7 +108,7 @@ protected:
 			return;
 		}
 
-		add_file(p_path.get_basename() + ".gdc", file, true);
+		add_file(p_path.get_basename() + ".mygdc", file, true);
 	}
 
 public:

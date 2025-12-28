@@ -302,7 +302,7 @@ void test(TestType p_type) {
 	}
 
 	String test = cmdlargs.back()->get();
-	if (!test.ends_with(".mygd") && !test.ends_with(".gdc")) {
+	if (!test.ends_with(".mygd") && !test.ends_with(".mygdc")) {
 		print_line("This test expects a path to a MyGDScript file as its last parameter. Got: " + test);
 		return;
 	}
@@ -345,7 +345,7 @@ void test(TestType p_type) {
 			test_tokenizer(code, lines);
 			break;
 		case TEST_TOKENIZER_BUFFER:
-			if (test.ends_with(".gdc")) {
+			if (test.ends_with(".mygdc")) {
 				test_tokenizer_buffer(buf, lines);
 			} else {
 				test_tokenizer_buffer(code, lines);
