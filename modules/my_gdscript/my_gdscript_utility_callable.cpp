@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  my_gdscript_utility_callable.cpp                                         */
+/*  my_gdscript_utility_callable.cpp                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  my_gdscript_language_protocol.cpp                                        */
+/*  my_gdscript_language_protocol.cpp                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */

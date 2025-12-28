@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  my_gdscript_utility_functions.cpp                                        */
+/*  my_gdscript_utility_functions.cpp                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -527,19 +527,19 @@ static void _register_function(const StringName &p_name, const MethodInfo &p_met
 	utility_function_name_table.push_back(p_name);
 }
 
-#define REGISTER_FUNC(m_func, m_is_const, m_return, m_args, m_is_vararg, m_default_args)         \
-	{                                                                                            \
-		String name(#m_func);                                                                    \
-		if (name.begins_with("_")) {                                                             \
-			name = name.substr(1);                                                               \
-		}                                                                                        \
-		MethodInfo info = m_args;                                                                \
-		info.name = name;                                                                        \
-		info.return_val = m_return;                                                              \
-		info.default_arguments = m_default_args;                                                 \
-		if (m_is_vararg) {                                                                       \
-			info.flags |= METHOD_FLAG_VARARG;                                                    \
-		}                                                                                        \
+#define REGISTER_FUNC(m_func, m_is_const, m_return, m_args, m_is_vararg, m_default_args)           \
+	{                                                                                              \
+		String name(#m_func);                                                                      \
+		if (name.begins_with("_")) {                                                               \
+			name = name.substr(1);                                                                 \
+		}                                                                                          \
+		MethodInfo info = m_args;                                                                  \
+		info.name = name;                                                                          \
+		info.return_val = m_return;                                                                \
+		info.default_arguments = m_default_args;                                                   \
+		if (m_is_vararg) {                                                                         \
+			info.flags |= METHOD_FLAG_VARARG;                                                      \
+		}                                                                                          \
 		_register_function(name, info, MyGDScriptUtilityFunctionsDefinitions::m_func, m_is_const); \
 	}
 

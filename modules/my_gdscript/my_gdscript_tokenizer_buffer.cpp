@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  my_gdscript_tokenizer_buffer.cpp                                         */
+/*  my_gdscript_tokenizer_buffer.cpp                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */

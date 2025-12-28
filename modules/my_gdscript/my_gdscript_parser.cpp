@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  my_gdscript_parser.cpp                                                   */
+/*  my_gdscript_parser.cpp                                                */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -611,12 +611,12 @@ void MyGDScriptParser::parse_program() {
 	current_class = head;
 	bool can_have_class_or_extends = true;
 
-#define PUSH_PENDING_ANNOTATIONS_TO_HEAD                 \
-	if (!annotation_stack.is_empty()) {                  \
-		for (AnnotationNode *annot : annotation_stack) { \
-			head->annotations.push_back(annot);          \
-		}                                                \
-		annotation_stack.clear();                        \
+#define PUSH_PENDING_ANNOTATIONS_TO_HEAD                  \
+	if (!annotation_stack.is_empty()) {                   \
+		for (AnnotationNode * annot : annotation_stack) { \
+			head->annotations.push_back(annot);           \
+		}                                                 \
+		annotation_stack.clear();                         \
 	}
 
 	while (!check(MyGDScriptTokenizer::Token::TK_EOF)) {

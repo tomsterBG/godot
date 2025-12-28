@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  my_gdscript_translation_parser_plugin.cpp                                */
+/*  my_gdscript_translation_parser_plugin.cpp                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */

@@ -38,10 +38,10 @@
 
 #include "tests/test_macros.h"
 
+#include "../language_server/godot_lsp.h"
 #include "../language_server/my_gdscript_extend_parser.h"
 #include "../language_server/my_gdscript_language_protocol.h"
 #include "../language_server/my_gdscript_workspace.h"
-#include "../language_server/godot_lsp.h"
 
 #include "core/io/dir_access.h"
 #include "core/io/file_access_pack.h"
