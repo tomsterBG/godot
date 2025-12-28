@@ -19,9 +19,9 @@ if env.editor_build:
     else:
         # Using a define in the disabled case, to avoid having an extra define
         # in regular builds where all modules are enabled.
-        env_my_gdscript.Append(CPPDEFINES=["GDSCRIPT_NO_LSP"])
+        env_my_gdscript.Append(CPPDEFINES=["MY_GDSCRIPT_NO_LSP"])
         # Also needed in main env to unexpose --lsp-port option.
-        env.Append(CPPDEFINES=["GDSCRIPT_NO_LSP"])
+        env.Append(CPPDEFINES=["MY_GDSCRIPT_NO_LSP"])
 
 
 if env["tests"]:

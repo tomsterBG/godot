@@ -40,7 +40,7 @@
 #include "editor/my_gdscript_highlighter.h"
 #include "editor/my_gdscript_translation_parser_plugin.h"
 
-#ifndef GDSCRIPT_NO_LSP
+#ifndef MY_GDSCRIPT_NO_LSP
 #include "language_server/my_gdscript_language_server.h"
 #endif
 #endif // TOOLS_ENABLED
@@ -57,7 +57,7 @@
 #include "editor/export/editor_export.h"
 #include "editor/translations/editor_translation_parser.h"
 
-#ifndef GDSCRIPT_NO_LSP
+#ifndef MY_GDSCRIPT_NO_LSP
 #include "core/config/engine.h"
 #endif
 #endif // TOOLS_ENABLED
@@ -126,12 +126,12 @@ static void _editor_init() {
 	ScriptEditor::get_singleton()->register_syntax_highlighter(my_gdscript_syntax_highlighter);
 #endif
 
-#ifndef GDSCRIPT_NO_LSP
+#ifndef MY_GDSCRIPT_NO_LSP
 	register_lsp_types();
 	MyGDScriptLanguageServer *lsp_plugin = memnew(MyGDScriptLanguageServer);
 	EditorNode::get_singleton()->add_editor_plugin(lsp_plugin);
 	Engine::get_singleton()->add_singleton(Engine::Singleton("MyGDScriptLanguageProtocol", MyGDScriptLanguageProtocol::get_singleton()));
-#endif // !GDSCRIPT_NO_LSP
+#endif // !MY_GDSCRIPT_NO_LSP
 }
 
 #endif // TOOLS_ENABLED
