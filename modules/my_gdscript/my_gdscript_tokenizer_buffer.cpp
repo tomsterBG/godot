@@ -138,7 +138,7 @@ MyGDScriptTokenizer::Token MyGDScriptTokenizerBuffer::_binary_to_token(const uin
 
 Error MyGDScriptTokenizerBuffer::set_code_buffer(const Vector<uint8_t> &p_buffer) {
 	const uint8_t *buf = p_buffer.ptr();
-	ERR_FAIL_COND_V(p_buffer.size() < 12 || p_buffer[0] != 'G' || p_buffer[1] != 'D' || p_buffer[2] != 'S' || p_buffer[3] != 'C', ERR_INVALID_DATA);
+	ERR_FAIL_COND_V(p_buffer.size() < 12 || p_buffer[0] != 'M' || p_buffer[1] != 'Y' || p_buffer[2] != 'G' || p_buffer[3] != 'D', ERR_INVALID_DATA);
 
 	int version = decode_uint32(&buf[4]);
 	ERR_FAIL_COND_V_MSG(version != TOKENIZER_VERSION, ERR_INVALID_DATA, "Binary MyGDScript is not compatible with this engine version.");
