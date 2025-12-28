@@ -36,7 +36,7 @@
 #include "core/string/ustring.h"
 #include "core/templates/vector.h"
 
-class GDScriptWarning {
+class MyGDScriptWarning {
 public:
 	enum WarnLevel {
 		IGNORE,

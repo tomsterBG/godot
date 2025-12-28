@@ -53,7 +53,7 @@
 typedef HashMap<String, const LSP::DocumentSymbol *> ClassMembers;
 
 /**
- * Represents a Position as used by GDScript Parser. Used for conversion to and from `LSP::Position`.
+ * Represents a Position as used by MyGDScript Parser. Used for conversion to and from `LSP::Position`.
  *
  * Difference to `LSP::Position`:
  * * Line & Char/column: 1-based
@@ -110,7 +110,7 @@ struct GodotRange {
 	}
 };
 
-class ExtendGDScriptParser : public GDScriptParser {
+class ExtendMyGDScriptParser : public MyGDScriptParser {
 	String path;
 	Vector<String> lines;
 
@@ -120,17 +120,17 @@ class ExtendGDScriptParser : public GDScriptParser {
 	ClassMembers members;
 	HashMap<String, ClassMembers> inner_classes;
 
-	LSP::Range range_of_node(const GDScriptParser::Node *p_node) const;
+	LSP::Range range_of_node(const MyGDScriptParser::Node *p_node) const;
 
 	void update_diagnostics();
 
 	void update_symbols();
 	void update_document_links(const String &p_code);
-	void parse_class_symbol(const GDScriptParser::ClassNode *p_class, LSP::DocumentSymbol &r_symbol);
-	void parse_function_symbol(const GDScriptParser::FunctionNode *p_func, LSP::DocumentSymbol &r_symbol);
+	void parse_class_symbol(const MyGDScriptParser::ClassNode *p_class, LSP::DocumentSymbol &r_symbol);
+	void parse_function_symbol(const MyGDScriptParser::FunctionNode *p_func, LSP::DocumentSymbol &r_symbol);
 
-	Dictionary dump_function_api(const GDScriptParser::FunctionNode *p_func) const;
-	Dictionary dump_class_api(const GDScriptParser::ClassNode *p_class) const;
+	Dictionary dump_function_api(const MyGDScriptParser::FunctionNode *p_func) const;
+	Dictionary dump_class_api(const MyGDScriptParser::ClassNode *p_class) const;
 
 	const LSP::DocumentSymbol *search_symbol_defined_at_line(int p_line, const LSP::DocumentSymbol &p_parent, const String &p_symbol_name = "") const;
 

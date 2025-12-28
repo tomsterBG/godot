@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="@GDScript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="@MyGDScript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Built-in GDScript constants, functions, and annotations.
+		Built-in MyGDScript constants, functions, and annotations.
 	</brief_description>
 	<description>
-		A list of utility functions and annotations accessible from any script written in GDScript.
+		A list of utility functions and annotations accessible from any script written in MyGDScript.
 		For the list of global functions and constants that can be accessed in any scripting language, see [@GlobalScope].
 	</description>
 	<tutorials>
-		<link title="GDScript exports">$DOCS_URL/tutorials/scripting/gdscript/gdscript_exports.html</link>
+		<link title="MyGDScript exports">$DOCS_URL/tutorials/scripting/gdscript/gdscript_exports.html</link>
 	</tutorials>
 	<methods>
 		<method name="Color8" deprecated="Use [method Color.from_rgba8] instead.">
@@ -120,7 +120,7 @@
 				[@subpath, @path, foo]
 				[, res://test.gd, bar]
 				[/codeblock]
-				[b]Note:[/b] This function can only be used to serialize objects with an attached [GDScript] stored in a separate file. Objects without an attached script, with a script written in another language, or with a built-in script are not supported.
+				[b]Note:[/b] This function can only be used to serialize objects with an attached [MyGDScript] stored in a separate file. Objects without an attached script, with a script written in another language, or with a built-in script are not supported.
 				[b]Note:[/b] This function is not recursive, which means that nested objects will not be represented as dictionaries. Also, properties passed by reference ([Object], [Dictionary], [Array], and packed arrays) are copied by reference, not duplicated.
 			</description>
 		</method>
@@ -172,7 +172,7 @@
 				[b]Important:[/b] Relative paths are [i]not[/i] relative to the script calling this method, instead it is prefixed with [code]"res://"[/code]. Loading from relative paths might not work as expected.
 				This function is a simplified version of [method ResourceLoader.load], which can be used for more advanced scenarios.
 				[b]Note:[/b] Files have to be imported into the engine first to load them using this function. If you want to load [Image]s at run-time, you may use [method Image.load]. If you want to import audio files, you can use the snippet described in [member AudioStreamMP3.data].
-				[b]Note:[/b] If [member ProjectSettings.editor/export/convert_text_resources_to_binary] is [code]true[/code], [method @GDScript.load] will not be able to read converted files in an exported project. If you rely on run-time loading of files present within the PCK, set [member ProjectSettings.editor/export/convert_text_resources_to_binary] to [code]false[/code].
+				[b]Note:[/b] If [member ProjectSettings.editor/export/convert_text_resources_to_binary] is [code]true[/code], [method @MyGDScript.load] will not be able to read converted files in an exported project. If you rely on run-time loading of files present within the PCK, set [member ProjectSettings.editor/export/convert_text_resources_to_binary] to [code]false[/code].
 			</description>
 		</method>
 		<method name="ord">
@@ -385,7 +385,7 @@
 			<param index="1" name="hint_string" type="String" />
 			<param index="2" name="usage" type="int" enum="PropertyUsageFlags" is_bitfield="true" default="6" />
 			<description>
-				Allows you to set a custom hint, hint string, and usage flags for the exported property. Note that there's no validation done in GDScript, it will just pass the parameters to the editor.
+				Allows you to set a custom hint, hint string, and usage flags for the exported property. Note that there's no validation done in MyGDScript, it will just pass the parameters to the editor.
 				[codeblock]
 				@export_custom(PROPERTY_HINT_NONE, "suffix:m") var suffix: Vector3
 				[/codeblock]
@@ -421,7 +421,7 @@
 				[codeblock]
 				@export_enum("Rebecca", "Mary", "Leah") var character_name: String = "Rebecca"
 				[/codeblock]
-				If you want to use named GDScript enums, then use [annotation @export] instead:
+				If you want to use named MyGDScript enums, then use [annotation @export] instead:
 				[codeblock]
 				enum CharacterName {REBECCA, MARY, LEAH}
 				@export var character_name: CharacterName
@@ -831,7 +831,7 @@
 			<return type="void" />
 			<param index="0" name="warning" type="String" />
 			<description>
-				Mark the following statement to ignore the specified [param warning]. See [url=$DOCS_URL/tutorials/scripting/gdscript/warning_system.html]GDScript warning system[/url].
+				Mark the following statement to ignore the specified [param warning]. See [url=$DOCS_URL/tutorials/scripting/gdscript/warning_system.html]MyGDScript warning system[/url].
 				[codeblock]
 				func test():
 					print("hello")

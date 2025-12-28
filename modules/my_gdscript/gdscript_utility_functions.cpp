@@ -97,7 +97,7 @@
 		return;                                                         \
 	}
 
-struct GDScriptUtilityFunctionsDefinitions {
+struct MyGDScriptUtilityFunctionsDefinitions {
 #ifndef DISABLE_DEPRECATED
 	static inline void convert(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
 		DEBUG_VALIDATE_ARG_COUNT(2, 2);
@@ -254,15 +254,15 @@ struct GDScriptUtilityFunctionsDefinitions {
 		}
 
 		VALIDATE_ARG_CUSTOM(0, Variant::OBJECT,
-				!obj->get_script_instance() || obj->get_script_instance()->get_language() != GDScriptLanguage::get_singleton(),
+				!obj->get_script_instance() || obj->get_script_instance()->get_language() != MyGDScriptLanguage::get_singleton(),
 				RTR("Not a script with an instance."));
 
-		GDScriptInstance *inst = static_cast<GDScriptInstance *>(obj->get_script_instance());
+		MyGDScriptInstance *inst = static_cast<MyGDScriptInstance *>(obj->get_script_instance());
 
-		Ref<GDScript> base = inst->get_script();
+		Ref<MyGDScript> base = inst->get_script();
 		VALIDATE_ARG_CUSTOM(0, Variant::OBJECT, base.is_null(), RTR("Not based on a script."));
 
-		GDScript *p = base.ptr();
+		MyGDScript *p = base.ptr();
 		String path = p->get_script_path();
 		Vector<StringName> sname;
 
@@ -280,7 +280,7 @@ struct GDScriptUtilityFunctionsDefinitions {
 		d["@subpath"] = cp;
 		d["@path"] = path;
 
-		for (const KeyValue<StringName, GDScript::MemberInfo> &E : base->member_indices) {
+		for (const KeyValue<StringName, MyGDScript::MemberInfo> &E : base->member_indices) {
 			if (!d.has(E.key)) {
 				d[E.key] = inst->members[E.value.index];
 			}
@@ -300,7 +300,7 @@ struct GDScriptUtilityFunctionsDefinitions {
 		Ref<Script> scr = ResourceLoader::load(d["@path"]);
 		VALIDATE_ARG_CUSTOM(0, Variant::DICTIONARY, scr.is_null(), RTR("Invalid instance dictionary format (can't load script at @path)."));
 
-		Ref<GDScript> gdscr = scr;
+		Ref<MyGDScript> gdscr = scr;
 		VALIDATE_ARG_CUSTOM(0, Variant::DICTIONARY, gdscr.is_null(), RTR("Invalid instance dictionary format (invalid script at @path)."));
 
 		NodePath sub;
@@ -315,14 +315,14 @@ struct GDScriptUtilityFunctionsDefinitions {
 
 		*r_ret = gdscr->_new(nullptr, -1 /* skip initializer */, r_error);
 		if (r_error.error != Callable::CallError::CALL_OK) {
-			*r_ret = RTR("Cannot instantiate GDScript class.");
+			*r_ret = RTR("Cannot instantiate MyGDScript class.");
 			return;
 		}
 
-		GDScriptInstance *inst = static_cast<GDScriptInstance *>(static_cast<Object *>(*r_ret)->get_script_instance());
-		Ref<GDScript> gd_ref = inst->get_script();
+		MyGDScriptInstance *inst = static_cast<MyGDScriptInstance *>(static_cast<Object *>(*r_ret)->get_script_instance());
+		Ref<MyGDScript> gd_ref = inst->get_script();
 
-		for (KeyValue<StringName, GDScript::MemberInfo> &E : gd_ref->member_indices) {
+		for (KeyValue<StringName, MyGDScript::MemberInfo> &E : gd_ref->member_indices) {
 			if (d.has(E.key)) {
 				inst->members.write[E.value.index] = d[E.key];
 			}
@@ -352,7 +352,7 @@ struct GDScriptUtilityFunctionsDefinitions {
 			s += p_args[i]->operator String();
 		}
 
-		ScriptLanguage *script = GDScriptLanguage::get_singleton();
+		ScriptLanguage *script = MyGDScriptLanguage::get_singleton();
 		if (script->debug_get_stack_level_count() > 0) {
 			s += "\n   At: " + script->debug_get_stack_level_source(0) + ":" + itos(script->debug_get_stack_level_line(0)) + ":" + script->debug_get_stack_level_function(0) + "()";
 		}
@@ -364,7 +364,7 @@ struct GDScriptUtilityFunctionsDefinitions {
 	static inline void print_stack(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
 		DEBUG_VALIDATE_ARG_COUNT(0, 0);
 
-		ScriptLanguage *script = GDScriptLanguage::get_singleton();
+		ScriptLanguage *script = MyGDScriptLanguage::get_singleton();
 		for (int i = 0; i < script->debug_get_stack_level_count(); i++) {
 			print_line("Frame " + itos(i) + " - " + script->debug_get_stack_level_source(i) + ":" + itos(script->debug_get_stack_level_line(i)) + " in function '" + script->debug_get_stack_level_function(i) + "'");
 		};
@@ -374,7 +374,7 @@ struct GDScriptUtilityFunctionsDefinitions {
 	static inline void get_stack(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
 		DEBUG_VALIDATE_ARG_COUNT(0, 0);
 
-		ScriptLanguage *script = GDScriptLanguage::get_singleton();
+		ScriptLanguage *script = MyGDScriptLanguage::get_singleton();
 		TypedArray<Dictionary> ret;
 		for (int i = 0; i < script->debug_get_stack_level_count(); i++) {
 			Dictionary frame;
@@ -476,7 +476,7 @@ struct GDScriptUtilityFunctionsDefinitions {
 			return;
 		}
 
-		GDScriptNativeClass *native_type = Object::cast_to<GDScriptNativeClass>(type_object);
+		MyGDScriptNativeClass *native_type = Object::cast_to<MyGDScriptNativeClass>(type_object);
 		if (native_type) {
 			*r_ret = ClassDB::is_parent_class(value_object->get_class_name(), native_type->get_name());
 			return;
@@ -506,19 +506,19 @@ struct GDScriptUtilityFunctionsDefinitions {
 	}
 };
 
-struct GDScriptUtilityFunctionInfo {
-	GDScriptUtilityFunctions::FunctionPtr function = nullptr;
+struct MyGDScriptUtilityFunctionInfo {
+	MyGDScriptUtilityFunctions::FunctionPtr function = nullptr;
 	MethodInfo info;
 	bool is_constant = false;
 };
 
-static AHashMap<StringName, GDScriptUtilityFunctionInfo> utility_function_table;
+static AHashMap<StringName, MyGDScriptUtilityFunctionInfo> utility_function_table;
 static List<StringName> utility_function_name_table;
 
-static void _register_function(const StringName &p_name, const MethodInfo &p_method_info, GDScriptUtilityFunctions::FunctionPtr p_function, bool p_is_const) {
+static void _register_function(const StringName &p_name, const MethodInfo &p_method_info, MyGDScriptUtilityFunctions::FunctionPtr p_function, bool p_is_const) {
 	ERR_FAIL_COND(utility_function_table.has(p_name));
 
-	GDScriptUtilityFunctionInfo function;
+	MyGDScriptUtilityFunctionInfo function;
 	function.function = p_function;
 	function.info = p_method_info;
 	function.is_constant = p_is_const;
@@ -540,7 +540,7 @@ static void _register_function(const StringName &p_name, const MethodInfo &p_met
 		if (m_is_vararg) {                                                                       \
 			info.flags |= METHOD_FLAG_VARARG;                                                    \
 		}                                                                                        \
-		_register_function(name, info, GDScriptUtilityFunctionsDefinitions::m_func, m_is_const); \
+		_register_function(name, info, MyGDScriptUtilityFunctionsDefinitions::m_func, m_is_const); \
 	}
 
 #define RET(m_type) \
@@ -567,7 +567,7 @@ static void _register_function(const StringName &p_name, const MethodInfo &p_met
 #define ARGTYPE(m_name) \
 	PropertyInfo(Variant::INT, m_name, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_CLASS_IS_ENUM, "Variant.Type")
 
-void GDScriptUtilityFunctions::register_functions() {
+void MyGDScriptUtilityFunctions::register_functions() {
 	/* clang-format off */
 #ifndef DISABLE_DEPRECATED
 	REGISTER_FUNC( convert,        true,  RETVAR,             ARGS( ARGVAR("what"), ARGTYPE("type") ), false, varray(     ));
@@ -591,72 +591,72 @@ void GDScriptUtilityFunctions::register_functions() {
 	/* clang-format on */
 }
 
-void GDScriptUtilityFunctions::unregister_functions() {
+void MyGDScriptUtilityFunctions::unregister_functions() {
 	utility_function_name_table.clear();
 	utility_function_table.clear();
 }
 
-GDScriptUtilityFunctions::FunctionPtr GDScriptUtilityFunctions::get_function(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+MyGDScriptUtilityFunctions::FunctionPtr MyGDScriptUtilityFunctions::get_function(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, nullptr);
 	return info->function;
 }
 
-bool GDScriptUtilityFunctions::has_function_return_value(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+bool MyGDScriptUtilityFunctions::has_function_return_value(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, false);
 	return info->info.return_val.type != Variant::NIL || bool(info->info.return_val.usage & PROPERTY_USAGE_NIL_IS_VARIANT);
 }
 
-Variant::Type GDScriptUtilityFunctions::get_function_return_type(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+Variant::Type MyGDScriptUtilityFunctions::get_function_return_type(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, Variant::NIL);
 	return info->info.return_val.type;
 }
 
-StringName GDScriptUtilityFunctions::get_function_return_class(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+StringName MyGDScriptUtilityFunctions::get_function_return_class(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, StringName());
 	return info->info.return_val.class_name;
 }
 
-Variant::Type GDScriptUtilityFunctions::get_function_argument_type(const StringName &p_function, int p_arg) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+Variant::Type MyGDScriptUtilityFunctions::get_function_argument_type(const StringName &p_function, int p_arg) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, Variant::NIL);
 	ERR_FAIL_INDEX_V(p_arg, info->info.arguments.size(), Variant::NIL);
 	return info->info.arguments[p_arg].type;
 }
 
-int GDScriptUtilityFunctions::get_function_argument_count(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+int MyGDScriptUtilityFunctions::get_function_argument_count(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, 0);
 	return info->info.arguments.size();
 }
 
-bool GDScriptUtilityFunctions::is_function_vararg(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+bool MyGDScriptUtilityFunctions::is_function_vararg(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, false);
 	return (bool)(info->info.flags & METHOD_FLAG_VARARG);
 }
 
-bool GDScriptUtilityFunctions::is_function_constant(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+bool MyGDScriptUtilityFunctions::is_function_constant(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, false);
 	return info->is_constant;
 }
 
-bool GDScriptUtilityFunctions::function_exists(const StringName &p_function) {
+bool MyGDScriptUtilityFunctions::function_exists(const StringName &p_function) {
 	return utility_function_table.has(p_function);
 }
 
-void GDScriptUtilityFunctions::get_function_list(List<StringName> *r_functions) {
+void MyGDScriptUtilityFunctions::get_function_list(List<StringName> *r_functions) {
 	for (const StringName &E : utility_function_name_table) {
 		r_functions->push_back(E);
 	}
 }
 
-MethodInfo GDScriptUtilityFunctions::get_function_info(const StringName &p_function) {
-	GDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
+MethodInfo MyGDScriptUtilityFunctions::get_function_info(const StringName &p_function) {
+	MyGDScriptUtilityFunctionInfo *info = utility_function_table.getptr(p_function);
 	ERR_FAIL_NULL_V(info, MethodInfo());
 	return info->info;
 }

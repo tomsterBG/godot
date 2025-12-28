@@ -34,27 +34,27 @@
 
 #include "core/templates/hashfuncs.h"
 
-bool GDScriptLambdaCallable::compare_equal(const CallableCustom *p_a, const CallableCustom *p_b) {
+bool MyGDScriptLambdaCallable::compare_equal(const CallableCustom *p_a, const CallableCustom *p_b) {
 	// Lambda callables are only compared by reference.
 	return p_a == p_b;
 }
 
-bool GDScriptLambdaCallable::compare_less(const CallableCustom *p_a, const CallableCustom *p_b) {
+bool MyGDScriptLambdaCallable::compare_less(const CallableCustom *p_a, const CallableCustom *p_b) {
 	// Lambda callables are only compared by reference.
 	return p_a < p_b;
 }
 
-bool GDScriptLambdaCallable::is_valid() const {
+bool MyGDScriptLambdaCallable::is_valid() const {
 	// Don't need to call CallableCustom::is_valid():
 	// It just verifies our script exists, which we know to be true because it is RefCounted.
 	return function != nullptr;
 }
 
-uint32_t GDScriptLambdaCallable::hash() const {
+uint32_t MyGDScriptLambdaCallable::hash() const {
 	return h;
 }
 
-String GDScriptLambdaCallable::get_as_text() const {
+String MyGDScriptLambdaCallable::get_as_text() const {
 	if (function == nullptr) {
 		return "<invalid lambda>";
 	}
@@ -64,23 +64,23 @@ String GDScriptLambdaCallable::get_as_text() const {
 	return "(anonymous lambda)";
 }
 
-CallableCustom::CompareEqualFunc GDScriptLambdaCallable::get_compare_equal_func() const {
+CallableCustom::CompareEqualFunc MyGDScriptLambdaCallable::get_compare_equal_func() const {
 	return compare_equal;
 }
 
-CallableCustom::CompareLessFunc GDScriptLambdaCallable::get_compare_less_func() const {
+CallableCustom::CompareLessFunc MyGDScriptLambdaCallable::get_compare_less_func() const {
 	return compare_less;
 }
 
-ObjectID GDScriptLambdaCallable::get_object() const {
+ObjectID MyGDScriptLambdaCallable::get_object() const {
 	return script->get_instance_id();
 }
 
-StringName GDScriptLambdaCallable::get_method() const {
+StringName MyGDScriptLambdaCallable::get_method() const {
 	return function->get_name();
 }
 
-int GDScriptLambdaCallable::get_argument_count(bool &r_is_valid) const {
+int MyGDScriptLambdaCallable::get_argument_count(bool &r_is_valid) const {
 	if (function == nullptr) {
 		r_is_valid = false;
 		return 0;
@@ -89,7 +89,7 @@ int GDScriptLambdaCallable::get_argument_count(bool &r_is_valid) const {
 	return function->get_argument_count() - captures.size();
 }
 
-void GDScriptLambdaCallable::call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const {
+void MyGDScriptLambdaCallable::call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const {
 	int captures_amount = captures.size();
 
 	if (function == nullptr) {
@@ -123,7 +123,7 @@ void GDScriptLambdaCallable::call(const Variant **p_arguments, int p_argcount, V
 				r_call_error.argument -= captures_amount;
 #ifdef DEBUG_ENABLED
 				if (r_call_error.argument < 0) {
-					ERR_PRINT(vformat("GDScript bug (please report): Invalid value of lambda capture at index %d.", captures_amount + r_call_error.argument));
+					ERR_PRINT(vformat("MyGDScript bug (please report): Invalid value of lambda capture at index %d.", captures_amount + r_call_error.argument));
 					r_call_error.error = Callable::CallError::CALL_ERROR_INVALID_METHOD; // TODO: Add a more suitable error code.
 					r_call_error.argument = 0;
 					r_call_error.expected = 0;
@@ -135,7 +135,7 @@ void GDScriptLambdaCallable::call(const Variant **p_arguments, int p_argcount, V
 				r_call_error.expected -= captures_amount;
 #ifdef DEBUG_ENABLED
 				if (r_call_error.expected < 0) {
-					ERR_PRINT("GDScript bug (please report): Invalid lambda captures count.");
+					ERR_PRINT("MyGDScript bug (please report): Invalid lambda captures count.");
 					r_call_error.error = Callable::CallError::CALL_ERROR_INVALID_METHOD; // TODO: Add a more suitable error code.
 					r_call_error.argument = 0;
 					r_call_error.expected = 0;
@@ -150,7 +150,7 @@ void GDScriptLambdaCallable::call(const Variant **p_arguments, int p_argcount, V
 	}
 }
 
-GDScriptLambdaCallable::GDScriptLambdaCallable(Ref<GDScript> p_script, GDScriptFunction *p_function, const Vector<Variant> &p_captures) :
+MyGDScriptLambdaCallable::MyGDScriptLambdaCallable(Ref<MyGDScript> p_script, MyGDScriptFunction *p_function, const Vector<Variant> &p_captures) :
 		function(p_function) {
 	ERR_FAIL_COND(p_script.is_null());
 	ERR_FAIL_NULL(p_function);
@@ -160,25 +160,25 @@ GDScriptLambdaCallable::GDScriptLambdaCallable(Ref<GDScript> p_script, GDScriptF
 	h = (uint32_t)hash_murmur3_one_64((uint64_t)this);
 }
 
-bool GDScriptLambdaSelfCallable::compare_equal(const CallableCustom *p_a, const CallableCustom *p_b) {
+bool MyGDScriptLambdaSelfCallable::compare_equal(const CallableCustom *p_a, const CallableCustom *p_b) {
 	// Lambda callables are only compared by reference.
 	return p_a == p_b;
 }
 
-bool GDScriptLambdaSelfCallable::compare_less(const CallableCustom *p_a, const CallableCustom *p_b) {
+bool MyGDScriptLambdaSelfCallable::compare_less(const CallableCustom *p_a, const CallableCustom *p_b) {
 	// Lambda callables are only compared by reference.
 	return p_a < p_b;
 }
 
-bool GDScriptLambdaSelfCallable::is_valid() const {
+bool MyGDScriptLambdaSelfCallable::is_valid() const {
 	return CallableCustom::is_valid() && function != nullptr;
 }
 
-uint32_t GDScriptLambdaSelfCallable::hash() const {
+uint32_t MyGDScriptLambdaSelfCallable::hash() const {
 	return h;
 }
 
-String GDScriptLambdaSelfCallable::get_as_text() const {
+String MyGDScriptLambdaSelfCallable::get_as_text() const {
 	if (function == nullptr) {
 		return "<invalid self lambda>";
 	}
@@ -188,23 +188,23 @@ String GDScriptLambdaSelfCallable::get_as_text() const {
 	return "(anonymous self lambda)";
 }
 
-CallableCustom::CompareEqualFunc GDScriptLambdaSelfCallable::get_compare_equal_func() const {
+CallableCustom::CompareEqualFunc MyGDScriptLambdaSelfCallable::get_compare_equal_func() const {
 	return compare_equal;
 }
 
-CallableCustom::CompareLessFunc GDScriptLambdaSelfCallable::get_compare_less_func() const {
+CallableCustom::CompareLessFunc MyGDScriptLambdaSelfCallable::get_compare_less_func() const {
 	return compare_less;
 }
 
-ObjectID GDScriptLambdaSelfCallable::get_object() const {
+ObjectID MyGDScriptLambdaSelfCallable::get_object() const {
 	return object->get_instance_id();
 }
 
-StringName GDScriptLambdaSelfCallable::get_method() const {
+StringName MyGDScriptLambdaSelfCallable::get_method() const {
 	return function->get_name();
 }
 
-int GDScriptLambdaSelfCallable::get_argument_count(bool &r_is_valid) const {
+int MyGDScriptLambdaSelfCallable::get_argument_count(bool &r_is_valid) const {
 	if (function == nullptr) {
 		r_is_valid = false;
 		return 0;
@@ -213,9 +213,9 @@ int GDScriptLambdaSelfCallable::get_argument_count(bool &r_is_valid) const {
 	return function->get_argument_count() - captures.size();
 }
 
-void GDScriptLambdaSelfCallable::call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const {
+void MyGDScriptLambdaSelfCallable::call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const {
 #ifdef DEBUG_ENABLED
-	if (object->get_script_instance() == nullptr || object->get_script_instance()->get_language() != GDScriptLanguage::get_singleton()) {
+	if (object->get_script_instance() == nullptr || object->get_script_instance()->get_language() != MyGDScriptLanguage::get_singleton()) {
 		ERR_PRINT("Trying to call a lambda with an invalid instance.");
 		r_call_error.error = Callable::CallError::CALL_ERROR_INSTANCE_IS_NULL;
 		return;
@@ -249,13 +249,13 @@ void GDScriptLambdaSelfCallable::call(const Variant **p_arguments, int p_argcoun
 			args[i + captures_amount] = p_arguments[i];
 		}
 
-		r_return_value = function->call(static_cast<GDScriptInstance *>(object->get_script_instance()), args, total_argcount, r_call_error);
+		r_return_value = function->call(static_cast<MyGDScriptInstance *>(object->get_script_instance()), args, total_argcount, r_call_error);
 		switch (r_call_error.error) {
 			case Callable::CallError::CALL_ERROR_INVALID_ARGUMENT:
 				r_call_error.argument -= captures_amount;
 #ifdef DEBUG_ENABLED
 				if (r_call_error.argument < 0) {
-					ERR_PRINT(vformat("GDScript bug (please report): Invalid value of lambda capture at index %d.", captures_amount + r_call_error.argument));
+					ERR_PRINT(vformat("MyGDScript bug (please report): Invalid value of lambda capture at index %d.", captures_amount + r_call_error.argument));
 					r_call_error.error = Callable::CallError::CALL_ERROR_INVALID_METHOD; // TODO: Add a more suitable error code.
 					r_call_error.argument = 0;
 					r_call_error.expected = 0;
@@ -267,7 +267,7 @@ void GDScriptLambdaSelfCallable::call(const Variant **p_arguments, int p_argcoun
 				r_call_error.expected -= captures_amount;
 #ifdef DEBUG_ENABLED
 				if (r_call_error.expected < 0) {
-					ERR_PRINT("GDScript bug (please report): Invalid lambda captures count.");
+					ERR_PRINT("MyGDScript bug (please report): Invalid lambda captures count.");
 					r_call_error.error = Callable::CallError::CALL_ERROR_INVALID_METHOD; // TODO: Add a more suitable error code.
 					r_call_error.argument = 0;
 					r_call_error.expected = 0;
@@ -278,11 +278,11 @@ void GDScriptLambdaSelfCallable::call(const Variant **p_arguments, int p_argcoun
 				break;
 		}
 	} else {
-		r_return_value = function->call(static_cast<GDScriptInstance *>(object->get_script_instance()), p_arguments, p_argcount, r_call_error);
+		r_return_value = function->call(static_cast<MyGDScriptInstance *>(object->get_script_instance()), p_arguments, p_argcount, r_call_error);
 	}
 }
 
-GDScriptLambdaSelfCallable::GDScriptLambdaSelfCallable(Ref<RefCounted> p_self, GDScriptFunction *p_function, const Vector<Variant> &p_captures) :
+MyGDScriptLambdaSelfCallable::MyGDScriptLambdaSelfCallable(Ref<RefCounted> p_self, MyGDScriptFunction *p_function, const Vector<Variant> &p_captures) :
 		function(p_function) {
 	ERR_FAIL_COND(p_self.is_null());
 	ERR_FAIL_NULL(p_function);
@@ -293,7 +293,7 @@ GDScriptLambdaSelfCallable::GDScriptLambdaSelfCallable(Ref<RefCounted> p_self, G
 	h = (uint32_t)hash_murmur3_one_64((uint64_t)this);
 }
 
-GDScriptLambdaSelfCallable::GDScriptLambdaSelfCallable(Object *p_self, GDScriptFunction *p_function, const Vector<Variant> &p_captures) :
+MyGDScriptLambdaSelfCallable::MyGDScriptLambdaSelfCallable(Object *p_self, MyGDScriptFunction *p_function, const Vector<Variant> &p_captures) :
 		function(p_function) {
 	ERR_FAIL_NULL(p_self);
 	ERR_FAIL_NULL(p_function);

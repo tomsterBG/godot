@@ -32,12 +32,12 @@
 
 #include "gdscript.h"
 
-Variant GDScriptFunction::get_constant(int p_idx) const {
+Variant MyGDScriptFunction::get_constant(int p_idx) const {
 	ERR_FAIL_INDEX_V(p_idx, constants.size(), "<errconst>");
 	return constants[p_idx];
 }
 
-StringName GDScriptFunction::get_global_name(int p_idx) const {
+StringName MyGDScriptFunction::get_global_name(int p_idx) const {
 	ERR_FAIL_INDEX_V(p_idx, global_names.size(), "<errgname>");
 	return global_names[p_idx];
 }
@@ -57,7 +57,7 @@ struct _GDFKCS {
 	}
 };
 
-void GDScriptFunction::debug_get_stack_member_state(int p_line, List<Pair<StringName, int>> *r_stackvars) const {
+void MyGDScriptFunction::debug_get_stack_member_state(int p_line, List<Pair<StringName, int>> *r_stackvars) const {
 	int oc = 0;
 	HashMap<StringName, _GDFKC> sdmap;
 	for (const StackDebug &sd : stack_debug) {
@@ -104,17 +104,17 @@ void GDScriptFunction::debug_get_stack_member_state(int p_line, List<Pair<String
 	}
 }
 
-GDScriptFunction::GDScriptFunction() {
+MyGDScriptFunction::MyGDScriptFunction() {
 	name = "<anonymous>";
 #ifdef DEBUG_ENABLED
 	{
-		MutexLock lock(GDScriptLanguage::get_singleton()->mutex);
-		GDScriptLanguage::get_singleton()->function_list.add(&function_list);
+		MutexLock lock(MyGDScriptLanguage::get_singleton()->mutex);
+		MyGDScriptLanguage::get_singleton()->function_list.add(&function_list);
 	}
 #endif
 }
 
-GDScriptFunction::~GDScriptFunction() {
+MyGDScriptFunction::~MyGDScriptFunction() {
 	get_script()->member_functions.erase(name);
 
 	for (int i = 0; i < lambdas.size(); i++) {
@@ -127,14 +127,14 @@ GDScriptFunction::~GDScriptFunction() {
 	return_type.script_type_ref = Ref<Script>();
 
 #ifdef DEBUG_ENABLED
-	MutexLock lock(GDScriptLanguage::get_singleton()->mutex);
-	GDScriptLanguage::get_singleton()->function_list.remove(&function_list);
+	MutexLock lock(MyGDScriptLanguage::get_singleton()->mutex);
+	MyGDScriptLanguage::get_singleton()->function_list.remove(&function_list);
 #endif
 }
 
 /////////////////////
 
-Variant GDScriptFunctionState::_signal_callback(const Variant **p_args, int p_argcount, Callable::CallError &r_error) {
+Variant MyGDScriptFunctionState::_signal_callback(const Variant **p_args, int p_argcount, Callable::CallError &r_error) {
 	Variant arg;
 	r_error.error = Callable::CallError::CALL_OK;
 
@@ -154,7 +154,7 @@ Variant GDScriptFunctionState::_signal_callback(const Variant **p_args, int p_ar
 		arg = extra_args;
 	}
 
-	Ref<GDScriptFunctionState> self = *p_args[p_argcount - 1];
+	Ref<MyGDScriptFunctionState> self = *p_args[p_argcount - 1];
 
 	if (self.is_null()) {
 		r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
@@ -166,13 +166,13 @@ Variant GDScriptFunctionState::_signal_callback(const Variant **p_args, int p_ar
 	return resume(arg);
 }
 
-bool GDScriptFunctionState::is_valid(bool p_extended_check) const {
+bool MyGDScriptFunctionState::is_valid(bool p_extended_check) const {
 	if (function == nullptr) {
 		return false;
 	}
 
 	if (p_extended_check) {
-		MutexLock lock(GDScriptLanguage::get_singleton()->mutex);
+		MutexLock lock(MyGDScriptLanguage::get_singleton()->mutex);
 
 		// Script gone?
 		if (!scripts_list.in_list()) {
@@ -187,10 +187,10 @@ bool GDScriptFunctionState::is_valid(bool p_extended_check) const {
 	return true;
 }
 
-Variant GDScriptFunctionState::resume(const Variant &p_arg) {
+Variant MyGDScriptFunctionState::resume(const Variant &p_arg) {
 	ERR_FAIL_NULL_V(function, Variant());
 	{
-		MutexLock lock(GDScriptLanguage::singleton->mutex);
+		MutexLock lock(MyGDScriptLanguage::singleton->mutex);
 
 		if (!scripts_list.in_list()) {
 #ifdef DEBUG_ENABLED
@@ -217,14 +217,14 @@ Variant GDScriptFunctionState::resume(const Variant &p_arg) {
 
 	bool completed = true;
 
-	// If the return value is a GDScriptFunctionState reference,
+	// If the return value is a MyGDScriptFunctionState reference,
 	// then the function did await again after resuming.
 	if (ret.is_ref_counted()) {
-		GDScriptFunctionState *gdfs = Object::cast_to<GDScriptFunctionState>(ret);
+		MyGDScriptFunctionState *gdfs = Object::cast_to<MyGDScriptFunctionState>(ret);
 		if (gdfs && gdfs->function == function) {
 			completed = false;
 			// Keep the first state alive via reference.
-			gdfs->first_state = first_state.is_valid() ? first_state : Ref<GDScriptFunctionState>(this);
+			gdfs->first_state = first_state.is_valid() ? first_state : Ref<MyGDScriptFunctionState>(this);
 		}
 	}
 
@@ -238,19 +238,19 @@ Variant GDScriptFunctionState::resume(const Variant &p_arg) {
 	return ret;
 }
 
-void GDScriptFunctionState::_clear_stack() {
+void MyGDScriptFunctionState::_clear_stack() {
 	if (state.stack_size) {
 		Variant *stack = (Variant *)state.stack.ptr();
-		// First `GDScriptFunction::FIXED_ADDRESSES_MAX` stack addresses are special
+		// First `MyGDScriptFunction::FIXED_ADDRESSES_MAX` stack addresses are special
 		// and not copied to the state, so we skip them here.
-		for (int i = GDScriptFunction::FIXED_ADDRESSES_MAX; i < state.stack_size; i++) {
+		for (int i = MyGDScriptFunction::FIXED_ADDRESSES_MAX; i < state.stack_size; i++) {
 			stack[i].~Variant();
 		}
 		state.stack_size = 0;
 	}
 }
 
-void GDScriptFunctionState::_clear_connections() {
+void MyGDScriptFunctionState::_clear_connections() {
 	List<Object::Connection> conns;
 	get_signals_connected_to_this(&conns);
 
@@ -259,22 +259,22 @@ void GDScriptFunctionState::_clear_connections() {
 	}
 }
 
-void GDScriptFunctionState::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("resume", "arg"), &GDScriptFunctionState::resume, DEFVAL(Variant()));
-	ClassDB::bind_method(D_METHOD("is_valid", "extended_check"), &GDScriptFunctionState::is_valid, DEFVAL(false));
-	ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "_signal_callback", &GDScriptFunctionState::_signal_callback, MethodInfo("_signal_callback"));
+void MyGDScriptFunctionState::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("resume", "arg"), &MyGDScriptFunctionState::resume, DEFVAL(Variant()));
+	ClassDB::bind_method(D_METHOD("is_valid", "extended_check"), &MyGDScriptFunctionState::is_valid, DEFVAL(false));
+	ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "_signal_callback", &MyGDScriptFunctionState::_signal_callback, MethodInfo("_signal_callback"));
 
 	ADD_SIGNAL(MethodInfo("completed", PropertyInfo(Variant::NIL, "result", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 }
 
-GDScriptFunctionState::GDScriptFunctionState() :
+MyGDScriptFunctionState::MyGDScriptFunctionState() :
 		scripts_list(this),
 		instances_list(this) {
 }
 
-GDScriptFunctionState::~GDScriptFunctionState() {
+MyGDScriptFunctionState::~MyGDScriptFunctionState() {
 	{
-		MutexLock lock(GDScriptLanguage::singleton->mutex);
+		MutexLock lock(MyGDScriptLanguage::singleton->mutex);
 		scripts_list.remove_from_list();
 		instances_list.remove_from_list();
 	}

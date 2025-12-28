@@ -34,9 +34,9 @@
 
 #include "core/config/project_settings.h"
 
-HashMap<String, String> GDScriptDocGen::singletons;
+HashMap<String, String> MyGDScriptDocGen::singletons;
 
-String GDScriptDocGen::_get_script_name(const String &p_path) {
+String MyGDScriptDocGen::_get_script_name(const String &p_path) {
 	const HashMap<String, String>::ConstIterator E = singletons.find(p_path);
 	if (E) {
 		return E->value;
@@ -44,7 +44,7 @@ String GDScriptDocGen::_get_script_name(const String &p_path) {
 	return p_path.trim_prefix("res://").quote();
 }
 
-String GDScriptDocGen::_get_class_name(const GDP::ClassNode &p_class) {
+String MyGDScriptDocGen::_get_class_name(const GDP::ClassNode &p_class) {
 	const GDP::ClassNode *curr_class = &p_class;
 	if (!curr_class->identifier) { // All inner classes have an identifier, so this is the outer class.
 		return _get_script_name(curr_class->fqcn);
@@ -61,7 +61,7 @@ String GDScriptDocGen::_get_class_name(const GDP::ClassNode &p_class) {
 	return full_name;
 }
 
-void GDScriptDocGen::_doctype_from_gdtype(const GDType &p_gdtype, String &r_type, String &r_enum, bool p_is_return) {
+void MyGDScriptDocGen::_doctype_from_gdtype(const GDType &p_gdtype, String &r_type, String &r_enum, bool p_is_return) {
 	if (!p_gdtype.is_hard_type()) {
 		r_type = "Variant";
 		return;
@@ -97,8 +97,8 @@ void GDScriptDocGen::_doctype_from_gdtype(const GDType &p_gdtype, String &r_type
 			return;
 		case GDType::NATIVE:
 			if (p_gdtype.is_meta_type) {
-				//r_type = GDScriptNativeClass::get_class_static();
-				r_type = "Object"; // "GDScriptNativeClass" refers to a blank page.
+				//r_type = MyGDScriptNativeClass::get_class_static();
+				r_type = "Object"; // "MyGDScriptNativeClass" refers to a blank page.
 				return;
 			}
 			r_type = p_gdtype.native_type;
@@ -126,7 +126,7 @@ void GDScriptDocGen::_doctype_from_gdtype(const GDType &p_gdtype, String &r_type
 			return;
 		case GDType::CLASS:
 			if (p_gdtype.is_meta_type) {
-				r_type = GDScript::get_class_static();
+				r_type = MyGDScript::get_class_static();
 				return;
 			}
 			r_type = _get_class_name(*p_gdtype.class_type);
@@ -155,7 +155,7 @@ void GDScriptDocGen::_doctype_from_gdtype(const GDType &p_gdtype, String &r_type
 	}
 }
 
-String GDScriptDocGen::_docvalue_from_variant(const Variant &p_variant, int p_recursion_level) {
+String MyGDScriptDocGen::_docvalue_from_variant(const Variant &p_variant, int p_recursion_level) {
 	constexpr int MAX_RECURSION_LEVEL = 2;
 
 	switch (p_variant.get_type()) {
@@ -289,7 +289,7 @@ String GDScriptDocGen::_docvalue_from_variant(const Variant &p_variant, int p_re
 	}
 }
 
-String GDScriptDocGen::docvalue_from_expression(const GDP::ExpressionNode *p_expression) {
+String MyGDScriptDocGen::docvalue_from_expression(const GDP::ExpressionNode *p_expression) {
 	ERR_FAIL_NULL_V(p_expression, String());
 
 	if (p_expression->is_constant) {
@@ -323,7 +323,7 @@ String GDScriptDocGen::docvalue_from_expression(const GDP::ExpressionNode *p_exp
 	return "<unknown>";
 }
 
-void GDScriptDocGen::_generate_docs(GDScript *p_script, const GDP::ClassNode *p_class) {
+void MyGDScriptDocGen::_generate_docs(MyGDScript *p_script, const GDP::ClassNode *p_class) {
 	p_script->_clear_doc();
 
 	DocData::ClassDoc &doc = p_script->doc;
@@ -375,8 +375,8 @@ void GDScriptDocGen::_generate_docs(GDScript *p_script, const GDP::ClassNode *p_
 				p_script->member_lines[class_name] = inner_class->start_line;
 
 				// Recursively generate inner class docs.
-				// Needs inner GDScripts to exist: previously generated in GDScriptCompiler::make_scripts().
-				GDScriptDocGen::_generate_docs(*p_script->subclasses[class_name], inner_class);
+				// Needs inner MyGDScripts to exist: previously generated in MyGDScriptCompiler::make_scripts().
+				MyGDScriptDocGen::_generate_docs(*p_script->subclasses[class_name], inner_class);
 			} break;
 
 			case GDP::ClassNode::Member::CONSTANT: {
@@ -588,7 +588,7 @@ void GDScriptDocGen::_generate_docs(GDScript *p_script, const GDP::ClassNode *p_
 	p_script->_add_doc(doc);
 }
 
-void GDScriptDocGen::generate_docs(GDScript *p_script, const GDP::ClassNode *p_class) {
+void MyGDScriptDocGen::generate_docs(MyGDScript *p_script, const GDP::ClassNode *p_class) {
 	for (const KeyValue<StringName, ProjectSettings::AutoloadInfo> &E : ProjectSettings::get_singleton()->get_autoload_list()) {
 		if (E.value.is_singleton) {
 			singletons[E.value.path] = E.key;
@@ -599,7 +599,7 @@ void GDScriptDocGen::generate_docs(GDScript *p_script, const GDP::ClassNode *p_c
 }
 
 // This method is needed for the editor, since during autocompletion the script is not compiled, only analyzed.
-void GDScriptDocGen::doctype_from_gdtype(const GDType &p_gdtype, String &r_type, String &r_enum, bool p_is_return) {
+void MyGDScriptDocGen::doctype_from_gdtype(const GDType &p_gdtype, String &r_type, String &r_enum, bool p_is_return) {
 	for (const KeyValue<StringName, ProjectSettings::AutoloadInfo> &E : ProjectSettings::get_singleton()->get_autoload_list()) {
 		if (E.value.is_singleton) {
 			singletons[E.value.path] = E.key;

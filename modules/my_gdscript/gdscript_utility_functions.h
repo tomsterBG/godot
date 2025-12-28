@@ -36,7 +36,7 @@
 template <typename T>
 class TypedArray;
 
-class GDScriptUtilityFunctions {
+class MyGDScriptUtilityFunctions {
 public:
 	typedef void (*FunctionPtr)(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error);
 

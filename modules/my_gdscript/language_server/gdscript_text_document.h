@@ -35,10 +35,10 @@
 #include "core/io/file_access.h"
 #include "core/object/ref_counted.h"
 
-class GDScript;
+class MyGDScript;
 
-class GDScriptTextDocument : public RefCounted {
-	GDCLASS(GDScriptTextDocument, RefCounted)
+class MyGDScriptTextDocument : public RefCounted {
+	GDCLASS(MyGDScriptTextDocument, RefCounted)
 protected:
 	static void _bind_methods();
 
@@ -58,7 +58,7 @@ public:
 	void willSaveWaitUntil(const Variant &p_param);
 	void didSave(const Variant &p_param);
 
-	void reload_script(Ref<GDScript> p_to_reload_script);
+	void reload_script(Ref<MyGDScript> p_to_reload_script);
 	void sync_script_content(const String &p_path, const String &p_content);
 	void show_native_symbol_in_editor(const String &p_symbol_id);
 
@@ -80,5 +80,5 @@ public:
 
 	void initialize();
 
-	GDScriptTextDocument();
+	MyGDScriptTextDocument();
 };

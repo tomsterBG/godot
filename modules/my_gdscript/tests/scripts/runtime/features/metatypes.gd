@@ -13,7 +13,7 @@ var test_enum := MyEnum
 func check_gdscript_native_class(value: Variant) -> void:
 	print(var_to_str(value).get_slice(",", 0).trim_prefix("Object("))
 
-func check_gdscript(value: GDScript) -> void:
+func check_gdscript(value: MyGDScript) -> void:
 	print(value.get_class())
 
 func check_enum(value: Dictionary) -> void:
@@ -38,9 +38,9 @@ func test():
 
 	print("---")
 	# Some users add unnecessary type hints to `const`-`preload`, which removes metatypes.
-	# For **constant** `GDScript` we still check the class members, despite the wider type.
-	const ScriptNoMeta: GDScript = Other
-	const ClassNoMeta: GDScript = MyClass
+	# For **constant** `MyGDScript` we still check the class members, despite the wider type.
+	const ScriptNoMeta: MyGDScript = Other
+	const ClassNoMeta: MyGDScript = MyClass
 	var a := ScriptNoMeta.TEST
 	var b := ClassNoMeta.TEST
 	print(a)

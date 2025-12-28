@@ -51,7 +51,7 @@
 #include "core/string/string_builder.h"
 #endif
 
-class GDScriptParser {
+class MyGDScriptParser {
 	struct AnnotationInfo;
 
 public:
@@ -106,7 +106,7 @@ public:
 			BUILTIN,
 			NATIVE,
 			SCRIPT,
-			CLASS, // GDScript.
+			CLASS, // MyGDScript.
 			ENUM, // Enumeration.
 			VARIANT, // Can be any type.
 			RESOLVING, // Currently resolving.
@@ -189,7 +189,7 @@ public:
 
 		bool is_typed_container_type() const;
 
-		GDScriptParser::DataType get_typed_container_type() const;
+		MyGDScriptParser::DataType get_typed_container_type() const;
 
 		bool can_reference(const DataType &p_other) const;
 
@@ -376,7 +376,7 @@ public:
 		bool is_resolved = false;
 		bool is_applied = false;
 
-		bool apply(GDScriptParser *p_this, Node *p_target, ClassNode *p_class);
+		bool apply(MyGDScriptParser *p_this, Node *p_target, ClassNode *p_class);
 		bool applies_to(uint32_t p_target_kinds) const;
 
 		AnnotationNode() {
@@ -916,7 +916,7 @@ public:
 			SignalNode *signal_source;
 			FunctionNode *function_source;
 		};
-		bool function_source_is_static = false; // For non-GDScript scripts.
+		bool function_source_is_static = false; // For non-MyGDScript scripts.
 
 		FunctionNode *source_function = nullptr; // TODO: Rename to disambiguate `function_source`.
 
@@ -1326,13 +1326,13 @@ public:
 		Variant::Type builtin_type = Variant::VARIANT_MAX;
 		Node *node = nullptr;
 		Object *base = nullptr;
-		GDScriptParser *parser = nullptr;
+		MyGDScriptParser *parser = nullptr;
 		CompletionCall call;
 	};
 
 private:
-	friend class GDScriptAnalyzer;
-	friend class GDScriptParserRef;
+	friend class MyGDScriptAnalyzer;
+	friend class MyGDScriptParserRef;
 
 	bool _is_tool = false;
 	String script_path;
@@ -1342,7 +1342,7 @@ private:
 	bool can_break = false;
 	bool can_continue = false;
 	List<bool> multiline_stack;
-	HashMap<String, Ref<GDScriptParserRef>> depended_parsers;
+	HashMap<String, Ref<MyGDScriptParserRef>> depended_parsers;
 
 	ClassNode *head = nullptr;
 	Node *list = nullptr;
@@ -1351,22 +1351,22 @@ private:
 #ifdef DEBUG_ENABLED
 	struct PendingWarning {
 		const Node *source = nullptr;
-		GDScriptWarning::Code code = GDScriptWarning::WARNING_MAX;
+		MyGDScriptWarning::Code code = MyGDScriptWarning::WARNING_MAX;
 		bool treated_as_error = false;
 		Vector<String> symbols;
 	};
 
 	bool is_ignoring_warnings = false;
-	List<GDScriptWarning> warnings;
+	List<MyGDScriptWarning> warnings;
 	List<PendingWarning> pending_warnings;
-	HashSet<int> warning_ignored_lines[GDScriptWarning::WARNING_MAX];
-	int warning_ignore_start_lines[GDScriptWarning::WARNING_MAX];
+	HashSet<int> warning_ignored_lines[MyGDScriptWarning::WARNING_MAX];
+	int warning_ignore_start_lines[MyGDScriptWarning::WARNING_MAX];
 	HashSet<int> unsafe_lines;
 #endif
 
-	GDScriptTokenizer *tokenizer = nullptr;
-	GDScriptTokenizer::Token previous;
-	GDScriptTokenizer::Token current;
+	MyGDScriptTokenizer *tokenizer = nullptr;
+	MyGDScriptTokenizer::Token previous;
+	MyGDScriptTokenizer::Token current;
 
 	ClassNode *current_class = nullptr;
 	FunctionNode *current_function = nullptr;
@@ -1378,7 +1378,7 @@ private:
 	bool in_lambda = false;
 	bool lambda_ended = false; // Marker for when a lambda ends, to apply an end of statement if needed.
 
-	typedef bool (GDScriptParser::*AnnotationAction)(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);
+	typedef bool (MyGDScriptParser::*AnnotationAction)(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);
 	struct AnnotationInfo {
 		enum TargetKind {
 			NONE = 0,
@@ -1399,7 +1399,7 @@ private:
 	static HashMap<StringName, AnnotationInfo> valid_annotations;
 	List<AnnotationNode *> annotation_stack;
 
-	typedef ExpressionNode *(GDScriptParser::*ParseFunction)(ExpressionNode *p_previous_operand, bool p_can_assign);
+	typedef ExpressionNode *(MyGDScriptParser::*ParseFunction)(ExpressionNode *p_previous_operand, bool p_can_assign);
 	// Higher value means higher precedence (i.e. is evaluated first).
 	enum Precedence {
 		PREC_NONE,
@@ -1432,12 +1432,12 @@ private:
 		ParseFunction infix = nullptr;
 		Precedence precedence = PREC_NONE;
 	};
-	static ParseRule *get_rule(GDScriptTokenizer::Token::Type p_token_type);
+	static ParseRule *get_rule(MyGDScriptTokenizer::Token::Type p_token_type);
 
 	List<Node *> nodes_in_progress;
 	void complete_extents(Node *p_node);
 	void update_extents(Node *p_node);
-	void reset_extents(Node *p_node, GDScriptTokenizer::Token p_token);
+	void reset_extents(Node *p_node, MyGDScriptTokenizer::Token p_token);
 	void reset_extents(Node *p_node, Node *p_from);
 
 	template <typename T>
@@ -1475,9 +1475,9 @@ private:
 	void clear();
 	void push_error(const String &p_message, const Node *p_origin = nullptr);
 #ifdef DEBUG_ENABLED
-	void push_warning(const Node *p_source, GDScriptWarning::Code p_code, const Vector<String> &p_symbols);
+	void push_warning(const Node *p_source, MyGDScriptWarning::Code p_code, const Vector<String> &p_symbols);
 	template <typename... Symbols>
-	void push_warning(const Node *p_source, GDScriptWarning::Code p_code, const Symbols &...p_symbols) {
+	void push_warning(const Node *p_source, MyGDScriptWarning::Code p_code, const Symbols &...p_symbols) {
 		push_warning(p_source, p_code, Vector<String>{ p_symbols... });
 	}
 	void apply_pending_warnings();
@@ -1494,10 +1494,10 @@ private:
 	void pop_completion_call();
 	void set_last_completion_call_arg(int p_argument);
 
-	GDScriptTokenizer::Token advance();
-	bool match(GDScriptTokenizer::Token::Type p_token_type);
-	bool check(GDScriptTokenizer::Token::Type p_token_type) const;
-	bool consume(GDScriptTokenizer::Token::Type p_token_type, const String &p_error_message);
+	MyGDScriptTokenizer::Token advance();
+	bool match(MyGDScriptTokenizer::Token::Type p_token_type);
+	bool check(MyGDScriptTokenizer::Token::Type p_token_type) const;
+	bool consume(MyGDScriptTokenizer::Token::Type p_token_type, const String &p_error_message);
 	bool is_at_end() const;
 	bool is_statement_end_token() const;
 	bool is_statement_end() const;
@@ -1513,7 +1513,7 @@ private:
 	void parse_extends();
 	void parse_class_body(bool p_is_multiline);
 	template <typename T>
-	void parse_class_member(T *(GDScriptParser::*p_parse_function)(bool), AnnotationInfo::TargetKind p_target, const String &p_member_kind, bool p_is_static = false);
+	void parse_class_member(T *(MyGDScriptParser::*p_parse_function)(bool), AnnotationInfo::TargetKind p_target, const String &p_member_kind, bool p_is_static = false);
 	SignalNode *parse_signal(bool p_is_static);
 	EnumNode *parse_enum(bool p_is_static);
 	ParameterNode *parse_parameter();
@@ -1600,10 +1600,10 @@ public:
 	Error parse_binary(const Vector<uint8_t> &p_binary, const String &p_script_path);
 	ClassNode *get_tree() const { return head; }
 	bool is_tool() const { return _is_tool; }
-	Ref<GDScriptParserRef> get_depended_parser_for(const String &p_path);
-	const HashMap<String, Ref<GDScriptParserRef>> &get_depended_parsers();
+	Ref<MyGDScriptParserRef> get_depended_parser_for(const String &p_path);
+	const HashMap<String, Ref<MyGDScriptParserRef>> &get_depended_parsers();
 	ClassNode *find_class(const String &p_qualified_name) const;
-	bool has_class(const GDScriptParser::ClassNode *p_class) const;
+	bool has_class(const MyGDScriptParser::ClassNode *p_class) const;
 	static Variant::Type get_builtin_type(const StringName &p_type); // Excluding `Variant::NIL` and `Variant::OBJECT`.
 
 	CompletionContext get_completion_context() const { return completion_context; }
@@ -1616,7 +1616,7 @@ public:
 		return List<String>();
 	}
 #ifdef DEBUG_ENABLED
-	const List<GDScriptWarning> &get_warnings() const { return warnings; }
+	const List<MyGDScriptWarning> &get_warnings() const { return warnings; }
 	const HashSet<int> &get_unsafe_lines() const { return unsafe_lines; }
 	int get_last_line_number() const { return current.end_line; }
 #endif
@@ -1624,11 +1624,11 @@ public:
 #ifdef TOOLS_ENABLED
 	static HashMap<String, String> theme_color_names;
 
-	HashMap<int, GDScriptTokenizer::CommentData> comment_data;
+	HashMap<int, MyGDScriptTokenizer::CommentData> comment_data;
 #endif // TOOLS_ENABLED
 
-	GDScriptParser();
-	~GDScriptParser();
+	MyGDScriptParser();
+	~MyGDScriptParser();
 
 #ifdef DEBUG_ENABLED
 	class TreePrinter {
@@ -1681,7 +1681,7 @@ public:
 		void print_while(WhileNode *p_while);
 
 	public:
-		void print_tree(const GDScriptParser &p_parser);
+		void print_tree(const MyGDScriptParser &p_parser);
 	};
 #endif // DEBUG_ENABLED
 	static void cleanup();

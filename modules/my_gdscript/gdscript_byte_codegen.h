@@ -35,7 +35,7 @@
 #include "gdscript_function.h"
 #include "gdscript_utility_functions.h"
 
-class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
+class MyGDScriptByteCodeGenerator : public MyGDScriptCodeGenerator {
 	struct StackSlot {
 		Variant::Type type = Variant::NIL;
 		bool can_contain_object = true;
@@ -49,7 +49,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 	struct CallTarget {
 		Address target;
 		bool is_new_temporary = false;
-		GDScriptByteCodeGenerator *codegen = nullptr;
+		MyGDScriptByteCodeGenerator *codegen = nullptr;
 #ifdef DEV_ENABLED
 		bool cleaned = false;
 #endif
@@ -64,7 +64,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 #endif
 		}
 
-		CallTarget(Address p_target, bool p_is_new_temporary, GDScriptByteCodeGenerator *p_codegen) :
+		CallTarget(Address p_target, bool p_is_new_temporary, MyGDScriptByteCodeGenerator *p_codegen) :
 				target(p_target),
 				is_new_temporary(p_is_new_temporary),
 				codegen(p_codegen) {}
@@ -74,7 +74,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 	};
 
 	bool ended = false;
-	GDScriptFunction *function = nullptr;
+	MyGDScriptFunction *function = nullptr;
 
 	Vector<int> opcodes;
 	List<RBMap<StringName, int>> stack_id_stack;
@@ -90,7 +90,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 	HashSet<int> temporaries_pending_clear;
 	RBMap<Variant::Type, List<int>> temporaries_pool;
 
-	List<GDScriptFunction::StackDebug> stack_debug;
+	List<MyGDScriptFunction::StackDebug> stack_debug;
 	List<RBMap<StringName, int>> block_identifier_stack;
 	RBMap<StringName, int> block_identifiers;
 
@@ -117,9 +117,9 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 	RBMap<Variant::ValidatedBuiltInMethod, int> builtin_method_map;
 	RBMap<Variant::ValidatedConstructor, int> constructors_map;
 	RBMap<Variant::ValidatedUtilityFunction, int> utilities_map;
-	RBMap<GDScriptUtilityFunctions::FunctionPtr, int> gds_utilities_map;
+	RBMap<MyGDScriptUtilityFunctions::FunctionPtr, int> gds_utilities_map;
 	RBMap<MethodBind *, int> method_bind_map;
-	RBMap<GDScriptFunction *, int> lambdas_map;
+	RBMap<MyGDScriptFunction *, int> lambdas_map;
 
 #ifdef DEBUG_ENABLED
 	// Keep method and property names for pointer and validated operations.
@@ -165,9 +165,9 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 			max_locals = locals.size();
 		}
 		stack_identifiers[p_id] = p_stackpos;
-		if (GDScriptLanguage::get_singleton()->should_track_locals()) {
+		if (MyGDScriptLanguage::get_singleton()->should_track_locals()) {
 			block_identifiers[p_id] = p_stackpos;
-			GDScriptFunction::StackDebug sd;
+			MyGDScriptFunction::StackDebug sd;
 			sd.added = true;
 			sd.line = current_line;
 			sd.identifier = p_id;
@@ -179,7 +179,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 	void push_stack_identifiers() {
 		stack_identifiers_counts.push_back(locals.size());
 		stack_id_stack.push_back(stack_identifiers);
-		if (GDScriptLanguage::get_singleton()->should_track_locals()) {
+		if (MyGDScriptLanguage::get_singleton()->should_track_locals()) {
 			RBMap<StringName, int> block_ids(block_identifiers);
 			block_identifier_stack.push_back(block_ids);
 			block_identifiers.clear();
@@ -197,12 +197,12 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 		}
 #endif
 		for (int i = current_locals; i < locals.size(); i++) {
-			dirty_locals.insert(i + GDScriptFunction::FIXED_ADDRESSES_MAX);
+			dirty_locals.insert(i + MyGDScriptFunction::FIXED_ADDRESSES_MAX);
 		}
 		locals.resize(current_locals);
-		if (GDScriptLanguage::get_singleton()->should_track_locals()) {
+		if (MyGDScriptLanguage::get_singleton()->should_track_locals()) {
 			for (const KeyValue<StringName, int> &E : block_identifiers) {
-				GDScriptFunction::StackDebug sd;
+				MyGDScriptFunction::StackDebug sd;
 				sd.added = false;
 				sd.identifier = E.key;
 				sd.line = current_line;
@@ -324,7 +324,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 		return pos;
 	}
 
-	int get_gds_utility_pos(const GDScriptUtilityFunctions::FunctionPtr p_gds_utility) {
+	int get_gds_utility_pos(const MyGDScriptUtilityFunctions::FunctionPtr p_gds_utility) {
 		if (gds_utilities_map.has(p_gds_utility)) {
 			return gds_utilities_map[p_gds_utility];
 		}
@@ -342,7 +342,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 		return pos;
 	}
 
-	int get_lambda_function_pos(GDScriptFunction *p_lambda_function) {
+	int get_lambda_function_pos(MyGDScriptFunction *p_lambda_function) {
 		if (lambdas_map.has(p_lambda_function)) {
 			return lambdas_map[p_lambda_function];
 		}
@@ -356,30 +356,30 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 	int address_of(const Address &p_address) {
 		switch (p_address.mode) {
 			case Address::SELF:
-				return GDScriptFunction::ADDR_SELF;
+				return MyGDScriptFunction::ADDR_SELF;
 			case Address::CLASS:
-				return GDScriptFunction::ADDR_CLASS;
+				return MyGDScriptFunction::ADDR_CLASS;
 			case Address::MEMBER:
-				return p_address.address | (GDScriptFunction::ADDR_TYPE_MEMBER << GDScriptFunction::ADDR_BITS);
+				return p_address.address | (MyGDScriptFunction::ADDR_TYPE_MEMBER << MyGDScriptFunction::ADDR_BITS);
 			case Address::CONSTANT:
-				return p_address.address | (GDScriptFunction::ADDR_TYPE_CONSTANT << GDScriptFunction::ADDR_BITS);
+				return p_address.address | (MyGDScriptFunction::ADDR_TYPE_CONSTANT << MyGDScriptFunction::ADDR_BITS);
 			case Address::LOCAL_VARIABLE:
 			case Address::FUNCTION_PARAMETER:
-				return p_address.address | (GDScriptFunction::ADDR_TYPE_STACK << GDScriptFunction::ADDR_BITS);
+				return p_address.address | (MyGDScriptFunction::ADDR_TYPE_STACK << MyGDScriptFunction::ADDR_BITS);
 			case Address::TEMPORARY:
 				temporaries.write[p_address.address].bytecode_indices.push_back(opcodes.size());
 				return -1;
 			case Address::NIL:
-				return GDScriptFunction::ADDR_NIL;
+				return MyGDScriptFunction::ADDR_NIL;
 		}
 		return -1; // Unreachable.
 	}
 
-	void append_opcode(GDScriptFunction::Opcode p_code) {
+	void append_opcode(MyGDScriptFunction::Opcode p_code) {
 		opcodes.push_back(p_code);
 	}
 
-	void append_opcode_and_argcount(GDScriptFunction::Opcode p_code, int p_argument_count) {
+	void append_opcode_and_argcount(MyGDScriptFunction::Opcode p_code, int p_argument_count) {
 		opcodes.push_back(p_code);
 		opcodes.push_back(p_argument_count);
 		instr_args_max = MAX(instr_args_max, p_argument_count);
@@ -437,7 +437,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 		opcodes.push_back(get_utility_pos(p_utility));
 	}
 
-	void append(const GDScriptUtilityFunctions::FunctionPtr p_gds_utility) {
+	void append(const MyGDScriptUtilityFunctions::FunctionPtr p_gds_utility) {
 		opcodes.push_back(get_gds_utility_pos(p_gds_utility));
 	}
 
@@ -445,7 +445,7 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 		opcodes.push_back(get_method_bind_pos(p_method));
 	}
 
-	void append(GDScriptFunction *p_lambda_function) {
+	void append(MyGDScriptFunction *p_lambda_function) {
 		opcodes.push_back(get_lambda_function_pos(p_lambda_function));
 	}
 
@@ -454,12 +454,12 @@ class GDScriptByteCodeGenerator : public GDScriptCodeGenerator {
 	}
 
 public:
-	virtual uint32_t add_parameter(const StringName &p_name, bool p_is_optional, const GDScriptDataType &p_type) override;
-	virtual uint32_t add_local(const StringName &p_name, const GDScriptDataType &p_type) override;
+	virtual uint32_t add_parameter(const StringName &p_name, bool p_is_optional, const MyGDScriptDataType &p_type) override;
+	virtual uint32_t add_local(const StringName &p_name, const MyGDScriptDataType &p_type) override;
 	virtual uint32_t add_local_constant(const StringName &p_name, const Variant &p_constant) override;
 	virtual uint32_t add_or_get_constant(const Variant &p_constant) override;
 	virtual uint32_t add_or_get_name(const StringName &p_name) override;
-	virtual uint32_t add_temporary(const GDScriptDataType &p_type) override;
+	virtual uint32_t add_temporary(const MyGDScriptDataType &p_type) override;
 	virtual void pop_temporary() override;
 	virtual void clear_temporaries() override;
 	virtual void clear_address(const Address &p_address) override;
@@ -471,8 +471,8 @@ public:
 	virtual void start_block() override;
 	virtual void end_block() override;
 
-	virtual void write_start(GDScript *p_script, const StringName &p_function_name, bool p_static, Variant p_rpc_config, const GDScriptDataType &p_return_type) override;
-	virtual GDScriptFunction *write_end() override;
+	virtual void write_start(MyGDScript *p_script, const StringName &p_function_name, bool p_static, Variant p_rpc_config, const MyGDScriptDataType &p_return_type) override;
+	virtual MyGDScriptFunction *write_end() override;
 
 #ifdef DEBUG_ENABLED
 	virtual void set_signature(const String &p_signature) override;
@@ -482,7 +482,7 @@ public:
 	virtual void write_type_adjust(const Address &p_target, Variant::Type p_new_type) override;
 	virtual void write_unary_operator(const Address &p_target, Variant::Operator p_operator, const Address &p_left_operand) override;
 	virtual void write_binary_operator(const Address &p_target, Variant::Operator p_operator, const Address &p_left_operand, const Address &p_right_operand) override;
-	virtual void write_type_test(const Address &p_target, const Address &p_source, const GDScriptDataType &p_type) override;
+	virtual void write_type_test(const Address &p_target, const Address &p_source, const MyGDScriptDataType &p_type) override;
 	virtual void write_and_left_operand(const Address &p_left_operand) override;
 	virtual void write_and_right_operand(const Address &p_right_operand) override;
 	virtual void write_end_and(const Address &p_target) override;
@@ -510,7 +510,7 @@ public:
 	virtual void write_assign_default_parameter(const Address &p_dst, const Address &p_src, bool p_use_conversion) override;
 	virtual void write_store_global(const Address &p_dst, int p_global_index) override;
 	virtual void write_store_named_global(const Address &p_dst, const StringName &p_global) override;
-	virtual void write_cast(const Address &p_target, const Address &p_source, const GDScriptDataType &p_type) override;
+	virtual void write_cast(const Address &p_target, const Address &p_source, const MyGDScriptDataType &p_type) override;
 	virtual void write_call(const Address &p_target, const Address &p_base, const StringName &p_function_name, const Vector<Address> &p_arguments) override;
 	virtual void write_super_call(const Address &p_target, const StringName &p_function_name, const Vector<Address> &p_arguments) override;
 	virtual void write_call_async(const Address &p_target, const Address &p_base, const StringName &p_function_name, const Vector<Address> &p_arguments) override;
@@ -526,19 +526,19 @@ public:
 	virtual void write_call_self(const Address &p_target, const StringName &p_function_name, const Vector<Address> &p_arguments) override;
 	virtual void write_call_self_async(const Address &p_target, const StringName &p_function_name, const Vector<Address> &p_arguments) override;
 	virtual void write_call_script_function(const Address &p_target, const Address &p_base, const StringName &p_function_name, const Vector<Address> &p_arguments) override;
-	virtual void write_lambda(const Address &p_target, GDScriptFunction *p_function, const Vector<Address> &p_captures, bool p_use_self) override;
+	virtual void write_lambda(const Address &p_target, MyGDScriptFunction *p_function, const Vector<Address> &p_captures, bool p_use_self) override;
 	virtual void write_construct(const Address &p_target, Variant::Type p_type, const Vector<Address> &p_arguments) override;
 	virtual void write_construct_array(const Address &p_target, const Vector<Address> &p_arguments) override;
-	virtual void write_construct_typed_array(const Address &p_target, const GDScriptDataType &p_element_type, const Vector<Address> &p_arguments) override;
+	virtual void write_construct_typed_array(const Address &p_target, const MyGDScriptDataType &p_element_type, const Vector<Address> &p_arguments) override;
 	virtual void write_construct_dictionary(const Address &p_target, const Vector<Address> &p_arguments) override;
-	virtual void write_construct_typed_dictionary(const Address &p_target, const GDScriptDataType &p_key_type, const GDScriptDataType &p_value_type, const Vector<Address> &p_arguments) override;
+	virtual void write_construct_typed_dictionary(const Address &p_target, const MyGDScriptDataType &p_key_type, const MyGDScriptDataType &p_value_type, const Vector<Address> &p_arguments) override;
 	virtual void write_await(const Address &p_target, const Address &p_operand) override;
 	virtual void write_if(const Address &p_condition) override;
 	virtual void write_else() override;
 	virtual void write_endif() override;
 	virtual void write_jump_if_shared(const Address &p_value) override;
 	virtual void write_end_jump_if_shared() override;
-	virtual void start_for(const GDScriptDataType &p_iterator_type, const GDScriptDataType &p_list_type, bool p_is_range) override;
+	virtual void start_for(const MyGDScriptDataType &p_iterator_type, const MyGDScriptDataType &p_list_type, bool p_is_range) override;
 	virtual void write_for_list_assignment(const Address &p_list) override;
 	virtual void write_for_range_assignment(const Address &p_from, const Address &p_to, const Address &p_step) override;
 	virtual void write_for(const Address &p_variable, bool p_use_conversion, bool p_is_range) override;
@@ -553,5 +553,5 @@ public:
 	virtual void write_return(const Address &p_return_value) override;
 	virtual void write_assert(const Address &p_test, const Address &p_message) override;
 
-	virtual ~GDScriptByteCodeGenerator();
+	virtual ~MyGDScriptByteCodeGenerator();
 };

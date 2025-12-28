@@ -11,7 +11,7 @@ static func check(condition: Variant) -> void:
 
 	printerr("Check failed. Backtrace (most recent call first):")
 	for stack: ScriptBacktrace in Engine.capture_script_backtraces():
-		if stack.get_language_name() == "GDScript":
+		if stack.get_language_name() == "MyGDScript":
 			var dir: String
 			for i: int in stack.get_frame_count():
 				if i == 0:

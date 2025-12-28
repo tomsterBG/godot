@@ -1,12 +1,12 @@
 GDTEST_OK
-var test_native: GDScriptNativeClass
-var test_script: GDScript
-var test_class: GDScript
+var test_native: MyGDScriptNativeClass
+var test_script: MyGDScript
+var test_class: MyGDScript
 var test_enum: Dictionary
 ---
-GDScriptNativeClass
-GDScript
-GDScript
+MyGDScriptNativeClass
+MyGDScript
+MyGDScript
 { "A": 0, "B": 1, "C": 2 }
 ---
 []

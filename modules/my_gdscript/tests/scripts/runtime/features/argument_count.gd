@@ -95,7 +95,7 @@ func test():
     var global_callable_2 = inverse_lerp
     print(global_callable_2.get_argument_count()) # Should print 3.
 
-    # Test GDScript methods.
+    # Test MyGDScript methods.
     var gdscript_callable_1 = char
     print(gdscript_callable_1.get_argument_count()) # Should print 1.
     var gdscript_callable_2 = is_instance_of

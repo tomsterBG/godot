@@ -1,19 +1,19 @@
-# GDScript integration tests
+# MyGDScript integration tests
 
-The `scripts/` folder contains integration tests in the form of GDScript files
+The `scripts/` folder contains integration tests in the form of MyGDScript files
 and output files.
 
 See the
-[Integration tests for GDScript documentation](https://docs.godotengine.org/en/latest/engine_details/architecture/unit_testing.html#integration-tests-for-gdscript)
-for information about creating and running GDScript integration tests.
+[Integration tests for MyGDScript documentation](https://docs.godotengine.org/en/latest/engine_details/architecture/unit_testing.html#integration-tests-for-gdscript)
+for information about creating and running MyGDScript integration tests.
 
-# GDScript Autocompletion tests
+# MyGDScript Autocompletion tests
 
-The `script/completion` folder contains test for the GDScript autocompletion.
+The `script/completion` folder contains test for the MyGDScript autocompletion.
 
-Each test case consists of at least one `.gd` file, which contains the code, and one `.cfg` file, which contains expected results and configuration. Inside of the GDScript file the character `➡` represents the cursor position, at which autocompletion is invoked.
+Each test case consists of at least one `.gd` file, which contains the code, and one `.cfg` file, which contains expected results and configuration. Inside of the MyGDScript file the character `➡` represents the cursor position, at which autocompletion is invoked.
 
-The script files won't be parsable GDScript since it contains an invalid char and often the code is not complete during autocompletion. To allow for a valid base when used with a scene, the
+The script files won't be parsable MyGDScript since it contains an invalid char and often the code is not complete during autocompletion. To allow for a valid base when used with a scene, the
 runner will remove the line which contains `➡`. Therefore the scripts need to be valid if this line is removed, otherwise the test might behave in unexpected ways. This may for example require
 adding an additional `pass` statement.
 
@@ -27,7 +27,7 @@ The config file contains two section:
 - `use_single_quotes: boolean = false`: Configures the corresponding editor setting for the test.
 - `add_node_path_literals: boolean = false`: Configures the corresponding editor setting for the test.
 - `add_string_name_literals: boolean = false`: Configures the corresponding editor setting for the test.
-- `scene: String`: Allows to specify a scene which is opened while autocompletion is performed. If this is not set the test runner will search for a `.tscn` file with the same basename as the GDScript file. If that isn't found either, autocompletion will behave as if no scene was opened.
+- `scene: String`: Allows to specify a scene which is opened while autocompletion is performed. If this is not set the test runner will search for a `.tscn` file with the same basename as the MyGDScript file. If that isn't found either, autocompletion will behave as if no scene was opened.
 - `node_path: String`: The node path of the node which holds the current script inside of the scene. Defaults to the scene root node.
 
 `[output]` specifies the expected results for the test. The following key are supported:
@@ -43,11 +43,11 @@ Tests will only test against entries in `[output]` that were specified.
 
 To avoid failing edge cases a certain behavior needs to be tested multiple times. Some things that tests should account for:
 
-- All possible types: Test with all possible types that apply to the tested behavior. (For the last points testing against `SCRIPT` and `CLASS` should suffice. `CLASS` can be obtained through C#, `SCRIPT` through GDScript. Relying on autoloads to be of type `SCRIPT` is not good, since this might change in the future.)
+- All possible types: Test with all possible types that apply to the tested behavior. (For the last points testing against `SCRIPT` and `CLASS` should suffice. `CLASS` can be obtained through C#, `SCRIPT` through MyGDScript. Relying on autoloads to be of type `SCRIPT` is not good, since this might change in the future.)
 
   - `BUILTIN`
   - `NATIVE`
-  - GDScripts (with `class_name` as well as `preload`ed)
+  - MyGDScripts (with `class_name` as well as `preload`ed)
   - C# (as standin for all other language bindings) (with `class_name` as well as `preload`ed)
   - Autoloads
 

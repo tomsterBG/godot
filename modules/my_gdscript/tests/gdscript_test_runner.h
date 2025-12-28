@@ -37,14 +37,14 @@
 #include "core/string/ustring.h"
 #include "core/templates/vector.h"
 
-namespace GDScriptTests {
+namespace MyGDScriptTests {
 
 void init_autoloads();
 void init_language(const String &p_base_path);
 void finish_language();
 
 // Single test instance in a suite.
-class GDScriptTest {
+class MyGDScriptTest {
 public:
 	enum TestStatus {
 		GDTEST_OK,
@@ -69,8 +69,8 @@ public:
 private:
 	struct ErrorHandlerData {
 		TestResult *result = nullptr;
-		GDScriptTest *self = nullptr;
-		ErrorHandlerData(TestResult *p_result, GDScriptTest *p_this) {
+		MyGDScriptTest *self = nullptr;
+		ErrorHandlerData(TestResult *p_result, MyGDScriptTest *p_this) {
 			result = p_result;
 			self = p_this;
 		}
@@ -105,14 +105,14 @@ public:
 	void set_tokenizer_mode(TokenizerMode p_tokenizer_mode) { tokenizer_mode = p_tokenizer_mode; }
 	TokenizerMode get_tokenizer_mode() const { return tokenizer_mode; }
 
-	GDScriptTest(const String &p_source_path, const String &p_output_path, const String &p_base_dir);
-	GDScriptTest() :
-			GDScriptTest(String(), String(), String()) {} // Needed to use in Vector.
+	MyGDScriptTest(const String &p_source_path, const String &p_output_path, const String &p_base_dir);
+	MyGDScriptTest() :
+			MyGDScriptTest(String(), String(), String()) {} // Needed to use in Vector.
 };
 
-class GDScriptTestRunner {
+class MyGDScriptTestRunner {
 	String source_dir;
-	Vector<GDScriptTest> tests;
+	Vector<MyGDScriptTest> tests;
 
 	bool is_generating = false;
 	bool do_init_languages = false;
@@ -130,8 +130,8 @@ public:
 	int run_tests();
 	bool generate_outputs();
 
-	GDScriptTestRunner(const String &p_source_dir, bool p_init_language, bool p_print_filenames = false, bool p_use_binary_tokens = false);
-	~GDScriptTestRunner();
+	MyGDScriptTestRunner(const String &p_source_dir, bool p_init_language, bool p_print_filenames = false, bool p_use_binary_tokens = false);
+	~MyGDScriptTestRunner();
 };
 
-} // namespace GDScriptTests
+} // namespace MyGDScriptTests

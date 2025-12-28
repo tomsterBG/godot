@@ -34,7 +34,7 @@
 
 #include "tests/test_macros.h"
 
-namespace GDScriptTests {
+namespace MyGDScriptTests {
 
 enum TestType {
 	TEST_TOKENIZER,
@@ -46,4 +46,4 @@ enum TestType {
 
 void test(TestType p_type);
 
-} // namespace GDScriptTests
+} // namespace MyGDScriptTests

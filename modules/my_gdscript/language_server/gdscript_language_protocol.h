@@ -41,8 +41,8 @@
 #define LSP_MAX_BUFFER_SIZE 4194304
 #define LSP_MAX_CLIENTS 8
 
-class GDScriptLanguageProtocol : public JSONRPC {
-	GDCLASS(GDScriptLanguageProtocol, JSONRPC)
+class MyGDScriptLanguageProtocol : public JSONRPC {
+	GDCLASS(MyGDScriptLanguageProtocol, JSONRPC)
 
 private:
 	struct LSPeer : RefCounted {
@@ -65,7 +65,7 @@ private:
 		ContentModified = -32801,
 	};
 
-	static GDScriptLanguageProtocol *singleton;
+	static MyGDScriptLanguageProtocol *singleton;
 
 	HashMap<int, Ref<LSPeer>> clients;
 	Ref<TCPServer> server;
@@ -74,8 +74,8 @@ private:
 
 	int next_server_id = 0;
 
-	Ref<GDScriptTextDocument> text_document;
-	Ref<GDScriptWorkspace> workspace;
+	Ref<MyGDScriptTextDocument> text_document;
+	Ref<MyGDScriptWorkspace> workspace;
 
 	Error on_client_connected();
 	void on_client_disconnected(const int &p_client_id);
@@ -92,9 +92,9 @@ protected:
 	void initialized(const Variant &p_params);
 
 public:
-	_FORCE_INLINE_ static GDScriptLanguageProtocol *get_singleton() { return singleton; }
-	_FORCE_INLINE_ Ref<GDScriptWorkspace> get_workspace() { return workspace; }
-	_FORCE_INLINE_ Ref<GDScriptTextDocument> get_text_document() { return text_document; }
+	_FORCE_INLINE_ static MyGDScriptLanguageProtocol *get_singleton() { return singleton; }
+	_FORCE_INLINE_ Ref<MyGDScriptWorkspace> get_workspace() { return workspace; }
+	_FORCE_INLINE_ Ref<MyGDScriptTextDocument> get_text_document() { return text_document; }
 	_FORCE_INLINE_ bool is_initialized() const { return _initialized; }
 
 	void poll(int p_limit_usec);
@@ -107,5 +107,5 @@ public:
 	bool is_smart_resolve_enabled() const;
 	bool is_goto_native_symbols_enabled() const;
 
-	GDScriptLanguageProtocol();
+	MyGDScriptLanguageProtocol();
 };

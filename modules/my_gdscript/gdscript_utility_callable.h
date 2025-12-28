@@ -34,7 +34,7 @@
 
 #include "core/variant/callable.h"
 
-class GDScriptUtilityCallable : public CallableCustom {
+class MyGDScriptUtilityCallable : public CallableCustom {
 	StringName function_name;
 	enum Type {
 		TYPE_INVALID,
@@ -42,7 +42,7 @@ class GDScriptUtilityCallable : public CallableCustom {
 		TYPE_GDSCRIPT,
 	};
 	Type type = TYPE_INVALID;
-	GDScriptUtilityFunctions::FunctionPtr gdscript_function = nullptr;
+	MyGDScriptUtilityFunctions::FunctionPtr gdscript_function = nullptr;
 	uint32_t h = 0;
 
 	static bool compare_equal(const CallableCustom *p_a, const CallableCustom *p_b);
@@ -59,5 +59,5 @@ public:
 	int get_argument_count(bool &r_is_valid) const override;
 	void call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const override;
 
-	GDScriptUtilityCallable(const StringName &p_function_name);
+	MyGDScriptUtilityCallable(const StringName &p_function_name);
 };

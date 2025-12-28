@@ -11,7 +11,7 @@ func test():
 	const IE = IC.InnerEnum
 	const E = Enum
 	# Doesn't work in CI, but works in the editor. Looks like an unrelated bug. TODO: Investigate it.
-	# Error: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+	# Error: Invalid call. Nonexistent function 'new' in base 'MyGDScript'.
 	var a1: IC = null # IC.new()
 	var a2: IE = IE.A
 	var a3: IC.InnerEnum = IE.A

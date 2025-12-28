@@ -35,9 +35,9 @@
 #include "editor/editor_node.h"
 #include "editor/settings/editor_settings.h"
 
-int GDScriptLanguageServer::port_override = -1;
+int MyGDScriptLanguageServer::port_override = -1;
 
-GDScriptLanguageServer::GDScriptLanguageServer() {
+MyGDScriptLanguageServer::MyGDScriptLanguageServer() {
 	// TODO: Move to editor_settings.cpp
 	_EDITOR_DEF("network/language_server/remote_host", host);
 	_EDITOR_DEF("network/language_server/remote_port", port);
@@ -49,7 +49,7 @@ GDScriptLanguageServer::GDScriptLanguageServer() {
 	set_process_internal(true);
 }
 
-void GDScriptLanguageServer::_notification(int p_what) {
+void MyGDScriptLanguageServer::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			stop();
@@ -72,7 +72,7 @@ void GDScriptLanguageServer::_notification(int p_what) {
 			}
 
 			String remote_host = String(_EDITOR_GET("network/language_server/remote_host"));
-			int remote_port = (GDScriptLanguageServer::port_override > -1) ? GDScriptLanguageServer::port_override : (int)_EDITOR_GET("network/language_server/remote_port");
+			int remote_port = (MyGDScriptLanguageServer::port_override > -1) ? MyGDScriptLanguageServer::port_override : (int)_EDITOR_GET("network/language_server/remote_port");
 			bool remote_use_thread = (bool)_EDITOR_GET("network/language_server/use_thread");
 			int remote_poll_limit = (int)_EDITOR_GET("network/language_server/poll_limit_usec");
 			if (remote_host != host || remote_port != port || remote_use_thread != use_thread || remote_poll_limit != poll_limit_usec) {
@@ -83,9 +83,9 @@ void GDScriptLanguageServer::_notification(int p_what) {
 	}
 }
 
-void GDScriptLanguageServer::thread_main(void *p_userdata) {
+void MyGDScriptLanguageServer::thread_main(void *p_userdata) {
 	set_current_thread_safe_for_nodes(true);
-	GDScriptLanguageServer *self = static_cast<GDScriptLanguageServer *>(p_userdata);
+	MyGDScriptLanguageServer *self = static_cast<MyGDScriptLanguageServer *>(p_userdata);
 	while (self->thread_running) {
 		// Poll 20 times per second
 		self->protocol.poll(self->poll_limit_usec);
@@ -93,23 +93,23 @@ void GDScriptLanguageServer::thread_main(void *p_userdata) {
 	}
 }
 
-void GDScriptLanguageServer::start() {
+void MyGDScriptLanguageServer::start() {
 	host = String(_EDITOR_GET("network/language_server/remote_host"));
-	port = (GDScriptLanguageServer::port_override > -1) ? GDScriptLanguageServer::port_override : (int)_EDITOR_GET("network/language_server/remote_port");
+	port = (MyGDScriptLanguageServer::port_override > -1) ? MyGDScriptLanguageServer::port_override : (int)_EDITOR_GET("network/language_server/remote_port");
 	use_thread = (bool)_EDITOR_GET("network/language_server/use_thread");
 	poll_limit_usec = (int)_EDITOR_GET("network/language_server/poll_limit_usec");
 	if (protocol.start(port, IPAddress(host)) == OK) {
-		EditorNode::get_log()->add_message("--- GDScript language server started on port " + itos(port) + " ---", EditorLog::MSG_TYPE_EDITOR);
+		EditorNode::get_log()->add_message("--- MyGDScript language server started on port " + itos(port) + " ---", EditorLog::MSG_TYPE_EDITOR);
 		if (use_thread) {
 			thread_running = true;
-			thread.start(GDScriptLanguageServer::thread_main, this);
+			thread.start(MyGDScriptLanguageServer::thread_main, this);
 		}
 		set_process_internal(!use_thread);
 		started = true;
 	}
 }
 
-void GDScriptLanguageServer::stop() {
+void MyGDScriptLanguageServer::stop() {
 	if (use_thread) {
 		ERR_FAIL_COND(!thread.is_started());
 		thread_running = false;
@@ -117,11 +117,11 @@ void GDScriptLanguageServer::stop() {
 	}
 	protocol.stop();
 	started = false;
-	EditorNode::get_log()->add_message("--- GDScript language server stopped ---", EditorLog::MSG_TYPE_EDITOR);
+	EditorNode::get_log()->add_message("--- MyGDScript language server stopped ---", EditorLog::MSG_TYPE_EDITOR);
 }
 
 void register_lsp_types() {
-	GDREGISTER_CLASS(GDScriptLanguageProtocol);
-	GDREGISTER_CLASS(GDScriptTextDocument);
-	GDREGISTER_CLASS(GDScriptWorkspace);
+	GDREGISTER_CLASS(MyGDScriptLanguageProtocol);
+	GDREGISTER_CLASS(MyGDScriptTextDocument);
+	GDREGISTER_CLASS(MyGDScriptWorkspace);
 }

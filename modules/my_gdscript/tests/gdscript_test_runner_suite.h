@@ -34,25 +34,25 @@
 
 #include "tests/test_macros.h"
 
-namespace GDScriptTests {
+namespace MyGDScriptTests {
 
 // TODO: Handle some cases failing on release builds. See: https://github.com/godotengine/godot/pull/88452
 #ifdef TOOLS_ENABLED
-TEST_SUITE("[Modules][GDScript]") {
+TEST_SUITE("[Modules][MyGDScript]") {
 	TEST_CASE("Script compilation and runtime") {
 		bool print_filenames = OS::get_singleton()->get_cmdline_args().find("--print-filenames") != nullptr;
 		bool use_binary_tokens = OS::get_singleton()->get_cmdline_args().find("--use-binary-tokens") != nullptr;
-		GDScriptTestRunner runner("modules/gdscript/tests/scripts", true, print_filenames, use_binary_tokens);
+		MyGDScriptTestRunner runner("modules/gdscript/tests/scripts", true, print_filenames, use_binary_tokens);
 		int fail_count = runner.run_tests();
 		INFO("Make sure `*.out` files have expected results.");
-		REQUIRE_MESSAGE(fail_count == 0, "All GDScript tests should pass.");
+		REQUIRE_MESSAGE(fail_count == 0, "All MyGDScript tests should pass.");
 	}
 }
 #endif // TOOLS_ENABLED
 
-TEST_CASE("[Modules][GDScript] Load source code dynamically and run it") {
-	GDScriptLanguage::get_singleton()->init();
-	Ref<GDScript> gdscript = memnew(GDScript);
+TEST_CASE("[Modules][MyGDScript] Load source code dynamically and run it") {
+	MyGDScriptLanguage::get_singleton()->init();
+	Ref<MyGDScript> gdscript = memnew(MyGDScript);
 	gdscript->set_source_code(R"(
 extends RefCounted
 
@@ -72,14 +72,14 @@ func _init():
 	CHECK_MESSAGE(int(ref_counted->get_meta("result")) == 42, "The script should assign object metadata successfully.");
 }
 
-TEST_CASE("[Modules][GDScript] Validate built-in API") {
-	GDScriptLanguage *lang = GDScriptLanguage::get_singleton();
+TEST_CASE("[Modules][MyGDScript] Validate built-in API") {
+	MyGDScriptLanguage *lang = MyGDScriptLanguage::get_singleton();
 
 	// Validate methods.
 	List<MethodInfo> builtin_methods;
 	lang->get_public_functions(&builtin_methods);
 
-	SUBCASE("[Modules][GDScript] Validate built-in methods") {
+	SUBCASE("[Modules][MyGDScript] Validate built-in methods") {
 		for (const MethodInfo &mi : builtin_methods) {
 			for (int64_t i = 0; i < mi.arguments.size(); ++i) {
 				TEST_COND((mi.arguments[i].name.is_empty() || mi.arguments[i].name.begins_with("_unnamed_arg")),
@@ -92,7 +92,7 @@ TEST_CASE("[Modules][GDScript] Validate built-in API") {
 	List<MethodInfo> builtin_annotations;
 	lang->get_public_annotations(&builtin_annotations);
 
-	SUBCASE("[Modules][GDScript] Validate built-in annotations") {
+	SUBCASE("[Modules][MyGDScript] Validate built-in annotations") {
 		for (const MethodInfo &ai : builtin_annotations) {
 			for (int64_t i = 0; i < ai.arguments.size(); ++i) {
 				TEST_COND((ai.arguments[i].name.is_empty() || ai.arguments[i].name.begins_with("_unnamed_arg")),
@@ -102,4 +102,4 @@ TEST_CASE("[Modules][GDScript] Validate built-in API") {
 	}
 }
 
-} // namespace GDScriptTests
+} // namespace MyGDScriptTests

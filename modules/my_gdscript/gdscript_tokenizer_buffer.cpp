@@ -33,14 +33,14 @@
 #include "core/io/compression.h"
 #include "core/io/marshalls.h"
 
-int GDScriptTokenizerBuffer::_token_to_binary(const Token &p_token, Vector<uint8_t> &r_buffer, int p_start, HashMap<StringName, uint32_t> &r_identifiers_map, HashMap<Variant, uint32_t, VariantHasher, VariantComparator> &r_constants_map) {
+int MyGDScriptTokenizerBuffer::_token_to_binary(const Token &p_token, Vector<uint8_t> &r_buffer, int p_start, HashMap<StringName, uint32_t> &r_identifiers_map, HashMap<Variant, uint32_t, VariantHasher, VariantComparator> &r_constants_map) {
 	int pos = p_start;
 
 	int token_type = p_token.type & TOKEN_MASK;
 
 	switch (p_token.type) {
-		case GDScriptTokenizer::Token::ANNOTATION:
-		case GDScriptTokenizer::Token::IDENTIFIER: {
+		case MyGDScriptTokenizer::Token::ANNOTATION:
+		case MyGDScriptTokenizer::Token::IDENTIFIER: {
 			// Add identifier to map.
 			int identifier_pos;
 			StringName id = p_token.get_identifier();
@@ -52,8 +52,8 @@ int GDScriptTokenizerBuffer::_token_to_binary(const Token &p_token, Vector<uint8
 			}
 			token_type |= identifier_pos << TOKEN_BITS;
 		} break;
-		case GDScriptTokenizer::Token::ERROR:
-		case GDScriptTokenizer::Token::LITERAL: {
+		case MyGDScriptTokenizer::Token::ERROR:
+		case MyGDScriptTokenizer::Token::LITERAL: {
 			// Add literal to map.
 			int constant_pos;
 			if (r_constants_map.has(p_token.literal)) {
@@ -85,7 +85,7 @@ int GDScriptTokenizerBuffer::_token_to_binary(const Token &p_token, Vector<uint8
 	return token_len;
 }
 
-GDScriptTokenizer::Token GDScriptTokenizerBuffer::_binary_to_token(const uint8_t *p_buffer) {
+MyGDScriptTokenizer::Token MyGDScriptTokenizerBuffer::_binary_to_token(const uint8_t *p_buffer) {
 	Token token;
 	const uint8_t *b = p_buffer;
 
@@ -105,8 +105,8 @@ GDScriptTokenizer::Token GDScriptTokenizerBuffer::_binary_to_token(const uint8_t
 	}
 
 	switch (token.type) {
-		case GDScriptTokenizer::Token::ANNOTATION:
-		case GDScriptTokenizer::Token::IDENTIFIER: {
+		case MyGDScriptTokenizer::Token::ANNOTATION:
+		case MyGDScriptTokenizer::Token::IDENTIFIER: {
 			// Get name from map.
 			int identifier_pos = token_type >> TOKEN_BITS;
 			if (unlikely(identifier_pos >= identifiers.size())) {
@@ -117,8 +117,8 @@ GDScriptTokenizer::Token GDScriptTokenizerBuffer::_binary_to_token(const uint8_t
 			}
 			token.literal = identifiers[identifier_pos];
 		} break;
-		case GDScriptTokenizer::Token::ERROR:
-		case GDScriptTokenizer::Token::LITERAL: {
+		case MyGDScriptTokenizer::Token::ERROR:
+		case MyGDScriptTokenizer::Token::LITERAL: {
 			// Get literal from map.
 			int constant_pos = token_type >> TOKEN_BITS;
 			if (unlikely(constant_pos >= constants.size())) {
@@ -136,12 +136,12 @@ GDScriptTokenizer::Token GDScriptTokenizerBuffer::_binary_to_token(const uint8_t
 	return token;
 }
 
-Error GDScriptTokenizerBuffer::set_code_buffer(const Vector<uint8_t> &p_buffer) {
+Error MyGDScriptTokenizerBuffer::set_code_buffer(const Vector<uint8_t> &p_buffer) {
 	const uint8_t *buf = p_buffer.ptr();
 	ERR_FAIL_COND_V(p_buffer.size() < 12 || p_buffer[0] != 'G' || p_buffer[1] != 'D' || p_buffer[2] != 'S' || p_buffer[3] != 'C', ERR_INVALID_DATA);
 
 	int version = decode_uint32(&buf[4]);
-	ERR_FAIL_COND_V_MSG(version != TOKENIZER_VERSION, ERR_INVALID_DATA, "Binary GDScript is not compatible with this engine version.");
+	ERR_FAIL_COND_V_MSG(version != TOKENIZER_VERSION, ERR_INVALID_DATA, "Binary MyGDScript is not compatible with this engine version.");
 
 	int decompressed_size = decode_uint32(&buf[8]);
 
@@ -151,7 +151,7 @@ Error GDScriptTokenizerBuffer::set_code_buffer(const Vector<uint8_t> &p_buffer) 
 	} else {
 		contents.resize(decompressed_size);
 		const int64_t result = Compression::decompress(contents.ptrw(), contents.size(), &buf[12], p_buffer.size() - 12, Compression::MODE_ZSTD);
-		ERR_FAIL_COND_V_MSG(result != decompressed_size, ERR_INVALID_DATA, "Error decompressing GDScript tokenizer buffer.");
+		ERR_FAIL_COND_V_MSG(result != decompressed_size, ERR_INVALID_DATA, "Error decompressing MyGDScript tokenizer buffer.");
 	}
 
 	int total_len = contents.size();
@@ -237,14 +237,14 @@ Error GDScriptTokenizerBuffer::set_code_buffer(const Vector<uint8_t> &p_buffer) 
 	return OK;
 }
 
-Vector<uint8_t> GDScriptTokenizerBuffer::parse_code_string(const String &p_code, CompressMode p_compress_mode) {
+Vector<uint8_t> MyGDScriptTokenizerBuffer::parse_code_string(const String &p_code, CompressMode p_compress_mode) {
 	HashMap<StringName, uint32_t> identifier_map;
 	HashMap<Variant, uint32_t, VariantHasher, VariantComparator> constant_map;
 	Vector<uint8_t> token_buffer;
 	HashMap<uint32_t, uint32_t> token_lines;
 	HashMap<uint32_t, uint32_t> token_columns;
 
-	GDScriptTokenizerText tokenizer;
+	MyGDScriptTokenizerText tokenizer;
 	tokenizer.set_source_code(p_code);
 	tokenizer.set_multiline_mode(true); // Ignore whitespace tokens.
 	Token current = tokenizer.scan();
@@ -372,7 +372,7 @@ Vector<uint8_t> GDScriptTokenizerBuffer::parse_code_string(const String &p_code,
 			compressed.resize(max_size);
 
 			const int64_t compressed_size = Compression::compress(compressed.ptrw(), contents.ptr(), contents.size(), Compression::MODE_ZSTD);
-			ERR_FAIL_COND_V_MSG(compressed_size < 0, Vector<uint8_t>(), "Error compressing GDScript tokenizer buffer.");
+			ERR_FAIL_COND_V_MSG(compressed_size < 0, Vector<uint8_t>(), "Error compressing MyGDScript tokenizer buffer.");
 			compressed.resize(compressed_size);
 
 			buf.append_array(compressed);
@@ -382,36 +382,36 @@ Vector<uint8_t> GDScriptTokenizerBuffer::parse_code_string(const String &p_code,
 	return buf;
 }
 
-int GDScriptTokenizerBuffer::get_cursor_line() const {
+int MyGDScriptTokenizerBuffer::get_cursor_line() const {
 	return 0;
 }
 
-int GDScriptTokenizerBuffer::get_cursor_column() const {
+int MyGDScriptTokenizerBuffer::get_cursor_column() const {
 	return 0;
 }
 
-void GDScriptTokenizerBuffer::set_cursor_position(int p_line, int p_column) {
+void MyGDScriptTokenizerBuffer::set_cursor_position(int p_line, int p_column) {
 }
 
-void GDScriptTokenizerBuffer::set_multiline_mode(bool p_state) {
+void MyGDScriptTokenizerBuffer::set_multiline_mode(bool p_state) {
 	multiline_mode = p_state;
 }
 
-bool GDScriptTokenizerBuffer::is_past_cursor() const {
+bool MyGDScriptTokenizerBuffer::is_past_cursor() const {
 	return false;
 }
 
-void GDScriptTokenizerBuffer::push_expression_indented_block() {
+void MyGDScriptTokenizerBuffer::push_expression_indented_block() {
 	indent_stack_stack.push_back(indent_stack);
 }
 
-void GDScriptTokenizerBuffer::pop_expression_indented_block() {
+void MyGDScriptTokenizerBuffer::pop_expression_indented_block() {
 	ERR_FAIL_COND(indent_stack_stack.is_empty());
 	indent_stack = indent_stack_stack.back()->get();
 	indent_stack_stack.pop_back();
 }
 
-GDScriptTokenizer::Token GDScriptTokenizerBuffer::scan() {
+MyGDScriptTokenizer::Token MyGDScriptTokenizerBuffer::scan() {
 	// Add final newline.
 	if (current >= tokens.size() && !last_token_was_newline) {
 		Token newline;

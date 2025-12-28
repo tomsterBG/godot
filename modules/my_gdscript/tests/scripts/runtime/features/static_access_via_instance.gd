@@ -16,7 +16,7 @@ class A:
 
 class B extends A:
 	func test_self():
-		print(self.InnerClass is GDScript)
+		print(self.InnerClass is MyGDScript)
 		print(self.NamedEnum)
 		print(self.NamedEnum.VALUE)
 		print(self.UNNAMED_ENUM_VALUE)
@@ -32,7 +32,7 @@ func test():
 	var hard := B.new()
 	hard.test_self()
 
-	print(hard.InnerClass is GDScript)
+	print(hard.InnerClass is MyGDScript)
 	print(hard.NamedEnum)
 	print(hard.NamedEnum.VALUE)
 	print(hard.UNNAMED_ENUM_VALUE)
@@ -45,7 +45,7 @@ func test():
 	prints("hard after:", hard.static_var)
 
 	var weak: Variant = B.new()
-	print(weak.InnerClass is GDScript)
+	print(weak.InnerClass is MyGDScript)
 	print(weak.NamedEnum)
 	print(weak.NamedEnum.VALUE)
 	print(weak.UNNAMED_ENUM_VALUE)

@@ -32,7 +32,7 @@
 
 #include "gdscript_tokenizer.h"
 
-class GDScriptTokenizerBuffer : public GDScriptTokenizer {
+class MyGDScriptTokenizerBuffer : public MyGDScriptTokenizer {
 public:
 	enum CompressMode {
 		COMPRESS_NONE,

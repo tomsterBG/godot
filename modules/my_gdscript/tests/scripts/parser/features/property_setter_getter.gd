@@ -25,7 +25,7 @@ func test():
 	print(_backing)
 
 	# In Godot 4.0 and later, using `self` no longer makes a difference for
-	# getter/setter execution in GDScript.
+	# getter/setter execution in MyGDScript.
 	print("Using self:")
 	print(self.property)
 	print(self._backing)

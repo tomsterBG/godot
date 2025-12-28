@@ -32,8 +32,8 @@
 
 #include "editor/script/script_editor_plugin.h"
 
-class GDScriptSyntaxHighlighter : public EditorSyntaxHighlighter {
-	GDCLASS(GDScriptSyntaxHighlighter, EditorSyntaxHighlighter)
+class MyGDScriptSyntaxHighlighter : public EditorSyntaxHighlighter {
+	GDCLASS(MyGDScriptSyntaxHighlighter, EditorSyntaxHighlighter)
 
 private:
 	struct ColorRegion {

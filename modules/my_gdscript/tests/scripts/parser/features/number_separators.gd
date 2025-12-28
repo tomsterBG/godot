@@ -1,5 +1,5 @@
 func test():
-	# `_` can be used as a separator for numbers in GDScript.
+	# `_` can be used as a separator for numbers in MyGDScript.
 	# It can be placed anywhere in the number, except at the beginning.
 	print(1_23)
 	print(12_3)

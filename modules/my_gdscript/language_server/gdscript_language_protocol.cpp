@@ -37,9 +37,9 @@
 #include "editor/editor_node.h"
 #include "editor/settings/editor_settings.h"
 
-GDScriptLanguageProtocol *GDScriptLanguageProtocol::singleton = nullptr;
+MyGDScriptLanguageProtocol *MyGDScriptLanguageProtocol::singleton = nullptr;
 
-Error GDScriptLanguageProtocol::LSPeer::handle_data() {
+Error MyGDScriptLanguageProtocol::LSPeer::handle_data() {
 	int read = 0;
 	// Read headers
 	if (!has_header) {
@@ -93,7 +93,7 @@ Error GDScriptLanguageProtocol::LSPeer::handle_data() {
 		has_header = false;
 
 		// Response
-		String output = GDScriptLanguageProtocol::get_singleton()->process_message(msg);
+		String output = MyGDScriptLanguageProtocol::get_singleton()->process_message(msg);
 		if (!output.is_empty()) {
 			res_queue.push_back(output.utf8());
 		}
@@ -101,7 +101,7 @@ Error GDScriptLanguageProtocol::LSPeer::handle_data() {
 	return OK;
 }
 
-Error GDScriptLanguageProtocol::LSPeer::send_data() {
+Error MyGDScriptLanguageProtocol::LSPeer::send_data() {
 	int sent = 0;
 	while (!res_queue.is_empty()) {
 		CharString c_res = res_queue[0];
@@ -121,7 +121,7 @@ Error GDScriptLanguageProtocol::LSPeer::send_data() {
 	return OK;
 }
 
-Error GDScriptLanguageProtocol::on_client_connected() {
+Error MyGDScriptLanguageProtocol::on_client_connected() {
 	Ref<StreamPeerTCP> tcp_peer = server->take_connection();
 	ERR_FAIL_COND_V_MSG(clients.size() >= LSP_MAX_CLIENTS, FAILED, "Max client limits reached");
 	Ref<LSPeer> peer = memnew(LSPeer);
@@ -132,12 +132,12 @@ Error GDScriptLanguageProtocol::on_client_connected() {
 	return OK;
 }
 
-void GDScriptLanguageProtocol::on_client_disconnected(const int &p_client_id) {
+void MyGDScriptLanguageProtocol::on_client_disconnected(const int &p_client_id) {
 	clients.erase(p_client_id);
 	EditorNode::get_log()->add_message("[LSP] Disconnected", EditorLog::MSG_TYPE_EDITOR);
 }
 
-String GDScriptLanguageProtocol::process_message(const String &p_text) {
+String MyGDScriptLanguageProtocol::process_message(const String &p_text) {
 	String ret = process_string(p_text);
 	if (ret.is_empty()) {
 		return ret;
@@ -146,7 +146,7 @@ String GDScriptLanguageProtocol::process_message(const String &p_text) {
 	}
 }
 
-String GDScriptLanguageProtocol::format_output(const String &p_text) {
+String MyGDScriptLanguageProtocol::format_output(const String &p_text) {
 	String header = "Content-Length: ";
 	CharString charstr = p_text.utf8();
 	size_t len = charstr.length();
@@ -156,19 +156,19 @@ String GDScriptLanguageProtocol::format_output(const String &p_text) {
 	return header + p_text;
 }
 
-void GDScriptLanguageProtocol::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("initialize", "params"), &GDScriptLanguageProtocol::initialize);
-	ClassDB::bind_method(D_METHOD("initialized", "params"), &GDScriptLanguageProtocol::initialized);
-	ClassDB::bind_method(D_METHOD("on_client_connected"), &GDScriptLanguageProtocol::on_client_connected);
-	ClassDB::bind_method(D_METHOD("on_client_disconnected"), &GDScriptLanguageProtocol::on_client_disconnected);
-	ClassDB::bind_method(D_METHOD("notify_client", "method", "params", "client_id"), &GDScriptLanguageProtocol::notify_client, DEFVAL(Variant()), DEFVAL(-1));
-	ClassDB::bind_method(D_METHOD("is_smart_resolve_enabled"), &GDScriptLanguageProtocol::is_smart_resolve_enabled);
-	ClassDB::bind_method(D_METHOD("get_text_document"), &GDScriptLanguageProtocol::get_text_document);
-	ClassDB::bind_method(D_METHOD("get_workspace"), &GDScriptLanguageProtocol::get_workspace);
-	ClassDB::bind_method(D_METHOD("is_initialized"), &GDScriptLanguageProtocol::is_initialized);
+void MyGDScriptLanguageProtocol::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("initialize", "params"), &MyGDScriptLanguageProtocol::initialize);
+	ClassDB::bind_method(D_METHOD("initialized", "params"), &MyGDScriptLanguageProtocol::initialized);
+	ClassDB::bind_method(D_METHOD("on_client_connected"), &MyGDScriptLanguageProtocol::on_client_connected);
+	ClassDB::bind_method(D_METHOD("on_client_disconnected"), &MyGDScriptLanguageProtocol::on_client_disconnected);
+	ClassDB::bind_method(D_METHOD("notify_client", "method", "params", "client_id"), &MyGDScriptLanguageProtocol::notify_client, DEFVAL(Variant()), DEFVAL(-1));
+	ClassDB::bind_method(D_METHOD("is_smart_resolve_enabled"), &MyGDScriptLanguageProtocol::is_smart_resolve_enabled);
+	ClassDB::bind_method(D_METHOD("get_text_document"), &MyGDScriptLanguageProtocol::get_text_document);
+	ClassDB::bind_method(D_METHOD("get_workspace"), &MyGDScriptLanguageProtocol::get_workspace);
+	ClassDB::bind_method(D_METHOD("is_initialized"), &MyGDScriptLanguageProtocol::is_initialized);
 }
 
-Dictionary GDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
+Dictionary MyGDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
 	LSP::InitializeResult ret;
 
 	{
@@ -187,7 +187,7 @@ Dictionary GDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
 		if (ProjectSettings::get_singleton()->localize_path(root) != "res://") {
 			LSP::ShowMessageParams params{
 				LSP::MessageType::Warning,
-				"The GDScript Language Server might not work correctly with other projects than the one opened in Godot."
+				"The MyGDScript Language Server might not work correctly with other projects than the one opened in Godot."
 			};
 			notify_client("window/showMessage", params.to_json());
 		}
@@ -214,7 +214,7 @@ Dictionary GDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
 		Dictionary request = make_notification("gdscript_client/changeWorkspace", params);
 
 		ERR_FAIL_COND_V_MSG(!clients.has(latest_client_id), ret.to_json(),
-				vformat("GDScriptLanguageProtocol: Can't initialize invalid peer '%d'.", latest_client_id));
+				vformat("MyGDScriptLanguageProtocol: Can't initialize invalid peer '%d'.", latest_client_id));
 		Ref<LSPeer> peer = clients.get(latest_client_id);
 		if (peer.is_valid()) {
 			String msg = Variant(request).to_json_string();
@@ -232,7 +232,7 @@ Dictionary GDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
 	return ret.to_json();
 }
 
-void GDScriptLanguageProtocol::initialized(const Variant &p_params) {
+void MyGDScriptLanguageProtocol::initialized(const Variant &p_params) {
 	LSP::GodotCapabilities capabilities;
 
 	DocTools *doc = EditorHelp::get_doc_data();
@@ -249,7 +249,7 @@ void GDScriptLanguageProtocol::initialized(const Variant &p_params) {
 	notify_client("gdscript/capabilities", capabilities.to_json());
 }
 
-void GDScriptLanguageProtocol::poll(int p_limit_usec) {
+void MyGDScriptLanguageProtocol::poll(int p_limit_usec) {
 	uint64_t target_ticks = OS::get_singleton()->get_ticks_usec() + p_limit_usec;
 
 	if (server->is_connection_available()) {
@@ -292,11 +292,11 @@ void GDScriptLanguageProtocol::poll(int p_limit_usec) {
 	}
 }
 
-Error GDScriptLanguageProtocol::start(int p_port, const IPAddress &p_bind_ip) {
+Error MyGDScriptLanguageProtocol::start(int p_port, const IPAddress &p_bind_ip) {
 	return server->listen(p_port, p_bind_ip);
 }
 
-void GDScriptLanguageProtocol::stop() {
+void MyGDScriptLanguageProtocol::stop() {
 	for (const KeyValue<int, Ref<LSPeer>> &E : clients) {
 		Ref<LSPeer> peer = clients.get(E.key);
 		peer->connection->disconnect_from_host();
@@ -305,7 +305,7 @@ void GDScriptLanguageProtocol::stop() {
 	server->stop();
 }
 
-void GDScriptLanguageProtocol::notify_client(const String &p_method, const Variant &p_params, int p_client_id) {
+void MyGDScriptLanguageProtocol::notify_client(const String &p_method, const Variant &p_params, int p_client_id) {
 #ifdef TESTS_ENABLED
 	if (clients.is_empty()) {
 		return;
@@ -313,7 +313,7 @@ void GDScriptLanguageProtocol::notify_client(const String &p_method, const Varia
 #endif
 	if (p_client_id == -1) {
 		ERR_FAIL_COND_MSG(latest_client_id == -1,
-				"GDScript LSP: Can't notify client as none was connected.");
+				"MyGDScript LSP: Can't notify client as none was connected.");
 		p_client_id = latest_client_id;
 	}
 	ERR_FAIL_COND(!clients.has(p_client_id));
@@ -326,7 +326,7 @@ void GDScriptLanguageProtocol::notify_client(const String &p_method, const Varia
 	peer->res_queue.push_back(msg.utf8());
 }
 
-void GDScriptLanguageProtocol::request_client(const String &p_method, const Variant &p_params, int p_client_id) {
+void MyGDScriptLanguageProtocol::request_client(const String &p_method, const Variant &p_params, int p_client_id) {
 #ifdef TESTS_ENABLED
 	if (clients.is_empty()) {
 		return;
@@ -334,7 +334,7 @@ void GDScriptLanguageProtocol::request_client(const String &p_method, const Vari
 #endif
 	if (p_client_id == -1) {
 		ERR_FAIL_COND_MSG(latest_client_id == -1,
-				"GDScript LSP: Can't notify client as none was connected.");
+				"MyGDScript LSP: Can't notify client as none was connected.");
 		p_client_id = latest_client_id;
 	}
 	ERR_FAIL_COND(!clients.has(p_client_id));
@@ -348,21 +348,21 @@ void GDScriptLanguageProtocol::request_client(const String &p_method, const Vari
 	peer->res_queue.push_back(msg.utf8());
 }
 
-bool GDScriptLanguageProtocol::is_smart_resolve_enabled() const {
+bool MyGDScriptLanguageProtocol::is_smart_resolve_enabled() const {
 	return bool(_EDITOR_GET("network/language_server/enable_smart_resolve"));
 }
 
-bool GDScriptLanguageProtocol::is_goto_native_symbols_enabled() const {
+bool MyGDScriptLanguageProtocol::is_goto_native_symbols_enabled() const {
 	return bool(_EDITOR_GET("network/language_server/show_native_symbols_in_editor"));
 }
 
 // clang-format off
-#define SET_DOCUMENT_METHOD(m_method) set_method(_STR(textDocument/m_method), callable_mp(text_document.ptr(), &GDScriptTextDocument::m_method))
-#define SET_COMPLETION_METHOD(m_method) set_method(_STR(completionItem/m_method), callable_mp(text_document.ptr(), &GDScriptTextDocument::m_method))
-#define SET_WORKSPACE_METHOD(m_method) set_method(_STR(workspace/m_method), callable_mp(workspace.ptr(), &GDScriptWorkspace::m_method))
+#define SET_DOCUMENT_METHOD(m_method) set_method(_STR(textDocument/m_method), callable_mp(text_document.ptr(), &MyGDScriptTextDocument::m_method))
+#define SET_COMPLETION_METHOD(m_method) set_method(_STR(completionItem/m_method), callable_mp(text_document.ptr(), &MyGDScriptTextDocument::m_method))
+#define SET_WORKSPACE_METHOD(m_method) set_method(_STR(workspace/m_method), callable_mp(workspace.ptr(), &MyGDScriptWorkspace::m_method))
 // clang-format on
 
-GDScriptLanguageProtocol::GDScriptLanguageProtocol() {
+MyGDScriptLanguageProtocol::MyGDScriptLanguageProtocol() {
 	server.instantiate();
 	singleton = this;
 	workspace.instantiate();
@@ -394,8 +394,8 @@ GDScriptLanguageProtocol::GDScriptLanguageProtocol() {
 
 	SET_WORKSPACE_METHOD(didDeleteFiles);
 
-	set_method("initialize", callable_mp(this, &GDScriptLanguageProtocol::initialize));
-	set_method("initialized", callable_mp(this, &GDScriptLanguageProtocol::initialized));
+	set_method("initialize", callable_mp(this, &MyGDScriptLanguageProtocol::initialize));
+	set_method("initialized", callable_mp(this, &MyGDScriptLanguageProtocol::initialized));
 
 	workspace->root = ProjectSettings::get_singleton()->get_resource_path();
 }

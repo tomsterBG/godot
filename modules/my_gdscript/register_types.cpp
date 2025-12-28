@@ -66,17 +66,17 @@
 #include "tests/test_macros.h"
 #endif
 
-GDScriptLanguage *script_language_gd = nullptr;
-Ref<ResourceFormatLoaderGDScript> resource_loader_gd;
-Ref<ResourceFormatSaverGDScript> resource_saver_gd;
-GDScriptCache *gdscript_cache = nullptr;
+MyGDScriptLanguage *script_language_gd = nullptr;
+Ref<ResourceFormatLoaderMyGDScript> resource_loader_gd;
+Ref<ResourceFormatSaverMyGDScript> resource_saver_gd;
+MyGDScriptCache *gdscript_cache = nullptr;
 
 #ifdef TOOLS_ENABLED
 
-Ref<GDScriptEditorTranslationParserPlugin> gdscript_translation_parser_plugin;
+Ref<MyGDScriptEditorTranslationParserPlugin> gdscript_translation_parser_plugin;
 
-class EditorExportGDScript : public EditorExportPlugin {
-	GDCLASS(EditorExportGDScript, EditorExportPlugin);
+class EditorExportMyGDScript : public EditorExportPlugin {
+	GDCLASS(EditorExportMyGDScript, EditorExportPlugin);
 
 	static constexpr int DEFAULT_SCRIPT_MODE = EditorExportPreset::MODE_SCRIPT_BINARY_TOKENS_COMPRESSED;
 	int script_mode = DEFAULT_SCRIPT_MODE;
@@ -102,8 +102,8 @@ protected:
 		}
 
 		String source = String::utf8(reinterpret_cast<const char *>(file.ptr()), file.size());
-		GDScriptTokenizerBuffer::CompressMode compress_mode = script_mode == EditorExportPreset::MODE_SCRIPT_BINARY_TOKENS_COMPRESSED ? GDScriptTokenizerBuffer::COMPRESS_ZSTD : GDScriptTokenizerBuffer::COMPRESS_NONE;
-		file = GDScriptTokenizerBuffer::parse_code_string(source, compress_mode);
+		MyGDScriptTokenizerBuffer::CompressMode compress_mode = script_mode == EditorExportPreset::MODE_SCRIPT_BINARY_TOKENS_COMPRESSED ? MyGDScriptTokenizerBuffer::COMPRESS_ZSTD : MyGDScriptTokenizerBuffer::COMPRESS_NONE;
+		file = MyGDScriptTokenizerBuffer::parse_code_string(source, compress_mode);
 		if (file.is_empty()) {
 			return;
 		}
@@ -112,25 +112,25 @@ protected:
 	}
 
 public:
-	virtual String get_name() const override { return "GDScript"; }
+	virtual String get_name() const override { return "MyGDScript"; }
 };
 
 static void _editor_init() {
-	Ref<EditorExportGDScript> gd_export;
+	Ref<EditorExportMyGDScript> gd_export;
 	gd_export.instantiate();
 	EditorExport::get_singleton()->add_export_plugin(gd_export);
 
 #ifdef TOOLS_ENABLED
-	Ref<GDScriptSyntaxHighlighter> gdscript_syntax_highlighter;
+	Ref<MyGDScriptSyntaxHighlighter> gdscript_syntax_highlighter;
 	gdscript_syntax_highlighter.instantiate();
 	ScriptEditor::get_singleton()->register_syntax_highlighter(gdscript_syntax_highlighter);
 #endif
 
 #ifndef GDSCRIPT_NO_LSP
 	register_lsp_types();
-	GDScriptLanguageServer *lsp_plugin = memnew(GDScriptLanguageServer);
+	MyGDScriptLanguageServer *lsp_plugin = memnew(MyGDScriptLanguageServer);
 	EditorNode::get_singleton()->add_editor_plugin(lsp_plugin);
-	Engine::get_singleton()->add_singleton(Engine::Singleton("GDScriptLanguageProtocol", GDScriptLanguageProtocol::get_singleton()));
+	Engine::get_singleton()->add_singleton(Engine::Singleton("MyGDScriptLanguageProtocol", MyGDScriptLanguageProtocol::get_singleton()));
 #endif // !GDSCRIPT_NO_LSP
 }
 
@@ -138,9 +138,9 @@ static void _editor_init() {
 
 void initialize_gdscript_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
-		GDREGISTER_CLASS(GDScript);
+		GDREGISTER_CLASS(MyGDScript);
 
-		script_language_gd = memnew(GDScriptLanguage);
+		script_language_gd = memnew(MyGDScriptLanguage);
 		ScriptServer::register_language(script_language_gd);
 
 		resource_loader_gd.instantiate();
@@ -149,9 +149,9 @@ void initialize_gdscript_module(ModuleInitializationLevel p_level) {
 		resource_saver_gd.instantiate();
 		ResourceSaver::add_resource_format_saver(resource_saver_gd);
 
-		gdscript_cache = memnew(GDScriptCache);
+		gdscript_cache = memnew(MyGDScriptCache);
 
-		GDScriptUtilityFunctions::register_functions();
+		MyGDScriptUtilityFunctions::register_functions();
 	}
 
 #ifdef TOOLS_ENABLED
@@ -161,7 +161,7 @@ void initialize_gdscript_module(ModuleInitializationLevel p_level) {
 		gdscript_translation_parser_plugin.instantiate();
 		EditorTranslationParser::get_singleton()->add_parser(gdscript_translation_parser_plugin, EditorTranslationParser::STANDARD);
 	} else if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
-		GDREGISTER_CLASS(GDScriptSyntaxHighlighter);
+		GDREGISTER_CLASS(MyGDScriptSyntaxHighlighter);
 	}
 #endif // TOOLS_ENABLED
 }
@@ -184,8 +184,8 @@ void uninitialize_gdscript_module(ModuleInitializationLevel p_level) {
 		ResourceSaver::remove_resource_format_saver(resource_saver_gd);
 		resource_saver_gd.unref();
 
-		GDScriptParser::cleanup();
-		GDScriptUtilityFunctions::unregister_functions();
+		MyGDScriptParser::cleanup();
+		MyGDScriptUtilityFunctions::unregister_functions();
 	}
 
 #ifdef TOOLS_ENABLED
@@ -198,23 +198,23 @@ void uninitialize_gdscript_module(ModuleInitializationLevel p_level) {
 
 #ifdef TESTS_ENABLED
 void test_tokenizer() {
-	GDScriptTests::test(GDScriptTests::TestType::TEST_TOKENIZER);
+	MyGDScriptTests::test(MyGDScriptTests::TestType::TEST_TOKENIZER);
 }
 
 void test_tokenizer_buffer() {
-	GDScriptTests::test(GDScriptTests::TestType::TEST_TOKENIZER_BUFFER);
+	MyGDScriptTests::test(MyGDScriptTests::TestType::TEST_TOKENIZER_BUFFER);
 }
 
 void test_parser() {
-	GDScriptTests::test(GDScriptTests::TestType::TEST_PARSER);
+	MyGDScriptTests::test(MyGDScriptTests::TestType::TEST_PARSER);
 }
 
 void test_compiler() {
-	GDScriptTests::test(GDScriptTests::TestType::TEST_COMPILER);
+	MyGDScriptTests::test(MyGDScriptTests::TestType::TEST_COMPILER);
 }
 
 void test_bytecode() {
-	GDScriptTests::test(GDScriptTests::TestType::TEST_BYTECODE);
+	MyGDScriptTests::test(MyGDScriptTests::TestType::TEST_BYTECODE);
 }
 
 REGISTER_TEST_COMMAND("gdscript-tokenizer", &test_tokenizer);

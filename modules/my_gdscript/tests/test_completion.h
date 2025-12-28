@@ -50,7 +50,7 @@
 
 #include "modules/modules_enabled.gen.h" // For mono.
 
-namespace GDScriptTests {
+namespace MyGDScriptTests {
 
 static bool match_option(const Dictionary p_expected, const ScriptLanguage::CodeCompletionOption p_got) {
 	if (p_expected.get("display", p_got.display) != p_got.display) {
@@ -164,7 +164,7 @@ static void test_directory(const String &p_dir) {
 			ERR_PRINT_OFF;
 			if (owner != nullptr) {
 				// Remove the line which contains the sentinel char, to get a valid script.
-				Ref<GDScript> scr;
+				Ref<MyGDScript> scr;
 				scr.instantiate();
 				int start = location;
 				int end = location;
@@ -184,7 +184,7 @@ static void test_directory(const String &p_dir) {
 				owner->set_script(scr);
 			}
 
-			GDScriptLanguage::get_singleton()->complete_code(code, res_path, owner, &options, forced, call_hint);
+			MyGDScriptLanguage::get_singleton()->complete_code(code, res_path, owner, &options, forced, call_hint);
 			ERR_PRINT_ON;
 
 			String contains_excluded;
@@ -245,7 +245,7 @@ static void setup_global_classes(const String &p_dir) {
 			bool is_abstract;
 			bool is_tool;
 			String source_file = path.path_join(next);
-			String class_name = GDScriptLanguage::get_singleton()->get_global_class_name(source_file, &base_type, nullptr, &is_abstract, &is_tool);
+			String class_name = MyGDScriptLanguage::get_singleton()->get_global_class_name(source_file, &base_type, nullptr, &is_abstract, &is_tool);
 			if (class_name.is_empty()) {
 				next = dir->get_next();
 				continue;
@@ -253,13 +253,13 @@ static void setup_global_classes(const String &p_dir) {
 			ERR_FAIL_COND_MSG(ScriptServer::is_global_class(class_name),
 					"Class name \"" + class_name + "\" from \"" + source_file + "\" is already used in \"" + ScriptServer::get_global_class_path(class_name) + "\".");
 
-			ScriptServer::add_global_class(class_name, base_type, GDScriptLanguage::get_singleton()->get_name(), source_file, is_abstract, is_tool);
+			ScriptServer::add_global_class(class_name, base_type, MyGDScriptLanguage::get_singleton()->get_name(), source_file, is_abstract, is_tool);
 		}
 		next = dir->get_next();
 	}
 }
 
-TEST_SUITE("[Modules][GDScript][Completion]") {
+TEST_SUITE("[Modules][MyGDScript][Completion]") {
 	TEST_CASE("[Editor] Check suggestion list") {
 		// Set all editor settings that code completion relies on.
 		EditorSettings::get_singleton()->set_setting("text_editor/completion/use_single_quotes", false);
@@ -271,6 +271,6 @@ TEST_SUITE("[Modules][GDScript][Completion]") {
 		finish_language();
 	}
 }
-} // namespace GDScriptTests
+} // namespace MyGDScriptTests
 
 #endif

@@ -34,10 +34,10 @@
 
 #include "editor/plugins/editor_plugin.h"
 
-class GDScriptLanguageServer : public EditorPlugin {
-	GDCLASS(GDScriptLanguageServer, EditorPlugin);
+class MyGDScriptLanguageServer : public EditorPlugin {
+	GDCLASS(MyGDScriptLanguageServer, EditorPlugin);
 
-	GDScriptLanguageProtocol protocol;
+	MyGDScriptLanguageProtocol protocol;
 
 	Thread thread;
 	bool thread_running = false;
@@ -55,7 +55,7 @@ private:
 
 public:
 	static int port_override;
-	GDScriptLanguageServer();
+	MyGDScriptLanguageServer();
 	void start();
 	void stop();
 };

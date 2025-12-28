@@ -40,8 +40,8 @@
 #include "core/object/script_language.h"
 #include "core/templates/rb_set.h"
 
-class GDScriptNativeClass : public RefCounted {
-	GDCLASS(GDScriptNativeClass, RefCounted);
+class MyGDScriptNativeClass : public RefCounted {
+	GDCLASS(MyGDScriptNativeClass, RefCounted);
 
 	StringName name;
 
@@ -54,11 +54,11 @@ public:
 	Variant _new();
 	Object *instantiate();
 	virtual Variant callp(const StringName &p_method, const Variant **p_args, int p_argcount, Callable::CallError &r_error) override;
-	GDScriptNativeClass(const StringName &p_name);
+	MyGDScriptNativeClass(const StringName &p_name);
 };
 
-class GDScript : public Script {
-	GDCLASS(GDScript, Script);
+class MyGDScript : public Script {
+	GDCLASS(MyGDScript, Script);
 	bool tool = false;
 	bool valid = false;
 	bool reloading = false;
@@ -68,12 +68,12 @@ class GDScript : public Script {
 		int index = 0;
 		StringName setter;
 		StringName getter;
-		GDScriptDataType data_type;
+		MyGDScriptDataType data_type;
 		PropertyInfo property_info;
 	};
 
 	struct ClearData {
-		RBSet<GDScriptFunction *> functions;
+		RBSet<MyGDScriptFunction *> functions;
 		RBSet<Ref<Script>> scripts;
 		void clear() {
 			functions.clear();
@@ -81,23 +81,23 @@ class GDScript : public Script {
 		}
 	};
 
-	friend class GDScriptInstance;
-	friend class GDScriptFunction;
-	friend class GDScriptAnalyzer;
-	friend class GDScriptCompiler;
-	friend class GDScriptDocGen;
-	friend class GDScriptLambdaCallable;
-	friend class GDScriptLambdaSelfCallable;
-	friend class GDScriptLanguage;
-	friend struct GDScriptUtilityFunctionsDefinitions;
+	friend class MyGDScriptInstance;
+	friend class MyGDScriptFunction;
+	friend class MyGDScriptAnalyzer;
+	friend class MyGDScriptCompiler;
+	friend class MyGDScriptDocGen;
+	friend class MyGDScriptLambdaCallable;
+	friend class MyGDScriptLambdaSelfCallable;
+	friend class MyGDScriptLanguage;
+	friend struct MyGDScriptUtilityFunctionsDefinitions;
 
-	Ref<GDScriptNativeClass> native;
-	Ref<GDScript> base;
-	GDScript *_base = nullptr; //fast pointer access
-	GDScript *_owner = nullptr; //for subclasses
+	Ref<MyGDScriptNativeClass> native;
+	Ref<MyGDScript> base;
+	MyGDScript *_base = nullptr; //fast pointer access
+	MyGDScript *_owner = nullptr; //for subclasses
 
 	// Members are just indices to the instantiated script.
-	HashMap<StringName, MemberInfo> member_indices; // Includes member info of all base GDScript classes.
+	HashMap<StringName, MemberInfo> member_indices; // Includes member info of all base MyGDScript classes.
 	HashSet<StringName> members; // Only members of the current class.
 
 	// Only static variables of the current class.
@@ -105,8 +105,8 @@ class GDScript : public Script {
 	Vector<Variant> static_variables; // Static variable values.
 
 	HashMap<StringName, Variant> constants;
-	HashMap<StringName, GDScriptFunction *> member_functions;
-	HashMap<StringName, Ref<GDScript>> subclasses;
+	HashMap<StringName, MyGDScriptFunction *> member_functions;
+	HashMap<StringName, Ref<MyGDScript>> subclasses;
 	HashMap<StringName, MethodInfo> _signals;
 	Dictionary rpc_config;
 
@@ -117,21 +117,21 @@ public:
 	};
 
 private:
-	HashMap<GDScriptFunction *, LambdaInfo> lambda_info;
+	HashMap<MyGDScriptFunction *, LambdaInfo> lambda_info;
 
 public:
 	class UpdatableFuncPtr {
-		friend class GDScript;
+		friend class MyGDScript;
 
-		GDScriptFunction *ptr = nullptr;
-		GDScript *script = nullptr;
+		MyGDScriptFunction *ptr = nullptr;
+		MyGDScript *script = nullptr;
 		List<UpdatableFuncPtr *>::Element *list_element = nullptr;
 
 	public:
-		GDScriptFunction *operator->() const { return ptr; }
-		operator GDScriptFunction *() const { return ptr; }
+		MyGDScriptFunction *operator->() const { return ptr; }
+		operator MyGDScriptFunction *() const { return ptr; }
 
-		UpdatableFuncPtr(GDScriptFunction *p_function);
+		UpdatableFuncPtr(MyGDScriptFunction *p_function);
 		~UpdatableFuncPtr();
 	};
 
@@ -140,7 +140,7 @@ private:
 	List<UpdatableFuncPtr *> func_ptrs_to_update;
 	Mutex func_ptrs_to_update_mutex;
 
-	void _recurse_replace_function_ptrs(const HashMap<GDScriptFunction *, GDScriptFunction *> &p_replacements) const;
+	void _recurse_replace_function_ptrs(const HashMap<MyGDScriptFunction *, MyGDScriptFunction *> &p_replacements) const;
 
 #ifdef TOOLS_ENABLED
 	// For static data storage during hot-reloading.
@@ -153,7 +153,7 @@ private:
 	HashMap<StringName, Variant> member_default_values;
 	List<PropertyInfo> members_cache;
 	HashMap<StringName, Variant> member_default_values_cache;
-	Ref<GDScript> base_cache;
+	Ref<MyGDScript> base_cache;
 	HashSet<ObjectID> inheriters_cache;
 	bool source_changed_cache = false;
 	bool placeholder_fallback_enabled = false;
@@ -166,11 +166,11 @@ private:
 	void _clear_doc();
 #endif
 
-	GDScriptFunction *initializer = nullptr; // Direct pointer to `new()`/`_init()` member function, faster to locate.
+	MyGDScriptFunction *initializer = nullptr; // Direct pointer to `new()`/`_init()` member function, faster to locate.
 
-	GDScriptFunction *implicit_initializer = nullptr; // `@implicit_new()` special function.
-	GDScriptFunction *implicit_ready = nullptr; // `@implicit_ready()` special function.
-	GDScriptFunction *static_initializer = nullptr; // `@static_initializer()` special function.
+	MyGDScriptFunction *implicit_initializer = nullptr; // `@implicit_new()` special function.
+	MyGDScriptFunction *implicit_ready = nullptr; // `@implicit_ready()` special function.
+	MyGDScriptFunction *static_initializer = nullptr; // `@static_initializer()` special function.
 
 	Error _static_init();
 	void _static_default_init(); // Initialize static variables with default values based on their types.
@@ -188,13 +188,13 @@ private:
 	StringName global_name; // `class_name`.
 	String fully_qualified_name;
 	String simplified_icon_path;
-	SelfList<GDScript> script_list;
+	SelfList<MyGDScript> script_list;
 
-	SelfList<GDScriptFunctionState>::List pending_func_states;
+	SelfList<MyGDScriptFunctionState>::List pending_func_states;
 
-	GDScriptFunction *_super_constructor(GDScript *p_script);
-	void _super_implicit_constructor(GDScript *p_script, GDScriptInstance *p_instance, Callable::CallError &r_error);
-	GDScriptInstance *_create_instance(const Variant **p_args, int p_argcount, Object *p_owner, bool p_is_ref_counted, Callable::CallError &r_error);
+	MyGDScriptFunction *_super_constructor(MyGDScript *p_script);
+	void _super_implicit_constructor(MyGDScript *p_script, MyGDScriptInstance *p_instance, Callable::CallError &r_error);
+	MyGDScriptInstance *_create_instance(const Variant **p_args, int p_argcount, Object *p_owner, bool p_is_ref_counted, Callable::CallError &r_error);
 
 	String _get_debug_path() const;
 
@@ -211,15 +211,15 @@ private:
 
 	bool _update_exports(bool *r_err = nullptr, bool p_recursive_call = false, PlaceHolderScriptInstance *p_instance_to_update = nullptr, bool p_base_exports_changed = false);
 
-	void _save_orphaned_subclasses(GDScript::ClearData *p_clear_data);
+	void _save_orphaned_subclasses(MyGDScript::ClearData *p_clear_data);
 
 	void _get_script_property_list(List<PropertyInfo> *r_list, bool p_include_base) const;
 	void _get_script_method_list(List<MethodInfo> *r_list, bool p_include_base) const;
 	void _get_script_signal_list(List<MethodInfo> *r_list, bool p_include_base) const;
 
-	GDScript *_get_gdscript_from_variant(const Variant &p_variant);
-	void _collect_function_dependencies(GDScriptFunction *p_func, RBSet<GDScript *> &p_dependencies, const GDScript *p_except);
-	void _collect_dependencies(RBSet<GDScript *> &p_dependencies, const GDScript *p_except);
+	MyGDScript *_get_gdscript_from_variant(const Variant &p_variant);
+	void _collect_function_dependencies(MyGDScriptFunction *p_func, RBSet<MyGDScript *> &p_dependencies, const MyGDScript *p_except);
+	void _collect_dependencies(RBSet<MyGDScript *> &p_dependencies, const MyGDScript *p_except);
 
 protected:
 	bool _get(const StringName &p_name, Variant &r_ret) const;
@@ -242,7 +242,7 @@ public:
 
 	_FORCE_INLINE_ StringName get_local_name() const { return local_name; }
 
-	void clear(GDScript::ClearData *p_clear_data = nullptr);
+	void clear(MyGDScript::ClearData *p_clear_data = nullptr);
 
 	// Cancels all functions of the script that are are waiting to be resumed after using await.
 	void cancel_pending_functions(bool warn);
@@ -251,40 +251,40 @@ public:
 
 	bool inherits_script(const Ref<Script> &p_script) const override;
 
-	GDScript *find_class(const String &p_qualified_name);
-	bool has_class(const GDScript *p_script);
-	GDScript *get_root_script();
+	MyGDScript *find_class(const String &p_qualified_name);
+	bool has_class(const MyGDScript *p_script);
+	MyGDScript *get_root_script();
 	bool is_root_script() const { return _owner == nullptr; }
 	String get_fully_qualified_name() const { return fully_qualified_name; }
-	const HashMap<StringName, Ref<GDScript>> &get_subclasses() const { return subclasses; }
+	const HashMap<StringName, Ref<MyGDScript>> &get_subclasses() const { return subclasses; }
 	const HashMap<StringName, Variant> &get_constants() const { return constants; }
 	const HashSet<StringName> &get_members() const { return members; }
-	const GDScriptDataType &get_member_type(const StringName &p_member) const {
+	const MyGDScriptDataType &get_member_type(const StringName &p_member) const {
 		CRASH_COND(!member_indices.has(p_member));
 		return member_indices[p_member].data_type;
 	}
-	const Ref<GDScriptNativeClass> &get_native() const { return native; }
+	const Ref<MyGDScriptNativeClass> &get_native() const { return native; }
 
-	_FORCE_INLINE_ const HashMap<StringName, GDScriptFunction *> &get_member_functions() const { return member_functions; }
-	_FORCE_INLINE_ const HashMap<GDScriptFunction *, LambdaInfo> &get_lambda_info() const { return lambda_info; }
+	_FORCE_INLINE_ const HashMap<StringName, MyGDScriptFunction *> &get_member_functions() const { return member_functions; }
+	_FORCE_INLINE_ const HashMap<MyGDScriptFunction *, LambdaInfo> &get_lambda_info() const { return lambda_info; }
 
-	_FORCE_INLINE_ const GDScriptFunction *get_implicit_initializer() const { return implicit_initializer; }
-	_FORCE_INLINE_ const GDScriptFunction *get_implicit_ready() const { return implicit_ready; }
-	_FORCE_INLINE_ const GDScriptFunction *get_static_initializer() const { return static_initializer; }
+	_FORCE_INLINE_ const MyGDScriptFunction *get_implicit_initializer() const { return implicit_initializer; }
+	_FORCE_INLINE_ const MyGDScriptFunction *get_implicit_ready() const { return implicit_ready; }
+	_FORCE_INLINE_ const MyGDScriptFunction *get_static_initializer() const { return static_initializer; }
 
-	RBSet<GDScript *> get_dependencies();
-	HashMap<GDScript *, RBSet<GDScript *>> get_all_dependencies();
-	RBSet<GDScript *> get_must_clear_dependencies();
+	RBSet<MyGDScript *> get_dependencies();
+	HashMap<MyGDScript *, RBSet<MyGDScript *>> get_all_dependencies();
+	RBSet<MyGDScript *> get_must_clear_dependencies();
 
 	virtual bool has_script_signal(const StringName &p_signal) const override;
 	virtual void get_script_signal_list(List<MethodInfo> *r_signals) const override;
 
 	bool is_tool() const override { return tool; }
 	bool is_abstract() const override { return _is_abstract; }
-	Ref<GDScript> get_base() const;
+	Ref<MyGDScript> get_base() const;
 
 	const HashMap<StringName, MemberInfo> &debug_get_member_indices() const { return member_indices; }
-	const HashMap<StringName, GDScriptFunction *> &debug_get_member_functions() const; //this is debug only
+	const HashMap<StringName, MyGDScriptFunction *> &debug_get_member_functions() const; //this is debug only
 	StringName debug_get_member_by_index(int p_idx) const;
 	StringName debug_get_static_var_by_index(int p_idx) const;
 
@@ -354,31 +354,31 @@ public:
 	virtual bool is_placeholder_fallback_enabled() const override { return placeholder_fallback_enabled; }
 #endif
 
-	GDScript();
-	~GDScript();
+	MyGDScript();
+	~MyGDScript();
 };
 
-class GDScriptInstance : public ScriptInstance {
-	friend class GDScript;
-	friend class GDScriptFunction;
-	friend class GDScriptLambdaCallable;
-	friend class GDScriptLambdaSelfCallable;
-	friend class GDScriptCompiler;
-	friend class GDScriptCache;
-	friend struct GDScriptUtilityFunctionsDefinitions;
+class MyGDScriptInstance : public ScriptInstance {
+	friend class MyGDScript;
+	friend class MyGDScriptFunction;
+	friend class MyGDScriptLambdaCallable;
+	friend class MyGDScriptLambdaSelfCallable;
+	friend class MyGDScriptCompiler;
+	friend class MyGDScriptCache;
+	friend struct MyGDScriptUtilityFunctionsDefinitions;
 
 	ObjectID owner_id;
 	Object *owner = nullptr;
-	Ref<GDScript> script;
+	Ref<MyGDScript> script;
 #ifdef DEBUG_ENABLED
 	HashMap<StringName, int> member_indices_cache; //used only for hot script reloading
 #endif
 	Vector<Variant> members;
 	bool base_ref_counted;
 
-	SelfList<GDScriptFunctionState>::List pending_func_states;
+	SelfList<MyGDScriptFunctionState>::List pending_func_states;
 
-	void _call_implicit_ready_recursively(GDScript *p_script);
+	void _call_implicit_ready_recursively(MyGDScript *p_script);
 
 public:
 	virtual Object *get_owner() { return owner; }
@@ -414,14 +414,14 @@ public:
 
 	virtual const Variant get_rpc_config() const;
 
-	GDScriptInstance();
-	~GDScriptInstance();
+	MyGDScriptInstance();
+	~MyGDScriptInstance();
 };
 
-class GDScriptLanguage : public ScriptLanguage {
-	friend class GDScriptFunctionState;
+class MyGDScriptLanguage : public ScriptLanguage {
+	friend class MyGDScriptFunctionState;
 
-	static GDScriptLanguage *singleton;
+	static MyGDScriptLanguage *singleton;
 
 	bool finishing = false;
 
@@ -433,8 +433,8 @@ class GDScriptLanguage : public ScriptLanguage {
 
 	struct CallLevel {
 		Variant *stack = nullptr;
-		GDScriptFunction *function = nullptr;
-		GDScriptInstance *instance = nullptr;
+		MyGDScriptFunction *function = nullptr;
+		MyGDScriptInstance *instance = nullptr;
 		int *ip = nullptr;
 		int *line = nullptr;
 		CallLevel *prev = nullptr; // Reverse linked list (stack).
@@ -456,16 +456,16 @@ class GDScriptLanguage : public ScriptLanguage {
 	void _add_global(const StringName &p_name, const Variant &p_value);
 	void _remove_global(const StringName &p_name);
 
-	friend class GDScriptInstance;
+	friend class MyGDScriptInstance;
 
 	Mutex mutex;
 
-	friend class GDScript;
+	friend class MyGDScript;
 
-	SelfList<GDScript>::List script_list;
-	friend class GDScriptFunction;
+	SelfList<MyGDScript>::List script_list;
+	friend class MyGDScriptFunction;
 
-	SelfList<GDScriptFunction>::List function_list;
+	SelfList<MyGDScriptFunction>::List function_list;
 #ifdef DEBUG_ENABLED
 	bool profiling;
 	bool profile_native_calls;
@@ -483,7 +483,7 @@ public:
 	bool debug_break(const String &p_error, bool p_allow_continue = true);
 	bool debug_break_parse(const String &p_file, int p_line, const String &p_error);
 
-	_FORCE_INLINE_ void enter_function(CallLevel *call_level, GDScriptInstance *p_instance, GDScriptFunction *p_function, Variant *p_stack, int *p_ip, int *p_line) {
+	_FORCE_INLINE_ void enter_function(CallLevel *call_level, MyGDScriptInstance *p_instance, MyGDScriptFunction *p_function, Variant *p_stack, int *p_ip, int *p_line) {
 		if (!track_call_stack) {
 			return;
 		}
@@ -588,7 +588,7 @@ public:
 	bool has_any_global_constant(const StringName &p_name) { return named_globals.has(p_name) || globals.has(p_name); }
 	Variant get_any_global_constant(const StringName &p_name);
 
-	_FORCE_INLINE_ static GDScriptLanguage *get_singleton() { return singleton; }
+	_FORCE_INLINE_ static MyGDScriptLanguage *get_singleton() { return singleton; }
 
 	virtual String get_name() const override;
 
@@ -668,15 +668,15 @@ public:
 	virtual String get_global_class_name(const String &p_path, String *r_base_type = nullptr, String *r_icon_path = nullptr, bool *r_is_abstract = nullptr, bool *r_is_tool = nullptr) const override;
 
 	void add_orphan_subclass(const String &p_qualified_name, const ObjectID &p_subclass);
-	Ref<GDScript> get_orphan_subclass(const String &p_qualified_name);
+	Ref<MyGDScript> get_orphan_subclass(const String &p_qualified_name);
 
-	Ref<GDScript> get_script_by_fully_qualified_name(const String &p_name);
+	Ref<MyGDScript> get_script_by_fully_qualified_name(const String &p_name);
 
-	GDScriptLanguage();
-	~GDScriptLanguage();
+	MyGDScriptLanguage();
+	~MyGDScriptLanguage();
 };
 
-class ResourceFormatLoaderGDScript : public ResourceFormatLoader {
+class ResourceFormatLoaderMyGDScript : public ResourceFormatLoader {
 public:
 	virtual Ref<Resource> load(const String &p_path, const String &p_original_path = "", Error *r_error = nullptr, bool p_use_sub_threads = false, float *r_progress = nullptr, CacheMode p_cache_mode = CACHE_MODE_REUSE) override;
 	virtual void get_recognized_extensions(List<String> *p_extensions) const override;
@@ -686,7 +686,7 @@ public:
 	virtual void get_classes_used(const String &p_path, HashSet<StringName> *r_classes) override;
 };
 
-class ResourceFormatSaverGDScript : public ResourceFormatSaver {
+class ResourceFormatSaverMyGDScript : public ResourceFormatSaver {
 public:
 	virtual Error save(const Ref<Resource> &p_resource, const String &p_path, uint32_t p_flags = 0) override;
 	virtual void get_recognized_extensions(const Ref<Resource> &p_resource, List<String> *p_extensions) const override;

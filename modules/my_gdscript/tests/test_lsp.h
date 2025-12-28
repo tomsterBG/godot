@@ -75,29 +75,29 @@ struct doctest::StringMaker<GodotPosition> {
 	}
 };
 
-namespace GDScriptTests {
+namespace MyGDScriptTests {
 
-// LSP GDScript test scripts are located inside project of other GDScript tests:
+// LSP MyGDScript test scripts are located inside project of other MyGDScript tests:
 // Cannot reset `ProjectSettings` (singleton) -> Cannot load another workspace and resources in there.
-// -> Reuse GDScript test project. LSP specific scripts are then placed inside `lsp` folder.
+// -> Reuse MyGDScript test project. LSP specific scripts are then placed inside `lsp` folder.
 //    Access via `res://lsp/my_script.gd`.
 const String root = "modules/gdscript/tests/scripts/";
 
 /*
  * After use:
- * * `memdelete` returned `GDScriptLanguageProtocol`.
- * * Call `GDScriptTests::::finish_language`.
+ * * `memdelete` returned `MyGDScriptLanguageProtocol`.
+ * * Call `MyGDScriptTests::::finish_language`.
  */
-GDScriptLanguageProtocol *initialize(const String &p_root) {
+MyGDScriptLanguageProtocol *initialize(const String &p_root) {
 	Error err = OK;
 	Ref<DirAccess> dir(DirAccess::open(p_root, &err));
 	REQUIRE_MESSAGE(err == OK, "Could not open specified root directory");
 	String absolute_root = dir->get_current_dir();
 	init_language(absolute_root);
 
-	GDScriptLanguageProtocol *proto = memnew(GDScriptLanguageProtocol);
+	MyGDScriptLanguageProtocol *proto = memnew(MyGDScriptLanguageProtocol);
 
-	Ref<GDScriptWorkspace> workspace = GDScriptLanguageProtocol::get_singleton()->get_workspace();
+	Ref<MyGDScriptWorkspace> workspace = MyGDScriptLanguageProtocol::get_singleton()->get_workspace();
 	workspace->root = absolute_root;
 	// On windows: `C:/...` -> `C%3A/...`.
 	workspace->root_uri = "file:///" + absolute_root.lstrip("/").replace_first(":", "%3A");
@@ -127,7 +127,7 @@ LSP::TextDocumentPositionParams pos_in(const LSP::DocumentUri &p_uri, const LSP:
 }
 
 const LSP::DocumentSymbol *test_resolve_symbol_at(const String &p_uri, const LSP::Position p_pos, const String &p_expected_uri, const String &p_expected_name, const LSP::Range &p_expected_range) {
-	Ref<GDScriptWorkspace> workspace = GDScriptLanguageProtocol::get_singleton()->get_workspace();
+	Ref<MyGDScriptWorkspace> workspace = MyGDScriptLanguageProtocol::get_singleton()->get_workspace();
 
 	LSP::TextDocumentPositionParams params = pos_in(p_uri, p_pos);
 	const LSP::DocumentSymbol *symbol = workspace->resolve_symbol(params);
@@ -259,7 +259,7 @@ void test_resolve_symbol(const String &p_uri, const InlineTestData &p_test_data,
 		}
 		REQUIRE_MESSAGE(target, vformat("No target for ref '%s'", p_test_data.ref));
 
-		Ref<GDScriptWorkspace> workspace = GDScriptLanguageProtocol::get_singleton()->get_workspace();
+		Ref<MyGDScriptWorkspace> workspace = MyGDScriptLanguageProtocol::get_singleton()->get_workspace();
 		LSP::Position pos = p_test_data.range.start;
 
 		SUBCASE("start of identifier") {
@@ -302,11 +302,11 @@ void assert_no_errors_in(const String &p_path) {
 	String source = FileAccess::get_file_as_string(p_path, &err);
 	REQUIRE_MESSAGE(err == OK, vformat("Cannot read '%s'", p_path));
 
-	GDScriptParser parser;
+	MyGDScriptParser parser;
 	err = parser.parse(source, p_path, true);
 	REQUIRE_MESSAGE(err == OK, vformat("Errors while parsing '%s'", p_path));
 
-	GDScriptAnalyzer analyzer(&parser);
+	MyGDScriptAnalyzer analyzer(&parser);
 	err = analyzer.analyze();
 	REQUIRE_MESSAGE(err == OK, vformat("Errors while analyzing '%s'", p_path));
 }
@@ -334,7 +334,7 @@ void test_position_roundtrip(LSP::Position p_lsp, GodotPosition p_gd, const Pack
 // * Line & Char:
 //   * LSP: both 0-based
 //   * Godot: both 1-based
-TEST_SUITE("[Modules][GDScript][LSP][Editor]") {
+TEST_SUITE("[Modules][MyGDScript][LSP][Editor]") {
 	TEST_CASE("Can convert positions to and from Godot") {
 		String code = R"(extends Node
 
@@ -406,9 +406,9 @@ func f():
 	}
 	TEST_CASE("[workspace][resolve_symbol]") {
 		EditorFileSystem *efs = memnew(EditorFileSystem);
-		GDScriptLanguageProtocol *proto = initialize(root);
+		MyGDScriptLanguageProtocol *proto = initialize(root);
 		REQUIRE(proto);
-		Ref<GDScriptWorkspace> workspace = GDScriptLanguageProtocol::get_singleton()->get_workspace();
+		Ref<MyGDScriptWorkspace> workspace = MyGDScriptLanguageProtocol::get_singleton()->get_workspace();
 
 		{
 			String path = "res://lsp/local_variables.gd";
@@ -491,7 +491,7 @@ func f():
 	}
 	TEST_CASE("[workspace][document_symbol]") {
 		EditorFileSystem *efs = memnew(EditorFileSystem);
-		GDScriptLanguageProtocol *proto = initialize(root);
+		MyGDScriptLanguageProtocol *proto = initialize(root);
 		REQUIRE(proto);
 
 		SUBCASE("selectionRange of root class must be inside range") {
@@ -502,8 +502,8 @@ func f():
 
 			for (const String &path : paths) {
 				assert_no_errors_in(path);
-				GDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_local_script(path);
-				ExtendGDScriptParser *parser = GDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_results[path];
+				MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_local_script(path);
+				ExtendMyGDScriptParser *parser = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_results[path];
 				REQUIRE(parser);
 				LSP::DocumentSymbol cls = parser->get_symbols();
 
@@ -515,8 +515,8 @@ func f():
 		SUBCASE("Documentation is correctly set") {
 			String path = "res://lsp/doc_comments.gd";
 			assert_no_errors_in(path);
-			GDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_local_script(path);
-			ExtendGDScriptParser *parser = GDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_results[path];
+			MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_local_script(path);
+			ExtendMyGDScriptParser *parser = MyGDScriptLanguageProtocol::get_singleton()->get_workspace()->parse_results[path];
 			REQUIRE(parser);
 			LSP::DocumentSymbol cls = parser->get_symbols();
 			REQUIRE(cls.documentation.contains("brief"));
@@ -532,7 +532,7 @@ func f():
 	}
 }
 
-} // namespace GDScriptTests
+} // namespace MyGDScriptTests
 
 #endif // MODULE_JSONRPC_ENABLED
 

@@ -37,16 +37,16 @@
 
 #include "core/templates/hash_set.h"
 
-class GDScriptCompiler {
-	const GDScriptParser *parser = nullptr;
-	HashSet<GDScript *> parsed_classes;
-	HashSet<GDScript *> parsing_classes;
-	GDScript *main_script = nullptr;
+class MyGDScriptCompiler {
+	const MyGDScriptParser *parser = nullptr;
+	HashSet<MyGDScript *> parsed_classes;
+	HashSet<MyGDScript *> parsing_classes;
+	MyGDScript *main_script = nullptr;
 
 	struct FunctionLambdaInfo {
-		GDScriptFunction *function = nullptr;
-		GDScriptFunction *parent = nullptr;
-		GDScript *script = nullptr;
+		MyGDScriptFunction *function = nullptr;
+		MyGDScriptFunction *parent = nullptr;
+		MyGDScript *script = nullptr;
 		StringName name;
 		int line = 0;
 		int index = 0;
@@ -57,8 +57,8 @@ class GDScriptCompiler {
 		bool use_self = false;
 		int arg_count = 0;
 		int default_arg_count = 0;
-		//Vector<GDScriptDataType> argument_types;
-		//GDScriptDataType return_type;
+		//Vector<MyGDScriptDataType> argument_types;
+		//MyGDScriptDataType return_type;
 		Vector<FunctionLambdaInfo> sublambdas;
 	};
 
@@ -72,52 +72,52 @@ class GDScriptCompiler {
 	};
 
 	struct CodeGen {
-		GDScript *script = nullptr;
-		const GDScriptParser::ClassNode *class_node = nullptr;
-		const GDScriptParser::FunctionNode *function_node = nullptr;
+		MyGDScript *script = nullptr;
+		const MyGDScriptParser::ClassNode *class_node = nullptr;
+		const MyGDScriptParser::FunctionNode *function_node = nullptr;
 		StringName function_name;
-		GDScriptCodeGenerator *generator = nullptr;
-		HashMap<StringName, GDScriptCodeGenerator::Address> parameters;
-		HashMap<StringName, GDScriptCodeGenerator::Address> locals;
-		List<HashMap<StringName, GDScriptCodeGenerator::Address>> locals_stack;
+		MyGDScriptCodeGenerator *generator = nullptr;
+		HashMap<StringName, MyGDScriptCodeGenerator::Address> parameters;
+		HashMap<StringName, MyGDScriptCodeGenerator::Address> locals;
+		List<HashMap<StringName, MyGDScriptCodeGenerator::Address>> locals_stack;
 		bool is_static = false;
 
-		GDScriptCodeGenerator::Address add_local(const StringName &p_name, const GDScriptDataType &p_type) {
+		MyGDScriptCodeGenerator::Address add_local(const StringName &p_name, const MyGDScriptDataType &p_type) {
 			uint32_t addr = generator->add_local(p_name, p_type);
-			locals[p_name] = GDScriptCodeGenerator::Address(GDScriptCodeGenerator::Address::LOCAL_VARIABLE, addr, p_type);
+			locals[p_name] = MyGDScriptCodeGenerator::Address(MyGDScriptCodeGenerator::Address::LOCAL_VARIABLE, addr, p_type);
 			return locals[p_name];
 		}
 
-		GDScriptCodeGenerator::Address add_local_constant(const StringName &p_name, const Variant &p_value) {
+		MyGDScriptCodeGenerator::Address add_local_constant(const StringName &p_name, const Variant &p_value) {
 			uint32_t addr = generator->add_local_constant(p_name, p_value);
-			locals[p_name] = GDScriptCodeGenerator::Address(GDScriptCodeGenerator::Address::CONSTANT, addr);
+			locals[p_name] = MyGDScriptCodeGenerator::Address(MyGDScriptCodeGenerator::Address::CONSTANT, addr);
 			return locals[p_name];
 		}
 
-		GDScriptCodeGenerator::Address add_temporary(const GDScriptDataType &p_type = GDScriptDataType()) {
+		MyGDScriptCodeGenerator::Address add_temporary(const MyGDScriptDataType &p_type = MyGDScriptDataType()) {
 			uint32_t addr = generator->add_temporary(p_type);
-			return GDScriptCodeGenerator::Address(GDScriptCodeGenerator::Address::TEMPORARY, addr, p_type);
+			return MyGDScriptCodeGenerator::Address(MyGDScriptCodeGenerator::Address::TEMPORARY, addr, p_type);
 		}
 
-		GDScriptCodeGenerator::Address add_constant(const Variant &p_constant) {
-			GDScriptDataType type;
+		MyGDScriptCodeGenerator::Address add_constant(const Variant &p_constant) {
+			MyGDScriptDataType type;
 			type.has_type = true;
-			type.kind = GDScriptDataType::BUILTIN;
+			type.kind = MyGDScriptDataType::BUILTIN;
 			type.builtin_type = p_constant.get_type();
 			if (type.builtin_type == Variant::OBJECT) {
 				Object *obj = p_constant;
 				if (obj) {
-					type.kind = GDScriptDataType::NATIVE;
+					type.kind = MyGDScriptDataType::NATIVE;
 					type.native_type = obj->get_class_name();
 
 					Ref<Script> scr = obj->get_script();
 					if (scr.is_valid()) {
 						type.script_type = scr.ptr();
-						Ref<GDScript> gdscript = scr;
+						Ref<MyGDScript> gdscript = scr;
 						if (gdscript.is_valid()) {
-							type.kind = GDScriptDataType::GDSCRIPT;
+							type.kind = MyGDScriptDataType::GDSCRIPT;
 						} else {
-							type.kind = GDScriptDataType::SCRIPT;
+							type.kind = MyGDScriptDataType::SCRIPT;
 						}
 					}
 				} else {
@@ -126,11 +126,11 @@ class GDScriptCompiler {
 			}
 
 			uint32_t addr = generator->add_or_get_constant(p_constant);
-			return GDScriptCodeGenerator::Address(GDScriptCodeGenerator::Address::CONSTANT, addr, type);
+			return MyGDScriptCodeGenerator::Address(MyGDScriptCodeGenerator::Address::CONSTANT, addr, type);
 		}
 
 		void start_block() {
-			HashMap<StringName, GDScriptCodeGenerator::Address> old_locals = locals;
+			HashMap<StringName, MyGDScriptCodeGenerator::Address> old_locals = locals;
 			locals_stack.push_back(old_locals);
 			generator->start_block();
 		}
@@ -143,45 +143,45 @@ class GDScriptCompiler {
 	};
 
 	bool _is_class_member_property(CodeGen &codegen, const StringName &p_name);
-	bool _is_class_member_property(GDScript *owner, const StringName &p_name);
+	bool _is_class_member_property(MyGDScript *owner, const StringName &p_name);
 	bool _is_local_or_parameter(CodeGen &codegen, const StringName &p_name);
 
-	void _set_error(const String &p_error, const GDScriptParser::Node *p_node);
+	void _set_error(const String &p_error, const MyGDScriptParser::Node *p_node);
 
-	GDScriptDataType _gdtype_from_datatype(const GDScriptParser::DataType &p_datatype, GDScript *p_owner, bool p_handle_metatype = true);
+	MyGDScriptDataType _gdtype_from_datatype(const MyGDScriptParser::DataType &p_datatype, MyGDScript *p_owner, bool p_handle_metatype = true);
 
-	GDScriptCodeGenerator::Address _parse_expression(CodeGen &codegen, Error &r_error, const GDScriptParser::ExpressionNode *p_expression, bool p_root = false, bool p_initializer = false);
-	GDScriptCodeGenerator::Address _parse_match_pattern(CodeGen &codegen, Error &r_error, const GDScriptParser::PatternNode *p_pattern, const GDScriptCodeGenerator::Address &p_value_addr, const GDScriptCodeGenerator::Address &p_type_addr, const GDScriptCodeGenerator::Address &p_previous_test, bool p_is_first, bool p_is_nested);
-	List<GDScriptCodeGenerator::Address> _add_block_locals(CodeGen &codegen, const GDScriptParser::SuiteNode *p_block);
-	void _clear_block_locals(CodeGen &codegen, const List<GDScriptCodeGenerator::Address> &p_locals);
-	Error _parse_block(CodeGen &codegen, const GDScriptParser::SuiteNode *p_block, bool p_add_locals = true, bool p_clear_locals = true);
-	GDScriptFunction *_parse_function(Error &r_error, GDScript *p_script, const GDScriptParser::ClassNode *p_class, const GDScriptParser::FunctionNode *p_func, bool p_for_ready = false, bool p_for_lambda = false);
-	GDScriptFunction *_make_static_initializer(Error &r_error, GDScript *p_script, const GDScriptParser::ClassNode *p_class);
-	Error _parse_setter_getter(GDScript *p_script, const GDScriptParser::ClassNode *p_class, const GDScriptParser::VariableNode *p_variable, bool p_is_setter);
-	Error _prepare_compilation(GDScript *p_script, const GDScriptParser::ClassNode *p_class, bool p_keep_state);
-	Error _compile_class(GDScript *p_script, const GDScriptParser::ClassNode *p_class, bool p_keep_state);
-	FunctionLambdaInfo _get_function_replacement_info(GDScriptFunction *p_func, int p_index = -1, int p_depth = 0, GDScriptFunction *p_parent_func = nullptr);
-	Vector<FunctionLambdaInfo> _get_function_lambda_replacement_info(GDScriptFunction *p_func, int p_depth = 0, GDScriptFunction *p_parent_func = nullptr);
-	ScriptLambdaInfo _get_script_lambda_replacement_info(GDScript *p_script);
+	MyGDScriptCodeGenerator::Address _parse_expression(CodeGen &codegen, Error &r_error, const MyGDScriptParser::ExpressionNode *p_expression, bool p_root = false, bool p_initializer = false);
+	MyGDScriptCodeGenerator::Address _parse_match_pattern(CodeGen &codegen, Error &r_error, const MyGDScriptParser::PatternNode *p_pattern, const MyGDScriptCodeGenerator::Address &p_value_addr, const MyGDScriptCodeGenerator::Address &p_type_addr, const MyGDScriptCodeGenerator::Address &p_previous_test, bool p_is_first, bool p_is_nested);
+	List<MyGDScriptCodeGenerator::Address> _add_block_locals(CodeGen &codegen, const MyGDScriptParser::SuiteNode *p_block);
+	void _clear_block_locals(CodeGen &codegen, const List<MyGDScriptCodeGenerator::Address> &p_locals);
+	Error _parse_block(CodeGen &codegen, const MyGDScriptParser::SuiteNode *p_block, bool p_add_locals = true, bool p_clear_locals = true);
+	MyGDScriptFunction *_parse_function(Error &r_error, MyGDScript *p_script, const MyGDScriptParser::ClassNode *p_class, const MyGDScriptParser::FunctionNode *p_func, bool p_for_ready = false, bool p_for_lambda = false);
+	MyGDScriptFunction *_make_static_initializer(Error &r_error, MyGDScript *p_script, const MyGDScriptParser::ClassNode *p_class);
+	Error _parse_setter_getter(MyGDScript *p_script, const MyGDScriptParser::ClassNode *p_class, const MyGDScriptParser::VariableNode *p_variable, bool p_is_setter);
+	Error _prepare_compilation(MyGDScript *p_script, const MyGDScriptParser::ClassNode *p_class, bool p_keep_state);
+	Error _compile_class(MyGDScript *p_script, const MyGDScriptParser::ClassNode *p_class, bool p_keep_state);
+	FunctionLambdaInfo _get_function_replacement_info(MyGDScriptFunction *p_func, int p_index = -1, int p_depth = 0, MyGDScriptFunction *p_parent_func = nullptr);
+	Vector<FunctionLambdaInfo> _get_function_lambda_replacement_info(MyGDScriptFunction *p_func, int p_depth = 0, MyGDScriptFunction *p_parent_func = nullptr);
+	ScriptLambdaInfo _get_script_lambda_replacement_info(MyGDScript *p_script);
 	bool _do_function_infos_match(const FunctionLambdaInfo &p_old_info, const FunctionLambdaInfo *p_new_info);
-	void _get_function_ptr_replacements(HashMap<GDScriptFunction *, GDScriptFunction *> &r_replacements, const FunctionLambdaInfo &p_old_info, const FunctionLambdaInfo *p_new_info);
-	void _get_function_ptr_replacements(HashMap<GDScriptFunction *, GDScriptFunction *> &r_replacements, const Vector<FunctionLambdaInfo> &p_old_infos, const Vector<FunctionLambdaInfo> *p_new_infos);
-	void _get_function_ptr_replacements(HashMap<GDScriptFunction *, GDScriptFunction *> &r_replacements, const ScriptLambdaInfo &p_old_info, const ScriptLambdaInfo *p_new_info);
+	void _get_function_ptr_replacements(HashMap<MyGDScriptFunction *, MyGDScriptFunction *> &r_replacements, const FunctionLambdaInfo &p_old_info, const FunctionLambdaInfo *p_new_info);
+	void _get_function_ptr_replacements(HashMap<MyGDScriptFunction *, MyGDScriptFunction *> &r_replacements, const Vector<FunctionLambdaInfo> &p_old_infos, const Vector<FunctionLambdaInfo> *p_new_infos);
+	void _get_function_ptr_replacements(HashMap<MyGDScriptFunction *, MyGDScriptFunction *> &r_replacements, const ScriptLambdaInfo &p_old_info, const ScriptLambdaInfo *p_new_info);
 	int err_line = 0;
 	int err_column = 0;
 	StringName source;
 	String error;
-	GDScriptParser::ExpressionNode *awaited_node = nullptr;
+	MyGDScriptParser::ExpressionNode *awaited_node = nullptr;
 	bool has_static_data = false;
 
 public:
-	static void convert_to_initializer_type(Variant &p_variant, const GDScriptParser::VariableNode *p_node);
-	static void make_scripts(GDScript *p_script, const GDScriptParser::ClassNode *p_class, bool p_keep_state);
-	Error compile(const GDScriptParser *p_parser, GDScript *p_script, bool p_keep_state = false);
+	static void convert_to_initializer_type(Variant &p_variant, const MyGDScriptParser::VariableNode *p_node);
+	static void make_scripts(MyGDScript *p_script, const MyGDScriptParser::ClassNode *p_class, bool p_keep_state);
+	Error compile(const MyGDScriptParser *p_parser, MyGDScript *p_script, bool p_keep_state = false);
 
 	String get_error() const;
 	int get_error_line() const;
 	int get_error_column() const;
 
-	GDScriptCompiler();
+	MyGDScriptCompiler();
 };

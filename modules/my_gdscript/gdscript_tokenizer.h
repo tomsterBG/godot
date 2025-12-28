@@ -35,7 +35,7 @@
 #include "core/templates/vector.h"
 #include "core/variant/variant.h"
 
-class GDScriptTokenizer {
+class MyGDScriptTokenizer {
 public:
 	enum CursorPlace {
 		CURSOR_NONE,
@@ -218,10 +218,10 @@ public:
 
 	virtual Token scan() = 0;
 
-	virtual ~GDScriptTokenizer() {}
+	virtual ~MyGDScriptTokenizer() {}
 };
 
-class GDScriptTokenizerText : public GDScriptTokenizer {
+class MyGDScriptTokenizerText : public MyGDScriptTokenizer {
 	String source;
 	const char32_t *_source = nullptr;
 	const char32_t *_current = nullptr;
@@ -314,5 +314,5 @@ public:
 
 	virtual Token scan() override;
 
-	GDScriptTokenizerText();
+	MyGDScriptTokenizerText();
 };

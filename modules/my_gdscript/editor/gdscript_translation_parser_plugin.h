@@ -37,10 +37,10 @@
 #include "core/templates/hash_set.h"
 #include "editor/translations/editor_translation_parser.h"
 
-class GDScriptEditorTranslationParserPlugin : public EditorTranslationParserPlugin {
-	GDCLASS(GDScriptEditorTranslationParserPlugin, EditorTranslationParserPlugin);
+class MyGDScriptEditorTranslationParserPlugin : public EditorTranslationParserPlugin {
+	GDCLASS(MyGDScriptEditorTranslationParserPlugin, EditorTranslationParserPlugin);
 
-	const HashMap<int, GDScriptTokenizer::CommentData> *comment_data = nullptr;
+	const HashMap<int, MyGDScriptTokenizer::CommentData> *comment_data = nullptr;
 
 	Vector<Vector<String>> *translations = nullptr;
 
@@ -57,27 +57,27 @@ class GDScriptEditorTranslationParserPlugin : public EditorTranslationParserPlug
 	StringName fd_set_filter = "set_filters";
 	StringName fd_filters = "filters";
 
-	static bool _is_constant_string(const GDScriptParser::ExpressionNode *p_expression);
+	static bool _is_constant_string(const MyGDScriptParser::ExpressionNode *p_expression);
 
 	String _parse_comment(int p_line, bool &r_skip) const;
 
 	void _add_id(const String &p_id, int p_line);
 	void _add_id_ctx_plural(const Vector<String> &p_id_ctx_plural, int p_line);
 
-	void _traverse_class(const GDScriptParser::ClassNode *p_class);
-	void _traverse_function(const GDScriptParser::FunctionNode *p_func);
-	void _traverse_block(const GDScriptParser::SuiteNode *p_suite);
+	void _traverse_class(const MyGDScriptParser::ClassNode *p_class);
+	void _traverse_function(const MyGDScriptParser::FunctionNode *p_func);
+	void _traverse_block(const MyGDScriptParser::SuiteNode *p_suite);
 
-	void _assess_expression(const GDScriptParser::ExpressionNode *p_expression);
-	void _assess_assignment(const GDScriptParser::AssignmentNode *p_assignment);
-	void _assess_call(const GDScriptParser::CallNode *p_call);
+	void _assess_expression(const MyGDScriptParser::ExpressionNode *p_expression);
+	void _assess_assignment(const MyGDScriptParser::AssignmentNode *p_assignment);
+	void _assess_call(const MyGDScriptParser::CallNode *p_call);
 
-	void _extract_fd_filter_string(const GDScriptParser::ExpressionNode *p_expression, int p_line);
-	void _extract_fd_filter_array(const GDScriptParser::ExpressionNode *p_expression);
+	void _extract_fd_filter_string(const MyGDScriptParser::ExpressionNode *p_expression, int p_line);
+	void _extract_fd_filter_array(const MyGDScriptParser::ExpressionNode *p_expression);
 
 public:
 	virtual Error parse_file(const String &p_path, Vector<Vector<String>> *r_translations) override;
 	virtual void get_recognized_extensions(List<String> *r_extensions) const override;
 
-	GDScriptEditorTranslationParserPlugin();
+	MyGDScriptEditorTranslationParserPlugin();
 };

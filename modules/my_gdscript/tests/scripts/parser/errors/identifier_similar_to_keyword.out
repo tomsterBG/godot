@@ -1,2 +1,2 @@
 GDTEST_PARSER_ERROR
-Identifier "аs" is visually similar to the GDScript keyword "as" and thus not allowed.
+Identifier "аs" is visually similar to the MyGDScript keyword "as" and thus not allowed.

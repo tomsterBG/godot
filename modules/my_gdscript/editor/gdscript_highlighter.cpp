@@ -39,7 +39,7 @@
 #include "editor/themes/editor_theme_manager.h"
 #include "scene/gui/text_edit.h"
 
-Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_line) {
+Dictionary MyGDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_line) {
 	Dictionary color_map;
 
 	Type next_type = NONE;
@@ -410,7 +410,7 @@ Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_l
 			Color col;
 			if (global_functions.has(word)) {
 				// "assert" and "preload" are reserved, so highlight even if not followed by a bracket.
-				if (word == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::ASSERT) || word == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::PRELOAD)) {
+				if (word == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::ASSERT) || word == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::PRELOAD)) {
 					col = global_function_color;
 				} else {
 					// For other global functions, check if followed by bracket.
@@ -452,7 +452,7 @@ Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_l
 		}
 
 		if (!in_function_name && in_word && !in_keyword) {
-			if (prev_text == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::SIGNAL)) {
+			if (prev_text == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::SIGNAL)) {
 				in_signal_declaration = true;
 			} else {
 				int k = j;
@@ -467,10 +467,10 @@ Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_l
 
 				if (str[k] == '(') {
 					in_function_name = true;
-					if (prev_text == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::FUNC)) {
+					if (prev_text == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::FUNC)) {
 						in_function_declaration = true;
 					}
-				} else if (prev_text == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::VAR) || prev_text == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::FOR) || prev_text == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::TK_CONST)) {
+				} else if (prev_text == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::VAR) || prev_text == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::FOR) || prev_text == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::TK_CONST)) {
 					in_var_const_declaration = true;
 				}
 
@@ -522,7 +522,7 @@ Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_l
 						in_declaration_param_dicts -= 1;
 						break;
 				}
-			} else if ((is_after_func_signal_declaration || prev_text == GDScriptTokenizer::get_token_name(GDScriptTokenizer::Token::FUNC)) && str[j] == '(') {
+			} else if ((is_after_func_signal_declaration || prev_text == MyGDScriptTokenizer::get_token_name(MyGDScriptTokenizer::Token::FUNC)) && str[j] == '(') {
 				in_declaration_params = 1;
 				in_declaration_param_dicts = 0;
 			}
@@ -689,17 +689,17 @@ Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_l
 	return color_map;
 }
 
-String GDScriptSyntaxHighlighter::_get_name() const {
-	return "GDScript";
+String MyGDScriptSyntaxHighlighter::_get_name() const {
+	return "MyGDScript";
 }
 
-PackedStringArray GDScriptSyntaxHighlighter::_get_supported_languages() const {
+PackedStringArray MyGDScriptSyntaxHighlighter::_get_supported_languages() const {
 	PackedStringArray languages;
-	languages.push_back("GDScript");
+	languages.push_back("MyGDScript");
 	return languages;
 }
 
-void GDScriptSyntaxHighlighter::_update_cache() {
+void MyGDScriptSyntaxHighlighter::_update_cache() {
 	class_names.clear();
 	reserved_keywords.clear();
 	member_keywords.clear();
@@ -746,7 +746,7 @@ void GDScriptSyntaxHighlighter::_update_cache() {
 		}
 	}
 
-	const GDScriptLanguage *gdscript = GDScriptLanguage::get_singleton();
+	const MyGDScriptLanguage *gdscript = MyGDScriptLanguage::get_singleton();
 
 	/* Core types. */
 	const Color basetype_color = EDITOR_GET("text_editor/theme/highlighting/base_type_color");
@@ -779,7 +779,7 @@ void GDScriptSyntaxHighlighter::_update_cache() {
 
 	/* Global functions. */
 	List<StringName> global_function_list;
-	GDScriptUtilityFunctions::get_function_list(&global_function_list);
+	MyGDScriptUtilityFunctions::get_function_list(&global_function_list);
 	Variant::get_utility_function_list(&global_function_list);
 	// "assert" and "preload" are not utility functions, but are global nonetheless, so insert them.
 	global_functions.insert(SNAME("assert"));
@@ -927,7 +927,7 @@ void GDScriptSyntaxHighlighter::_update_cache() {
 	}
 }
 
-void GDScriptSyntaxHighlighter::add_color_region(ColorRegion::Type p_type, const String &p_start_key, const String &p_end_key, const Color &p_color, bool p_line_only, bool p_r_prefix) {
+void MyGDScriptSyntaxHighlighter::add_color_region(ColorRegion::Type p_type, const String &p_start_key, const String &p_end_key, const Color &p_color, bool p_line_only, bool p_r_prefix) {
 	ERR_FAIL_COND_MSG(p_start_key.is_empty(), "Color region start key cannot be empty.");
 	ERR_FAIL_COND_MSG(!is_symbol(p_start_key[0]), "Color region start key must start with a symbol.");
 
@@ -958,8 +958,8 @@ void GDScriptSyntaxHighlighter::add_color_region(ColorRegion::Type p_type, const
 	clear_highlighting_cache();
 }
 
-Ref<EditorSyntaxHighlighter> GDScriptSyntaxHighlighter::_create() const {
-	Ref<GDScriptSyntaxHighlighter> syntax_highlighter;
+Ref<EditorSyntaxHighlighter> MyGDScriptSyntaxHighlighter::_create() const {
+	Ref<MyGDScriptSyntaxHighlighter> syntax_highlighter;
 	syntax_highlighter.instantiate();
 	return syntax_highlighter;
 }

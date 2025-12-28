@@ -1,2 +1,2 @@
 func test():
-	print(len(Color())) # GDScript utility function.
+	print(len(Color())) # MyGDScript utility function.

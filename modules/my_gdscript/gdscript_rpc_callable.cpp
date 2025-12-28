@@ -34,19 +34,19 @@
 #include "core/templates/hashfuncs.h"
 #include "scene/main/node.h"
 
-bool GDScriptRPCCallable::compare_equal(const CallableCustom *p_a, const CallableCustom *p_b) {
+bool MyGDScriptRPCCallable::compare_equal(const CallableCustom *p_a, const CallableCustom *p_b) {
 	return p_a->hash() == p_b->hash();
 }
 
-bool GDScriptRPCCallable::compare_less(const CallableCustom *p_a, const CallableCustom *p_b) {
+bool MyGDScriptRPCCallable::compare_less(const CallableCustom *p_a, const CallableCustom *p_b) {
 	return p_a->hash() < p_b->hash();
 }
 
-uint32_t GDScriptRPCCallable::hash() const {
+uint32_t MyGDScriptRPCCallable::hash() const {
 	return h;
 }
 
-String GDScriptRPCCallable::get_as_text() const {
+String MyGDScriptRPCCallable::get_as_text() const {
 	String class_name = object->get_class();
 	Ref<Script> script = object->get_script();
 	if (script.is_valid()) {
@@ -59,31 +59,31 @@ String GDScriptRPCCallable::get_as_text() const {
 	return class_name + "::" + String(method) + " (rpc)";
 }
 
-CallableCustom::CompareEqualFunc GDScriptRPCCallable::get_compare_equal_func() const {
+CallableCustom::CompareEqualFunc MyGDScriptRPCCallable::get_compare_equal_func() const {
 	return compare_equal;
 }
 
-CallableCustom::CompareLessFunc GDScriptRPCCallable::get_compare_less_func() const {
+CallableCustom::CompareLessFunc MyGDScriptRPCCallable::get_compare_less_func() const {
 	return compare_less;
 }
 
-ObjectID GDScriptRPCCallable::get_object() const {
+ObjectID MyGDScriptRPCCallable::get_object() const {
 	return object->get_instance_id();
 }
 
-StringName GDScriptRPCCallable::get_method() const {
+StringName MyGDScriptRPCCallable::get_method() const {
 	return method;
 }
 
-int GDScriptRPCCallable::get_argument_count(bool &r_is_valid) const {
+int MyGDScriptRPCCallable::get_argument_count(bool &r_is_valid) const {
 	return object->get_method_argument_count(method, &r_is_valid);
 }
 
-void GDScriptRPCCallable::call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const {
+void MyGDScriptRPCCallable::call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const {
 	r_return_value = object->callp(method, p_arguments, p_argcount, r_call_error);
 }
 
-GDScriptRPCCallable::GDScriptRPCCallable(Object *p_object, const StringName &p_method) {
+MyGDScriptRPCCallable::MyGDScriptRPCCallable(Object *p_object, const StringName &p_method) {
 	ERR_FAIL_NULL(p_object);
 	object = p_object;
 	method = p_method;
@@ -93,7 +93,7 @@ GDScriptRPCCallable::GDScriptRPCCallable(Object *p_object, const StringName &p_m
 	ERR_FAIL_NULL_MSG(node, "RPC can only be defined on class that extends Node.");
 }
 
-Error GDScriptRPCCallable::rpc(int p_peer_id, const Variant **p_arguments, int p_argcount, Callable::CallError &r_call_error) const {
+Error MyGDScriptRPCCallable::rpc(int p_peer_id, const Variant **p_arguments, int p_argcount, Callable::CallError &r_call_error) const {
 	if (unlikely(!node)) {
 		r_call_error.error = Callable::CallError::CALL_ERROR_INSTANCE_IS_NULL;
 		return ERR_UNCONFIGURED;

@@ -9,9 +9,9 @@ def configure(env):
 
 def get_doc_classes():
     return [
-        "@GDScript",
-        "GDScript",
-        "GDScriptSyntaxHighlighter",
+        "@MyGDScript",
+        "MyGDScript",
+        "MyGDScriptSyntaxHighlighter",
     ]
 
 

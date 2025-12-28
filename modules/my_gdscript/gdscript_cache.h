@@ -37,11 +37,11 @@
 #include "core/templates/hash_map.h"
 #include "core/templates/hash_set.h"
 
-class GDScriptAnalyzer;
-class GDScriptParser;
+class MyGDScriptAnalyzer;
+class MyGDScriptParser;
 
-class GDScriptParserRef : public RefCounted {
-	GDSOFTCLASS(GDScriptParserRef, RefCounted);
+class MyGDScriptParserRef : public RefCounted {
+	GDSOFTCLASS(MyGDScriptParserRef, RefCounted);
 
 public:
 	enum Status {
@@ -53,8 +53,8 @@ public:
 	};
 
 private:
-	GDScriptParser *parser = nullptr;
-	GDScriptAnalyzer *analyzer = nullptr;
+	MyGDScriptParser *parser = nullptr;
+	MyGDScriptAnalyzer *analyzer = nullptr;
 	Status status = EMPTY;
 	Error result = OK;
 	String path;
@@ -62,37 +62,37 @@ private:
 	bool clearing = false;
 	bool abandoned = false;
 
-	friend class GDScriptCache;
-	friend class GDScript;
+	friend class MyGDScriptCache;
+	friend class MyGDScript;
 
 public:
 	Status get_status() const;
 	String get_path() const;
 	uint32_t get_source_hash() const;
-	GDScriptParser *get_parser();
-	GDScriptAnalyzer *get_analyzer();
+	MyGDScriptParser *get_parser();
+	MyGDScriptAnalyzer *get_analyzer();
 	Error raise_status(Status p_new_status);
 	void clear();
 
-	GDScriptParserRef() {}
-	~GDScriptParserRef();
+	MyGDScriptParserRef() {}
+	~MyGDScriptParserRef();
 };
 
-class GDScriptCache {
+class MyGDScriptCache {
 	// String key is full path.
-	HashMap<String, GDScriptParserRef *> parser_map;
+	HashMap<String, MyGDScriptParserRef *> parser_map;
 	HashMap<String, Vector<ObjectID>> abandoned_parser_map;
-	HashMap<String, Ref<GDScript>> shallow_gdscript_cache;
-	HashMap<String, Ref<GDScript>> full_gdscript_cache;
-	HashMap<String, Ref<GDScript>> static_gdscript_cache;
+	HashMap<String, Ref<MyGDScript>> shallow_gdscript_cache;
+	HashMap<String, Ref<MyGDScript>> full_gdscript_cache;
+	HashMap<String, Ref<MyGDScript>> static_gdscript_cache;
 	HashMap<String, HashSet<String>> dependencies;
 	HashMap<String, HashSet<String>> parser_inverse_dependencies;
 
-	friend class GDScript;
-	friend class GDScriptParserRef;
-	friend class GDScriptInstance;
+	friend class MyGDScript;
+	friend class MyGDScriptParserRef;
+	friend class MyGDScriptInstance;
 
-	static GDScriptCache *singleton;
+	static MyGDScriptCache *singleton;
 
 	bool cleared = false;
 
@@ -106,20 +106,20 @@ private:
 public:
 	static void move_script(const String &p_from, const String &p_to);
 	static void remove_script(const String &p_path);
-	static Ref<GDScriptParserRef> get_parser(const String &p_path, GDScriptParserRef::Status status, Error &r_error, const String &p_owner = String());
+	static Ref<MyGDScriptParserRef> get_parser(const String &p_path, MyGDScriptParserRef::Status status, Error &r_error, const String &p_owner = String());
 	static bool has_parser(const String &p_path);
 	static void remove_parser(const String &p_path);
 	static String get_source_code(const String &p_path);
 	static Vector<uint8_t> get_binary_tokens(const String &p_path);
-	static Ref<GDScript> get_shallow_script(const String &p_path, Error &r_error, const String &p_owner = String());
-	static Ref<GDScript> get_full_script(const String &p_path, Error &r_error, const String &p_owner = String(), bool p_update_from_disk = false);
-	static Ref<GDScript> get_cached_script(const String &p_path);
+	static Ref<MyGDScript> get_shallow_script(const String &p_path, Error &r_error, const String &p_owner = String());
+	static Ref<MyGDScript> get_full_script(const String &p_path, Error &r_error, const String &p_owner = String(), bool p_update_from_disk = false);
+	static Ref<MyGDScript> get_cached_script(const String &p_path);
 	static Error finish_compiling(const String &p_owner);
-	static void add_static_script(Ref<GDScript> p_script);
+	static void add_static_script(Ref<MyGDScript> p_script);
 	static void remove_static_script(const String &p_fqcn);
 
 	static void clear();
 
-	GDScriptCache();
-	~GDScriptCache();
+	MyGDScriptCache();
+	~MyGDScriptCache();
 };

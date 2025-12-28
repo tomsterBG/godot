@@ -36,7 +36,7 @@
 #include "core/string/string_name.h"
 #include "core/variant/variant.h"
 
-class GDScriptCodeGenerator {
+class MyGDScriptCodeGenerator {
 public:
 	struct Address {
 		enum AddressMode {
@@ -51,26 +51,26 @@ public:
 		};
 		AddressMode mode = NIL;
 		uint32_t address = 0;
-		GDScriptDataType type;
+		MyGDScriptDataType type;
 
 		Address() {}
-		Address(AddressMode p_mode, const GDScriptDataType &p_type = GDScriptDataType()) {
+		Address(AddressMode p_mode, const MyGDScriptDataType &p_type = MyGDScriptDataType()) {
 			mode = p_mode;
 			type = p_type;
 		}
-		Address(AddressMode p_mode, uint32_t p_address, const GDScriptDataType &p_type = GDScriptDataType()) {
+		Address(AddressMode p_mode, uint32_t p_address, const MyGDScriptDataType &p_type = MyGDScriptDataType()) {
 			mode = p_mode;
 			address = p_address;
 			type = p_type;
 		}
 	};
 
-	virtual uint32_t add_parameter(const StringName &p_name, bool p_is_optional, const GDScriptDataType &p_type) = 0;
-	virtual uint32_t add_local(const StringName &p_name, const GDScriptDataType &p_type) = 0;
+	virtual uint32_t add_parameter(const StringName &p_name, bool p_is_optional, const MyGDScriptDataType &p_type) = 0;
+	virtual uint32_t add_local(const StringName &p_name, const MyGDScriptDataType &p_type) = 0;
 	virtual uint32_t add_local_constant(const StringName &p_name, const Variant &p_constant) = 0;
 	virtual uint32_t add_or_get_constant(const Variant &p_constant) = 0;
 	virtual uint32_t add_or_get_name(const StringName &p_name) = 0;
-	virtual uint32_t add_temporary(const GDScriptDataType &p_type) = 0;
+	virtual uint32_t add_temporary(const MyGDScriptDataType &p_type) = 0;
 	virtual void pop_temporary() = 0;
 	virtual void clear_temporaries() = 0;
 	virtual void clear_address(const Address &p_address) = 0;
@@ -82,8 +82,8 @@ public:
 	virtual void start_block() = 0;
 	virtual void end_block() = 0;
 
-	virtual void write_start(GDScript *p_script, const StringName &p_function_name, bool p_static, Variant p_rpc_config, const GDScriptDataType &p_return_type) = 0;
-	virtual GDScriptFunction *write_end() = 0;
+	virtual void write_start(MyGDScript *p_script, const StringName &p_function_name, bool p_static, Variant p_rpc_config, const MyGDScriptDataType &p_return_type) = 0;
+	virtual MyGDScriptFunction *write_end() = 0;
 
 #ifdef DEBUG_ENABLED
 	virtual void set_signature(const String &p_signature) = 0;
@@ -93,7 +93,7 @@ public:
 	virtual void write_type_adjust(const Address &p_target, Variant::Type p_new_type) = 0;
 	virtual void write_unary_operator(const Address &p_target, Variant::Operator p_operator, const Address &p_left_operand) = 0;
 	virtual void write_binary_operator(const Address &p_target, Variant::Operator p_operator, const Address &p_left_operand, const Address &p_right_operand) = 0;
-	virtual void write_type_test(const Address &p_target, const Address &p_source, const GDScriptDataType &p_type) = 0;
+	virtual void write_type_test(const Address &p_target, const Address &p_source, const MyGDScriptDataType &p_type) = 0;
 	virtual void write_and_left_operand(const Address &p_left_operand) = 0;
 	virtual void write_and_right_operand(const Address &p_right_operand) = 0;
 	virtual void write_end_and(const Address &p_target) = 0;
@@ -121,7 +121,7 @@ public:
 	virtual void write_assign_default_parameter(const Address &dst, const Address &src, bool p_use_conversion) = 0;
 	virtual void write_store_global(const Address &p_dst, int p_global_index) = 0;
 	virtual void write_store_named_global(const Address &p_dst, const StringName &p_global) = 0;
-	virtual void write_cast(const Address &p_target, const Address &p_source, const GDScriptDataType &p_type) = 0;
+	virtual void write_cast(const Address &p_target, const Address &p_source, const MyGDScriptDataType &p_type) = 0;
 	virtual void write_call(const Address &p_target, const Address &p_base, const StringName &p_function_name, const Vector<Address> &p_arguments) = 0;
 	virtual void write_super_call(const Address &p_target, const StringName &p_function_name, const Vector<Address> &p_arguments) = 0;
 	virtual void write_call_async(const Address &p_target, const Address &p_base, const StringName &p_function_name, const Vector<Address> &p_arguments) = 0;
@@ -136,19 +136,19 @@ public:
 	virtual void write_call_self(const Address &p_target, const StringName &p_function_name, const Vector<Address> &p_arguments) = 0;
 	virtual void write_call_self_async(const Address &p_target, const StringName &p_function_name, const Vector<Address> &p_arguments) = 0;
 	virtual void write_call_script_function(const Address &p_target, const Address &p_base, const StringName &p_function_name, const Vector<Address> &p_arguments) = 0;
-	virtual void write_lambda(const Address &p_target, GDScriptFunction *p_function, const Vector<Address> &p_captures, bool p_use_self) = 0;
+	virtual void write_lambda(const Address &p_target, MyGDScriptFunction *p_function, const Vector<Address> &p_captures, bool p_use_self) = 0;
 	virtual void write_construct(const Address &p_target, Variant::Type p_type, const Vector<Address> &p_arguments) = 0;
 	virtual void write_construct_array(const Address &p_target, const Vector<Address> &p_arguments) = 0;
-	virtual void write_construct_typed_array(const Address &p_target, const GDScriptDataType &p_element_type, const Vector<Address> &p_arguments) = 0;
+	virtual void write_construct_typed_array(const Address &p_target, const MyGDScriptDataType &p_element_type, const Vector<Address> &p_arguments) = 0;
 	virtual void write_construct_dictionary(const Address &p_target, const Vector<Address> &p_arguments) = 0;
-	virtual void write_construct_typed_dictionary(const Address &p_target, const GDScriptDataType &p_key_type, const GDScriptDataType &p_value_type, const Vector<Address> &p_arguments) = 0;
+	virtual void write_construct_typed_dictionary(const Address &p_target, const MyGDScriptDataType &p_key_type, const MyGDScriptDataType &p_value_type, const Vector<Address> &p_arguments) = 0;
 	virtual void write_await(const Address &p_target, const Address &p_operand) = 0;
 	virtual void write_if(const Address &p_condition) = 0;
 	virtual void write_else() = 0;
 	virtual void write_endif() = 0;
 	virtual void write_jump_if_shared(const Address &p_value) = 0;
 	virtual void write_end_jump_if_shared() = 0;
-	virtual void start_for(const GDScriptDataType &p_iterator_type, const GDScriptDataType &p_list_type, bool p_is_range) = 0;
+	virtual void start_for(const MyGDScriptDataType &p_iterator_type, const MyGDScriptDataType &p_list_type, bool p_is_range) = 0;
 	virtual void write_for_list_assignment(const Address &p_list) = 0;
 	virtual void write_for_range_assignment(const Address &p_from, const Address &p_to, const Address &p_step) = 0;
 	virtual void write_for(const Address &p_variable, bool p_use_conversion, bool p_is_range) = 0;
@@ -163,5 +163,5 @@ public:
 	virtual void write_return(const Address &p_return_value) = 0;
 	virtual void write_assert(const Address &p_test, const Address &p_message) = 0;
 
-	virtual ~GDScriptCodeGenerator() {}
+	virtual ~MyGDScriptCodeGenerator() {}
 };

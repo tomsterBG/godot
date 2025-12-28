@@ -37,12 +37,12 @@
 #include "core/variant/callable.h"
 #include "core/variant/variant.h"
 
-class GDScriptFunction;
-class GDScriptInstance;
+class MyGDScriptFunction;
+class MyGDScriptInstance;
 
-class GDScriptLambdaCallable : public CallableCustom {
-	GDScript::UpdatableFuncPtr function;
-	Ref<GDScript> script;
+class MyGDScriptLambdaCallable : public CallableCustom {
+	MyGDScript::UpdatableFuncPtr function;
+	Ref<MyGDScript> script;
 	uint32_t h;
 
 	Vector<Variant> captures;
@@ -61,15 +61,15 @@ public:
 	int get_argument_count(bool &r_is_valid) const override;
 	void call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const override;
 
-	GDScriptLambdaCallable(GDScriptLambdaCallable &) = delete;
-	GDScriptLambdaCallable(const GDScriptLambdaCallable &) = delete;
-	GDScriptLambdaCallable(Ref<GDScript> p_script, GDScriptFunction *p_function, const Vector<Variant> &p_captures);
-	virtual ~GDScriptLambdaCallable() = default;
+	MyGDScriptLambdaCallable(MyGDScriptLambdaCallable &) = delete;
+	MyGDScriptLambdaCallable(const MyGDScriptLambdaCallable &) = delete;
+	MyGDScriptLambdaCallable(Ref<MyGDScript> p_script, MyGDScriptFunction *p_function, const Vector<Variant> &p_captures);
+	virtual ~MyGDScriptLambdaCallable() = default;
 };
 
 // Lambda callable that references a particular object, so it can use `self` in the body.
-class GDScriptLambdaSelfCallable : public CallableCustom {
-	GDScript::UpdatableFuncPtr function;
+class MyGDScriptLambdaSelfCallable : public CallableCustom {
+	MyGDScript::UpdatableFuncPtr function;
 	Ref<RefCounted> reference; // For objects that are RefCounted, keep a reference.
 	Object *object = nullptr; // For non RefCounted objects, use a direct pointer.
 	uint32_t h;
@@ -90,9 +90,9 @@ public:
 	int get_argument_count(bool &r_is_valid) const override;
 	void call(const Variant **p_arguments, int p_argcount, Variant &r_return_value, Callable::CallError &r_call_error) const override;
 
-	GDScriptLambdaSelfCallable(GDScriptLambdaSelfCallable &) = delete;
-	GDScriptLambdaSelfCallable(const GDScriptLambdaSelfCallable &) = delete;
-	GDScriptLambdaSelfCallable(Ref<RefCounted> p_self, GDScriptFunction *p_function, const Vector<Variant> &p_captures);
-	GDScriptLambdaSelfCallable(Object *p_self, GDScriptFunction *p_function, const Vector<Variant> &p_captures);
-	virtual ~GDScriptLambdaSelfCallable() = default;
+	MyGDScriptLambdaSelfCallable(MyGDScriptLambdaSelfCallable &) = delete;
+	MyGDScriptLambdaSelfCallable(const MyGDScriptLambdaSelfCallable &) = delete;
+	MyGDScriptLambdaSelfCallable(Ref<RefCounted> p_self, MyGDScriptFunction *p_function, const Vector<Variant> &p_captures);
+	MyGDScriptLambdaSelfCallable(Object *p_self, MyGDScriptFunction *p_function, const Vector<Variant> &p_captures);
+	virtual ~MyGDScriptLambdaSelfCallable() = default;
 };

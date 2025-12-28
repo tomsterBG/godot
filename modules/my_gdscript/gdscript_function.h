@@ -40,12 +40,12 @@
 #include "core/templates/self_list.h"
 #include "core/variant/variant.h"
 
-class GDScriptInstance;
-class GDScript;
+class MyGDScriptInstance;
+class MyGDScript;
 
-class GDScriptDataType {
+class MyGDScriptDataType {
 public:
-	Vector<GDScriptDataType> container_element_types;
+	Vector<MyGDScriptDataType> container_element_types;
 
 	enum Kind {
 		UNINITIALIZED,
@@ -77,7 +77,7 @@ public:
 				if (valid && builtin_type == Variant::ARRAY && has_container_element_type(0)) {
 					Array array = p_variant;
 					if (array.is_typed()) {
-						const GDScriptDataType &elem_type = container_element_types[0];
+						const MyGDScriptDataType &elem_type = container_element_types[0];
 						Variant::Type array_builtin_type = (Variant::Type)array.get_typed_builtin();
 						StringName array_native_type = array.get_typed_class_name();
 						Ref<Script> array_script_type_ref = array.get_typed_script();
@@ -96,7 +96,7 @@ public:
 					Dictionary dictionary = p_variant;
 					if (dictionary.is_typed()) {
 						if (dictionary.is_typed_key()) {
-							GDScriptDataType key = get_container_element_type_or_variant(0);
+							MyGDScriptDataType key = get_container_element_type_or_variant(0);
 							Variant::Type key_builtin_type = (Variant::Type)dictionary.get_typed_key_builtin();
 							StringName key_native_type = dictionary.get_typed_key_class_name();
 							Ref<Script> key_script_type_ref = dictionary.get_typed_key_script();
@@ -111,7 +111,7 @@ public:
 						}
 
 						if (valid && dictionary.is_typed_value()) {
-							GDScriptDataType value = get_container_element_type_or_variant(1);
+							MyGDScriptDataType value = get_container_element_type_or_variant(1);
 							Variant::Type value_builtin_type = (Variant::Type)dictionary.get_typed_value_builtin();
 							StringName value_native_type = dictionary.get_typed_value_class_name();
 							Ref<Script> value_script_type_ref = dictionary.get_typed_value_script();
@@ -204,22 +204,22 @@ public:
 		return true;
 	}
 
-	void set_container_element_type(int p_index, const GDScriptDataType &p_element_type) {
+	void set_container_element_type(int p_index, const MyGDScriptDataType &p_element_type) {
 		ERR_FAIL_COND(p_index < 0);
 		while (p_index >= container_element_types.size()) {
-			container_element_types.push_back(GDScriptDataType());
+			container_element_types.push_back(MyGDScriptDataType());
 		}
-		container_element_types.write[p_index] = GDScriptDataType(p_element_type);
+		container_element_types.write[p_index] = MyGDScriptDataType(p_element_type);
 	}
 
-	GDScriptDataType get_container_element_type(int p_index) const {
-		ERR_FAIL_INDEX_V(p_index, container_element_types.size(), GDScriptDataType());
+	MyGDScriptDataType get_container_element_type(int p_index) const {
+		ERR_FAIL_INDEX_V(p_index, container_element_types.size(), MyGDScriptDataType());
 		return container_element_types[p_index];
 	}
 
-	GDScriptDataType get_container_element_type_or_variant(int p_index) const {
+	MyGDScriptDataType get_container_element_type_or_variant(int p_index) const {
 		if (p_index < 0 || p_index >= container_element_types.size()) {
-			return GDScriptDataType();
+			return MyGDScriptDataType();
 		}
 		return container_element_types[p_index];
 	}
@@ -232,9 +232,9 @@ public:
 		return !container_element_types.is_empty();
 	}
 
-	GDScriptDataType() = default;
+	MyGDScriptDataType() = default;
 
-	bool operator==(const GDScriptDataType &p_other) const {
+	bool operator==(const MyGDScriptDataType &p_other) const {
 		return kind == p_other.kind &&
 				has_type == p_other.has_type &&
 				builtin_type == p_other.builtin_type &&
@@ -243,11 +243,11 @@ public:
 				container_element_types == p_other.container_element_types;
 	}
 
-	bool operator!=(const GDScriptDataType &p_other) const {
+	bool operator!=(const MyGDScriptDataType &p_other) const {
 		return !(*this == p_other);
 	}
 
-	void operator=(const GDScriptDataType &p_other) {
+	void operator=(const MyGDScriptDataType &p_other) {
 		kind = p_other.kind;
 		has_type = p_other.has_type;
 		builtin_type = p_other.builtin_type;
@@ -257,14 +257,14 @@ public:
 		container_element_types = p_other.container_element_types;
 	}
 
-	GDScriptDataType(const GDScriptDataType &p_other) {
+	MyGDScriptDataType(const MyGDScriptDataType &p_other) {
 		*this = p_other;
 	}
 
-	~GDScriptDataType() {}
+	~MyGDScriptDataType() {}
 };
 
-class GDScriptFunction {
+class MyGDScriptFunction {
 public:
 	enum Opcode {
 		OPCODE_OPERATOR,
@@ -286,8 +286,8 @@ public:
 		OPCODE_GET_NAMED_VALIDATED,
 		OPCODE_SET_MEMBER,
 		OPCODE_GET_MEMBER,
-		OPCODE_SET_STATIC_VARIABLE, // Only for GDScript.
-		OPCODE_GET_STATIC_VARIABLE, // Only for GDScript.
+		OPCODE_SET_STATIC_VARIABLE, // Only for MyGDScript.
+		OPCODE_GET_STATIC_VARIABLE, // Only for MyGDScript.
 		OPCODE_ASSIGN,
 		OPCODE_ASSIGN_NULL,
 		OPCODE_ASSIGN_TRUE,
@@ -455,27 +455,27 @@ public:
 	};
 
 private:
-	friend class GDScript;
-	friend class GDScriptCompiler;
-	friend class GDScriptByteCodeGenerator;
-	friend class GDScriptLanguage;
+	friend class MyGDScript;
+	friend class MyGDScriptCompiler;
+	friend class MyGDScriptByteCodeGenerator;
+	friend class MyGDScriptLanguage;
 
 	StringName name;
 	StringName source;
 	bool _static = false;
-	Vector<GDScriptDataType> argument_types;
-	GDScriptDataType return_type;
+	Vector<MyGDScriptDataType> argument_types;
+	MyGDScriptDataType return_type;
 	MethodInfo method_info;
 	Variant rpc_config;
 
-	GDScript *_script = nullptr;
+	MyGDScript *_script = nullptr;
 	int _initial_line = 0;
 	int _argument_count = 0;
 	int _vararg_index = -1;
 	int _stack_size = 0;
 	int _instruction_args_size = 0;
 
-	SelfList<GDScriptFunction> function_list{ this };
+	SelfList<MyGDScriptFunction> function_list{ this };
 	mutable Variant nil;
 	HashMap<int, Variant::Type> temporary_slots;
 	List<StackDebug> stack_debug;
@@ -494,9 +494,9 @@ private:
 	Vector<Variant::ValidatedBuiltInMethod> builtin_methods;
 	Vector<Variant::ValidatedConstructor> constructors;
 	Vector<Variant::ValidatedUtilityFunction> utilities;
-	Vector<GDScriptUtilityFunctions::FunctionPtr> gds_utilities;
+	Vector<MyGDScriptUtilityFunctions::FunctionPtr> gds_utilities;
 	Vector<MethodBind *> methods;
-	Vector<GDScriptFunction *> lambdas;
+	Vector<MyGDScriptFunction *> lambdas;
 
 	int _code_size = 0;
 	int _default_arg_count = 0;
@@ -530,9 +530,9 @@ private:
 	const Variant::ValidatedBuiltInMethod *_builtin_methods_ptr = nullptr;
 	const Variant::ValidatedConstructor *_constructors_ptr = nullptr;
 	const Variant::ValidatedUtilityFunction *_utilities_ptr = nullptr;
-	const GDScriptUtilityFunctions::FunctionPtr *_gds_utilities_ptr = nullptr;
+	const MyGDScriptUtilityFunctions::FunctionPtr *_gds_utilities_ptr = nullptr;
 	MethodBind **_methods_ptr = nullptr;
-	GDScriptFunction **_lambdas_ptr = nullptr;
+	MyGDScriptFunction **_lambdas_ptr = nullptr;
 
 #ifdef DEBUG_ENABLED
 	CharString func_cname;
@@ -569,15 +569,15 @@ private:
 
 	String _get_call_error(const String &p_where, const Variant **p_argptrs, int p_argcount, const Variant &p_ret, const Callable::CallError &p_err) const;
 	String _get_callable_call_error(const String &p_where, const Callable &p_callable, const Variant **p_argptrs, int p_argcount, const Variant &p_ret, const Callable::CallError &p_err) const;
-	Variant _get_default_variant_for_data_type(const GDScriptDataType &p_data_type);
+	Variant _get_default_variant_for_data_type(const MyGDScriptDataType &p_data_type);
 
 public:
 	static constexpr int MAX_CALL_DEPTH = 2048; // Limit to try to avoid crash because of a stack overflow.
 
 	struct CallState {
 		Signal completed;
-		GDScript *script = nullptr;
-		GDScriptInstance *instance = nullptr;
+		MyGDScript *script = nullptr;
+		MyGDScriptInstance *instance = nullptr;
 #ifdef DEBUG_ENABLED
 		StringName function_name;
 		String script_path;
@@ -592,7 +592,7 @@ public:
 
 	_FORCE_INLINE_ StringName get_name() const { return name; }
 	_FORCE_INLINE_ StringName get_source() const { return source; }
-	_FORCE_INLINE_ GDScript *get_script() const { return _script; }
+	_FORCE_INLINE_ MyGDScript *get_script() const { return _script; }
 	_FORCE_INLINE_ bool is_static() const { return _static; }
 	_FORCE_INLINE_ bool is_vararg() const { return _vararg_index >= 0; }
 	_FORCE_INLINE_ MethodInfo get_method_info() const { return method_info; }
@@ -603,7 +603,7 @@ public:
 	Variant get_constant(int p_idx) const;
 	StringName get_global_name(int p_idx) const;
 
-	Variant call(GDScriptInstance *p_instance, const Variant **p_args, int p_argcount, Callable::CallError &r_err, CallState *p_state = nullptr);
+	Variant call(MyGDScriptInstance *p_instance, const Variant **p_args, int p_argcount, Callable::CallError &r_err, CallState *p_state = nullptr);
 	void debug_get_stack_member_state(int p_line, List<Pair<StringName, int>> *r_stackvars) const;
 
 #ifdef DEBUG_ENABLED
@@ -611,20 +611,20 @@ public:
 	void disassemble(const Vector<String> &p_code_lines) const;
 #endif
 
-	GDScriptFunction();
-	~GDScriptFunction();
+	MyGDScriptFunction();
+	~MyGDScriptFunction();
 };
 
-class GDScriptFunctionState : public RefCounted {
-	GDCLASS(GDScriptFunctionState, RefCounted);
-	friend class GDScriptFunction;
-	GDScriptFunction *function = nullptr;
-	GDScriptFunction::CallState state;
+class MyGDScriptFunctionState : public RefCounted {
+	GDCLASS(MyGDScriptFunctionState, RefCounted);
+	friend class MyGDScriptFunction;
+	MyGDScriptFunction *function = nullptr;
+	MyGDScriptFunction::CallState state;
 	Variant _signal_callback(const Variant **p_args, int p_argcount, Callable::CallError &r_error);
-	Ref<GDScriptFunctionState> first_state;
+	Ref<MyGDScriptFunctionState> first_state;
 
-	SelfList<GDScriptFunctionState> scripts_list;
-	SelfList<GDScriptFunctionState> instances_list;
+	SelfList<MyGDScriptFunctionState> scripts_list;
+	SelfList<MyGDScriptFunctionState> instances_list;
 
 protected:
 	static void _bind_methods();
@@ -643,6 +643,6 @@ public:
 	void _clear_stack();
 	void _clear_connections();
 
-	GDScriptFunctionState();
-	~GDScriptFunctionState();
+	MyGDScriptFunctionState();
+	~MyGDScriptFunctionState();
 };

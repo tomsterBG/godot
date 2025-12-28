@@ -37,8 +37,8 @@
 #include "core/variant/variant.h"
 #include "editor/file_system/editor_file_system.h"
 
-class GDScriptWorkspace : public RefCounted {
-	GDCLASS(GDScriptWorkspace, RefCounted);
+class MyGDScriptWorkspace : public RefCounted {
+	GDCLASS(MyGDScriptWorkspace, RefCounted);
 
 private:
 	void _get_owners(EditorFileSystemDirectory *efsd, String p_path, List<String> &owners);
@@ -56,12 +56,12 @@ protected:
 	const LSP::DocumentSymbol *get_native_symbol(const String &p_class, const String &p_member = "") const;
 	const LSP::DocumentSymbol *get_script_symbol(const String &p_path) const;
 	const LSP::DocumentSymbol *get_parameter_symbol(const LSP::DocumentSymbol *p_parent, const String &symbol_identifier);
-	const LSP::DocumentSymbol *get_local_symbol_at(const ExtendGDScriptParser *p_parser, const String &p_symbol_identifier, const LSP::Position p_position);
+	const LSP::DocumentSymbol *get_local_symbol_at(const ExtendMyGDScriptParser *p_parser, const String &p_symbol_identifier, const LSP::Position p_position);
 
 	void reload_all_workspace_scripts();
 
-	ExtendGDScriptParser *get_parse_successed_script(const String &p_path);
-	ExtendGDScriptParser *get_parse_result(const String &p_path);
+	ExtendMyGDScriptParser *get_parse_successed_script(const String &p_path);
+	ExtendMyGDScriptParser *get_parse_result(const String &p_path);
 
 	void list_script_files(const String &p_root_dir, List<String> &r_files);
 
@@ -71,8 +71,8 @@ public:
 	String root;
 	String root_uri;
 
-	HashMap<String, ExtendGDScriptParser *> scripts;
-	HashMap<String, ExtendGDScriptParser *> parse_results;
+	HashMap<String, ExtendMyGDScriptParser *> scripts;
+	HashMap<String, ExtendMyGDScriptParser *> parse_results;
 	HashMap<StringName, ClassMembers> native_members;
 
 public:
@@ -99,6 +99,6 @@ public:
 	Vector<LSP::Location> find_usages_in_file(const LSP::DocumentSymbol &p_symbol, const String &p_file_path);
 	Vector<LSP::Location> find_all_usages(const LSP::DocumentSymbol &p_symbol);
 
-	GDScriptWorkspace();
-	~GDScriptWorkspace();
+	MyGDScriptWorkspace();
+	~MyGDScriptWorkspace();
 };

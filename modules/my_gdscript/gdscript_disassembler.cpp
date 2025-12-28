@@ -48,17 +48,17 @@ static String _get_variant_string(const Variant &p_variant) {
 		if (!obj) {
 			txt = "null";
 		} else {
-			GDScriptNativeClass *cls = Object::cast_to<GDScriptNativeClass>(obj);
+			MyGDScriptNativeClass *cls = Object::cast_to<MyGDScriptNativeClass>(obj);
 			if (cls) {
 				txt = "class(" + cls->get_name() + ")";
 			} else {
 				Script *script = Object::cast_to<Script>(obj);
 				if (script) {
-					txt = "script(" + GDScript::debug_get_script_name(script) + ")";
+					txt = "script(" + MyGDScript::debug_get_script_name(script) + ")";
 				} else {
 					txt = "object(" + obj->get_class();
 					if (obj->get_script_instance()) {
-						txt += ", " + GDScript::debug_get_script_name(obj->get_script_instance()->get_script());
+						txt += ", " + MyGDScript::debug_get_script_name(obj->get_script_instance()->get_script());
 					}
 					txt += ")";
 				}
@@ -70,26 +70,26 @@ static String _get_variant_string(const Variant &p_variant) {
 	return txt;
 }
 
-static String _disassemble_address(const GDScript *p_script, const GDScriptFunction &p_function, int p_address) {
-	int addr = p_address & GDScriptFunction::ADDR_MASK;
+static String _disassemble_address(const MyGDScript *p_script, const MyGDScriptFunction &p_function, int p_address) {
+	int addr = p_address & MyGDScriptFunction::ADDR_MASK;
 
-	switch (p_address >> GDScriptFunction::ADDR_BITS) {
-		case GDScriptFunction::ADDR_TYPE_STACK: {
+	switch (p_address >> MyGDScriptFunction::ADDR_BITS) {
+		case MyGDScriptFunction::ADDR_TYPE_STACK: {
 			switch (addr) {
-				case GDScriptFunction::ADDR_STACK_SELF:
+				case MyGDScriptFunction::ADDR_STACK_SELF:
 					return "self";
-				case GDScriptFunction::ADDR_STACK_CLASS:
+				case MyGDScriptFunction::ADDR_STACK_CLASS:
 					return "class";
-				case GDScriptFunction::ADDR_STACK_NIL:
+				case MyGDScriptFunction::ADDR_STACK_NIL:
 					return "nil";
 				default:
 					return "stack(" + itos(addr) + ")";
 			}
 		} break;
-		case GDScriptFunction::ADDR_TYPE_CONSTANT: {
+		case MyGDScriptFunction::ADDR_TYPE_CONSTANT: {
 			return "const(" + _get_variant_string(p_function.get_constant(addr)) + ")";
 		} break;
-		case GDScriptFunction::ADDR_TYPE_MEMBER: {
+		case MyGDScriptFunction::ADDR_TYPE_MEMBER: {
 			return "member(" + p_script->debug_get_member_by_index(addr) + ")";
 		} break;
 	}
@@ -97,7 +97,7 @@ static String _disassemble_address(const GDScript *p_script, const GDScriptFunct
 	return "<err>";
 }
 
-void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
+void MyGDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 #define DADDR(m_ip) (_disassemble_address(_script, *this, _code_ptr[ip + m_ip]))
 
 	for (int ip = 0; ip < _code_size;) {
@@ -164,7 +164,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 
 				if (script_type.is_valid() && script_type->is_valid()) {
 					text += "script(";
-					text += GDScript::debug_get_script_name(script_type);
+					text += MyGDScript::debug_get_script_name(script_type);
 					text += ")";
 				} else if (native_type != StringName()) {
 					text += native_type;
@@ -189,7 +189,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 
 				if (key_script_type.is_valid() && key_script_type->is_valid()) {
 					text += "script(";
-					text += GDScript::debug_get_script_name(key_script_type);
+					text += MyGDScript::debug_get_script_name(key_script_type);
 					text += ")";
 				} else if (key_native_type != StringName()) {
 					text += key_native_type;
@@ -205,7 +205,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 
 				if (value_script_type.is_valid() && value_script_type->is_valid()) {
 					text += "script(";
-					text += GDScript::debug_get_script_name(value_script_type);
+					text += MyGDScript::debug_get_script_name(value_script_type);
 					text += ")";
 				} else if (value_native_type != StringName()) {
 					text += value_native_type;
@@ -362,15 +362,15 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 				incr += 3;
 			} break;
 			case OPCODE_SET_STATIC_VARIABLE: {
-				Ref<GDScript> gdscript;
+				Ref<MyGDScript> gdscript;
 				if (_code_ptr[ip + 2] == ADDR_CLASS) {
-					gdscript = Ref<GDScript>(_script);
+					gdscript = Ref<MyGDScript>(_script);
 				} else {
 					gdscript = get_constant(_code_ptr[ip + 2] & ADDR_MASK);
 				}
 
 				text += "set_static_variable script(";
-				text += GDScript::debug_get_script_name(gdscript);
+				text += MyGDScript::debug_get_script_name(gdscript);
 				text += ")";
 				if (gdscript.is_valid()) {
 					text += "[\"" + gdscript->debug_get_static_var_by_index(_code_ptr[ip + 3]) + "\"]";
@@ -383,9 +383,9 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 				incr += 4;
 			} break;
 			case OPCODE_GET_STATIC_VARIABLE: {
-				Ref<GDScript> gdscript;
+				Ref<MyGDScript> gdscript;
 				if (_code_ptr[ip + 2] == ADDR_CLASS) {
-					gdscript = Ref<GDScript>(_script);
+					gdscript = Ref<MyGDScript>(_script);
 				} else {
 					gdscript = get_constant(_code_ptr[ip + 2] & ADDR_MASK);
 				}
@@ -393,7 +393,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 				text += "get_static_variable ";
 				text += DADDR(1);
 				text += " = script(";
-				text += GDScript::debug_get_script_name(gdscript);
+				text += MyGDScript::debug_get_script_name(gdscript);
 				text += ")";
 				if (gdscript.is_valid()) {
 					text += "[\"" + gdscript->debug_get_static_var_by_index(_code_ptr[ip + 3]) + "\"]";
@@ -472,7 +472,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 				Ref<Script> script = get_constant(_code_ptr[ip + 3] & ADDR_MASK);
 
 				text += "assign typed script (";
-				text += GDScript::debug_get_script_name(script);
+				text += MyGDScript::debug_get_script_name(script);
 				text += ") ";
 				text += DADDR(1);
 				text += " = ";
@@ -578,7 +578,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 
 				String type_name;
 				if (script_type.is_valid() && script_type->is_valid()) {
-					type_name = "script(" + GDScript::debug_get_script_name(script_type) + ")";
+					type_name = "script(" + MyGDScript::debug_get_script_name(script_type) + ")";
 				} else if (native_type != StringName()) {
 					type_name = native_type;
 				} else {
@@ -633,7 +633,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 
 				String key_type_name;
 				if (key_script_type.is_valid() && key_script_type->is_valid()) {
-					key_type_name = "script(" + GDScript::debug_get_script_name(key_script_type) + ")";
+					key_type_name = "script(" + MyGDScript::debug_get_script_name(key_script_type) + ")";
 				} else if (key_native_type != StringName()) {
 					key_type_name = key_native_type;
 				} else {
@@ -646,7 +646,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 
 				String value_type_name;
 				if (value_script_type.is_valid() && value_script_type->is_valid()) {
-					value_type_name = "script(" + GDScript::debug_get_script_name(value_script_type) + ")";
+					value_type_name = "script(" + MyGDScript::debug_get_script_name(value_script_type) + ")";
 				} else if (value_native_type != StringName()) {
 					value_type_name = value_native_type;
 				} else {
@@ -999,7 +999,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 			case OPCODE_CREATE_LAMBDA: {
 				int instr_var_args = _code_ptr[++ip];
 				int captures_count = _code_ptr[ip + 1 + instr_var_args];
-				GDScriptFunction *lambda = _lambdas_ptr[_code_ptr[ip + 2 + instr_var_args]];
+				MyGDScriptFunction *lambda = _lambdas_ptr[_code_ptr[ip + 2 + instr_var_args]];
 
 				text += DADDR(1 + captures_count);
 				text += "create lambda from ";
@@ -1019,7 +1019,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 			case OPCODE_CREATE_SELF_LAMBDA: {
 				int instr_var_args = _code_ptr[++ip];
 				int captures_count = _code_ptr[ip + 1 + instr_var_args];
-				GDScriptFunction *lambda = _lambdas_ptr[_code_ptr[ip + 2 + instr_var_args]];
+				MyGDScriptFunction *lambda = _lambdas_ptr[_code_ptr[ip + 2 + instr_var_args]];
 
 				text += DADDR(1 + captures_count);
 				text += "create self lambda from ";
@@ -1109,7 +1109,7 @@ void GDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 				Ref<Script> script = get_constant(_code_ptr[ip + 2] & ADDR_MASK);
 
 				text += "return typed script (";
-				text += GDScript::debug_get_script_name(script);
+				text += MyGDScript::debug_get_script_name(script);
 				text += ") ";
 				text += DADDR(1);
 
