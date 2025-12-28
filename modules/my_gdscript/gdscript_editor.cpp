@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_editor.cpp                                                   */
+/*  my_gdscript_editor.cpp                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,15 +28,15 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript.h"
+#include "my_gdscript.h"
 
-#include "gdscript_analyzer.h"
-#include "gdscript_parser.h"
-#include "gdscript_tokenizer.h"
-#include "gdscript_utility_functions.h"
+#include "my_gdscript_analyzer.h"
+#include "my_gdscript_parser.h"
+#include "my_gdscript_tokenizer.h"
+#include "my_gdscript_utility_functions.h"
 
 #ifdef TOOLS_ENABLED
-#include "editor/gdscript_docgen.h"
+#include "editor/my_gdscript_docgen.h"
 #include "editor/script_templates/templates.gen.h"
 #endif
 

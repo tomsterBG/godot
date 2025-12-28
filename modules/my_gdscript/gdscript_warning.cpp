@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_warning.cpp                                                  */
+/*  my_gdscript_warning.cpp                                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_warning.h"
+#include "my_gdscript_warning.h"
 
 #include "core/variant/variant.h"
 
@@ -251,7 +251,7 @@ String MyGDScriptWarning::get_name_from_code(Code p_code) {
 }
 
 String MyGDScriptWarning::get_settings_path_from_code(Code p_code) {
-	return "debug/gdscript/warnings/" + get_name_from_code(p_code).to_lower();
+	return "debug/my_gdscript/warnings/" + get_name_from_code(p_code).to_lower();
 }
 
 MyGDScriptWarning::Code MyGDScriptWarning::get_code_from_name(const String &p_name) {

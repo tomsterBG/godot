@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_compiler.cpp                                                 */
+/*  my_gdscript_compiler.cpp                                                 */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,12 +28,12 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_compiler.h"
+#include "my_gdscript_compiler.h"
 
-#include "gdscript.h"
-#include "gdscript_byte_codegen.h"
-#include "gdscript_cache.h"
-#include "gdscript_utility_functions.h"
+#include "my_gdscript.h"
+#include "my_gdscript_byte_codegen.h"
+#include "my_gdscript_cache.h"
+#include "my_gdscript_utility_functions.h"
 
 #include "core/config/engine.h"
 #include "core/config/project_settings.h"
@@ -627,7 +627,7 @@ MyGDScriptCodeGenerator::Address MyGDScriptCompiler::_parse_expression(CodeGen &
 				gen->write_call_utility(result, call->function_name, arguments);
 			} else if (!call->is_super && call->callee->type == MyGDScriptParser::Node::IDENTIFIER && MyGDScriptUtilityFunctions::function_exists(call->function_name)) {
 				// MyGDScript utility function.
-				gen->write_call_gdscript_utility(result, call->function_name, arguments);
+				gen->write_call_my_gdscript_utility(result, call->function_name, arguments);
 			} else {
 				// Regular function.
 				const MyGDScriptParser::ExpressionNode *callee = call->callee;
@@ -1628,7 +1628,7 @@ MyGDScriptCodeGenerator::Address MyGDScriptCompiler::_parse_match_pattern(CodeGe
 			MyGDScriptCodeGenerator::Address value_length_addr = codegen.add_temporary(temp_type);
 			Vector<MyGDScriptCodeGenerator::Address> len_args;
 			len_args.push_back(p_value_addr);
-			codegen.generator->write_call_gdscript_utility(value_length_addr, "len", len_args);
+			codegen.generator->write_call_my_gdscript_utility(value_length_addr, "len", len_args);
 
 			// Test length compatibility.
 			temp_type.builtin_type = Variant::BOOL;
@@ -1726,7 +1726,7 @@ MyGDScriptCodeGenerator::Address MyGDScriptCompiler::_parse_match_pattern(CodeGe
 			MyGDScriptCodeGenerator::Address value_length_addr = codegen.add_temporary(temp_type);
 			Vector<MyGDScriptCodeGenerator::Address> func_args;
 			func_args.push_back(p_value_addr);
-			codegen.generator->write_call_gdscript_utility(value_length_addr, "len", func_args);
+			codegen.generator->write_call_my_gdscript_utility(value_length_addr, "len", func_args);
 
 			// Test length compatibility.
 			temp_type.builtin_type = Variant::BOOL;

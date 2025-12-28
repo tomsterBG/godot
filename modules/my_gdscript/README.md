@@ -1,5 +1,5 @@
 # Basic MyGDScript module architecture
-This provides some basic information in how MyGDScript is implemented and integrates with the rest of the engine. You can learn more about MyGDScript in the [documentation](https://docs.godotengine.org/en/latest/tutorials/scripting/gdscript/index.html). It describes the syntax and user facing systems and concepts, and can be used as a reference for what user expectations are.
+This provides some basic information in how MyGDScript is implemented and integrates with the rest of the engine. You can learn more about MyGDScript in the [documentation](https://docs.godotengine.org/en/latest/tutorials/scripting/my_gdscript/index.html). It describes the syntax and user facing systems and concepts, and can be used as a reference for what user expectations are.
 
 
 ## General design
@@ -19,14 +19,14 @@ The MyGDScript module interfaces with Godot's codebase by inheriting from the en
 
 To access Godot's internal classes, MyGDScript uses [`ClassDB`](/core/object/class_db.h). `ClassDB` is where Godot registers classes, methods and properties that it wants exposed to its scripting system. This is how MyGDScript understands that `Node2D` is a class it can use, and that it has a `get_parent()` method.
 
-[Built-in MyGDScript methods](https://docs.godotengine.org/en/latest/classes/class_@gdscript.html#methods) are defined and exported by [`MyGDScriptUtilityFunctions`](gdscript_utility_functions.h), whereas [global scope methods](https://docs.godotengine.org/en/latest/classes/class_%2540globalscope.html) are registered in [`Variant::_register_variant_utility_functions()`](/core/variant/variant_utility.cpp).
+[Built-in MyGDScript methods](https://docs.godotengine.org/en/latest/classes/class_@my_gdscript.html#methods) are defined and exported by [`MyGDScriptUtilityFunctions`](my_gdscript_utility_functions.h), whereas [global scope methods](https://docs.godotengine.org/en/latest/classes/class_%2540globalscope.html) are registered in [`Variant::_register_variant_utility_functions()`](/core/variant/variant_utility.cpp).
 
 
 ## Compilation
 
 Scripts can be at different stages of compilation. The process isn't entirely linear, but consists of this general order: tokenizing, parsing, analyzing, and finally compiling. This process is the same for scripts in the editor and scripts in an exported game. Scripts are stored as text files in both cases, and the compilation process must happen in full before the bytecode can be passed to the virtual machine and run.
 
-The main class of the MyGDScript module is the [`MyGDScript`](gdscript.h) class, which represents a class defined in MyGDScript. Each `.gd` file is called a _class file_ because it implicitly defines a class in MyGDScript, and thus results in an associated `MyGDScript` object. However, MyGDScript classes may define [_inner classes_](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#inner-classes), and those are also represented by further `MyGDScript` objects, even though they are not in files of their own.
+The main class of the MyGDScript module is the [`MyGDScript`](my_gdscript.h) class, which represents a class defined in MyGDScript. Each `.gd` file is called a _class file_ because it implicitly defines a class in MyGDScript, and thus results in an associated `MyGDScript` object. However, MyGDScript classes may define [_inner classes_](https://docs.godotengine.org/en/stable/tutorials/scripting/my_gdscript/my_gdscript_basics.html#inner-classes), and those are also represented by further `MyGDScript` objects, even though they are not in files of their own.
 
 The `MyGDScript` class contains all the information related to the corresponding MyGDScript class: its name and path, its members like variables, functions, symbols, signals, implicit methods like initializers, etc. This is the main class that the compilation step deals with.
 
@@ -38,21 +38,21 @@ A secondary class is `MyGDScriptInstance`, defined in the same file, containing 
 This mostly happens by calling `MyGDScript::load_source_code()` on a `MyGDScript` object. Parsing only requires a `String`, so it is entirely possible to parse a script without a `MyGDScript` object!
 
 
-### Tokenizing (see [`MyGDScriptTokenizer`](gdscript_tokenizer.h))
+### Tokenizing (see [`MyGDScriptTokenizer`](my_gdscript_tokenizer.h))
 
 Tokenizing is the process of converting the source code `String` into a sequence of tokens, which represent language constructs (such as `for` or `if`), identifiers, literals, etc. This happens almost exclusively during the parsing process, which asks for the next token in order to make sense of the source code. The tokenizer is only used outside of the parsing process in very rare exceptions.
 
 
-### Parsing (see [`MyGDScriptParser`](gdscript_parser.h))
+### Parsing (see [`MyGDScriptParser`](my_gdscript_parser.h))
 
 The parser takes a sequence of tokens and builds [the abstract syntax tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) of the MyGDScript program. The AST is used in the analyzing and compilation steps, and the source code `String` and sequence of tokens are discarded. The AST-building process finds syntax errors in a MyGDScript program and reports them to the user.
 
 The parser class also defines all the possible nodes of the AST as subtypes of `MyGDScriptParser::Node`, not to be confused with Godot's scene tree `Node`. For example, `MyGDScriptParser::IfNode` has two children nodes, one for the code in the `if` block, and one for the code in the `else` block. A `MyGDScriptParser::FunctionNode` contains children nodes for its name, parameters, return type, body, etc. The parser also defines typechecking data structures like `MyGDScriptParser::Datatype`.
 
-The parser was [intentionally designed](https://godotengine.org/article/gdscript-progress-report-writing-new-parser/#less-lookahead) with a look-ahead of a single token. This means that the parser only has access to the current token and the previous token (or, if you prefer, the current token and the next token). This parsing limitation ensures that MyGDScript will remain syntactically simple and accessible, and that the parsing process cannot become overly complex.
+The parser was [intentionally designed](https://godotengine.org/article/my_gdscript-progress-report-writing-new-parser/#less-lookahead) with a look-ahead of a single token. This means that the parser only has access to the current token and the previous token (or, if you prefer, the current token and the next token). This parsing limitation ensures that MyGDScript will remain syntactically simple and accessible, and that the parsing process cannot become overly complex.
 
 
-### Analysis and typechecking (see [`MyGDScriptAnalyzer`](gdscript_analyzer.h))
+### Analysis and typechecking (see [`MyGDScriptAnalyzer`](my_gdscript_analyzer.h))
 
 The analyzer takes in the AST of a program and verifies that "everything checks out". For example, when analyzing a method call with three parameters, it will check whether the function definition also contains three parameters. If the code is typed, it will check that argument and parameter types are compatible.
 
@@ -89,9 +89,9 @@ MyGDScript supports cyclic dependencies due to a few features of the analyzer:
 A fundamental cyclic dependency problem occurs when the types of two different member variables are mutually dependent. This is commonly checked by a pattern that declares a temporary datatype with `MyGDScriptParser::DataType resolving_datatype;`, followed by `resolving_datatype.kind = MyGDScriptParser::DataType::RESOLVING;`. If the analyzer attempts to resolve a member on-demand that is already tagged as resolving, then a cyclic dependency problem has been found and can be reported.
 
 
-### Compiling (see [`MyGDScriptCompiler`](gdscript_compiler.h))
+### Compiling (see [`MyGDScriptCompiler`](my_gdscript_compiler.h))
 
-Compiling is the final step in making a MyGDScript executable in the [virtual machine](gdscript_vm.h) (VM). The compiler takes a `MyGDScript` object and an AST, and uses another class, [`MyGDScriptByteCodeGenerator`](gdscript_byte_codegen.h), to generate bytecode corresponding to the class. In doing this, it creates the objects that the VM understands how to run, like [`MyGDScriptFunction`](gdscript_function.h), and completes a few extra tasks needed for compilation, such as populating runtime class member information.
+Compiling is the final step in making a MyGDScript executable in the [virtual machine](my_gdscript_vm.h) (VM). The compiler takes a `MyGDScript` object and an AST, and uses another class, [`MyGDScriptByteCodeGenerator`](my_gdscript_byte_codegen.h), to generate bytecode corresponding to the class. In doing this, it creates the objects that the VM understands how to run, like [`MyGDScriptFunction`](my_gdscript_function.h), and completes a few extra tasks needed for compilation, such as populating runtime class member information.
 
 Importantly, the compilation process of a class, specifically the `MyGDScriptCompiler::_compile_class()` method, _cannot_ depend on information obtained by calling `MyGDScriptCompiler::_compile_class()` on another class, for the same cyclic dependency reasons explained in the previous section.
 Any information that can only be obtained or populated during the compilation step, when `MyGDScript` objects become available, must be handled before `MyGDScriptCompiler::_compile_class()` is called. This process is centralized in `MyGDScriptCompiler::_prepare_compilation()` which works as the compile-time equivalent of `MyGDScriptAnalyzer::resolve_class_interface()`: it populates a `MyGDScript`'s "interface" exclusively with information from the analysis step, and without processing other external classes. This information may then be referenced by other classes without introducing problematic cycles.
@@ -104,14 +104,14 @@ Typed code is safer code and faster code!
 
 ## Loading scripts
 
-MyGDScripts can be loaded in a couple of different ways. The main method, used almost everywhere in the engine, is to load scripts through the `ResourceLoader` singleton. In this way, MyGDScripts are resources like any others: `ResourceLoader::load()` will simply reroute to `ResourceFormatLoaderMyGDScript::load()`, found in `gdscript.h/cpp`(gdscript.h). This generates a MyGDScript object which is compiled and ready to use.
+MyGDScripts can be loaded in a couple of different ways. The main method, used almost everywhere in the engine, is to load scripts through the `ResourceLoader` singleton. In this way, MyGDScripts are resources like any others: `ResourceLoader::load()` will simply reroute to `ResourceFormatLoaderMyGDScript::load()`, found in `my_gdscript.h/cpp`(my_gdscript.h). This generates a MyGDScript object which is compiled and ready to use.
 
-The other method is to manually load the source code, then pass it to a parser, then to an analyzer and then to a compiler. The previous approach does this behind the scenes, alongside some smart caching of scripts and other functionalities. It is used in the [MyGDScript test runner infrastructure](tests/gdscript_test_runner.h).
+The other method is to manually load the source code, then pass it to a parser, then to an analyzer and then to a compiler. The previous approach does this behind the scenes, alongside some smart caching of scripts and other functionalities. It is used in the [MyGDScript test runner infrastructure](tests/my_gdscript_test_runner.h).
 
 
 ### Full and shallow scripts
 
-The `ResourceFormatLoaderMyGDScript::load()` method simply calls `MyGDScriptCache::get_full_script()`. The [`MyGDScriptCache`](gdscript_cache.h) is, as it sounds, a cache for MyGDScripts. Its two main methods, `get_shallow_script()` and `get_full_script()`, get and cache, respectively, scripts that have been merely parsed, and scripts which have been statically analyzed and fully compiled. Another internal class, `MyGDScriptParserRef`, found in the same file, provides even more granularity over the different steps of the parsing process, and is used extensively in the analyzer.
+The `ResourceFormatLoaderMyGDScript::load()` method simply calls `MyGDScriptCache::get_full_script()`. The [`MyGDScriptCache`](my_gdscript_cache.h) is, as it sounds, a cache for MyGDScripts. Its two main methods, `get_shallow_script()` and `get_full_script()`, get and cache, respectively, scripts that have been merely parsed, and scripts which have been statically analyzed and fully compiled. Another internal class, `MyGDScriptParserRef`, found in the same file, provides even more granularity over the different steps of the parsing process, and is used extensively in the analyzer.
 
 Shallow, or "just parsed" scripts, provide information such as defined classes, class members, and so forth. This is sufficient for many purposes, like obtaining a class interface or checking whether a member exists on a specific class. Full scripts, on the other hand, have been analyzed and compiled and are ready to use.
 
@@ -131,9 +131,9 @@ Tool scripts, declared with the `@tool` annotation on a MyGDScript file, run in 
 
 There are many other classes in the MyGDScript module. Here is a brief overview of some of them:
 
-- Declaration of MyGDScript warnings in [`MyGDScriptWarning`](gdscript_warning.h).
-- [`MyGDScriptFunction`](gdscript_function.h), which represents an executable MyGDScript function. The relevant file contains both static as well as runtime information.
-- The [virtual machine](gdscript_vm.cpp) is essentially defined as calling `MyGDScriptFunction::call()`.
-- Editor-related functions can be found in parts of `MyGDScriptLanguage`, originally declared in [`gdscript.h`](gdscript.h) but defined in [`gdscript_editor.cpp`](gdscript_editor.cpp). Code highlighting can be found in [`MyGDScriptSyntaxHighlighter`](editor/gdscript_highlighter.h).
-- MyGDScript decompilation is found in [`gdscript_disassembler.cpp`](gdscript_disassembler.h), defined as `MyGDScriptFunction::disassemble()`.
-- Documentation generation from MyGDScript comments in [`MyGDScriptDocGen`](editor/gdscript_docgen.h)
+- Declaration of MyGDScript warnings in [`MyGDScriptWarning`](my_gdscript_warning.h).
+- [`MyGDScriptFunction`](my_gdscript_function.h), which represents an executable MyGDScript function. The relevant file contains both static as well as runtime information.
+- The [virtual machine](my_gdscript_vm.cpp) is essentially defined as calling `MyGDScriptFunction::call()`.
+- Editor-related functions can be found in parts of `MyGDScriptLanguage`, originally declared in [`my_gdscript.h`](my_gdscript.h) but defined in [`my_gdscript_editor.cpp`](my_gdscript_editor.cpp). Code highlighting can be found in [`MyGDScriptSyntaxHighlighter`](editor/my_gdscript_highlighter.h).
+- MyGDScript decompilation is found in [`my_gdscript_disassembler.cpp`](my_gdscript_disassembler.h), defined as `MyGDScriptFunction::disassemble()`.
+- Documentation generation from MyGDScript comments in [`MyGDScriptDocGen`](editor/my_gdscript_docgen.h)

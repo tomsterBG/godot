@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_rpc_callable.cpp                                             */
+/*  my_gdscript_rpc_callable.cpp                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_rpc_callable.h"
+#include "my_gdscript_rpc_callable.h"
 
 #include "core/object/script_language.h"
 #include "core/templates/hashfuncs.h"

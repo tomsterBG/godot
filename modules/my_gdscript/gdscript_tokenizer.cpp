@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_tokenizer.cpp                                                */
+/*  my_gdscript_tokenizer.cpp                                                */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_tokenizer.h"
+#include "my_gdscript_tokenizer.h"
 
 #include "core/error/error_macros.h"
 #include "core/string/char_utils.h"

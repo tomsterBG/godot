@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_docgen.cpp                                                   */
+/*  my_gdscript_docgen.cpp                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,9 +28,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_docgen.h"
+#include "my_gdscript_docgen.h"
 
-#include "../gdscript.h"
+#include "../my_gdscript.h"
 
 #include "core/config/project_settings.h"
 

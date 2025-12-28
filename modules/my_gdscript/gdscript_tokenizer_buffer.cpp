@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_tokenizer_buffer.cpp                                         */
+/*  my_gdscript_tokenizer_buffer.cpp                                         */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_tokenizer_buffer.h"
+#include "my_gdscript_tokenizer_buffer.h"
 
 #include "core/io/compression.h"
 #include "core/io/marshalls.h"

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_function.cpp                                                 */
+/*  my_gdscript_function.cpp                                                 */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,9 +28,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_function.h"
+#include "my_gdscript_function.h"
 
-#include "gdscript.h"
+#include "my_gdscript.h"
 
 Variant MyGDScriptFunction::get_constant(int p_idx) const {
 	ERR_FAIL_INDEX_V(p_idx, constants.size(), "<errconst>");

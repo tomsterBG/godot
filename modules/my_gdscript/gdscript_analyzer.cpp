@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_analyzer.cpp                                                 */
+/*  my_gdscript_analyzer.cpp                                                 */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,11 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_analyzer.h"
+#include "my_gdscript_analyzer.h"
 
-#include "gdscript.h"
-#include "gdscript_utility_callable.h"
-#include "gdscript_utility_functions.h"
+#include "my_gdscript.h"
+#include "my_gdscript_utility_callable.h"
+#include "my_gdscript_utility_functions.h"
 
 #include "core/config/engine.h"
 #include "core/config/project_settings.h"
@@ -698,11 +698,11 @@ MyGDScriptParser::DataType MyGDScriptAnalyzer::resolve_datatype(MyGDScriptParser
 			if (result.is_meta_type) {
 				type_found = true;
 			} else if (Ref<Script>(local.constant->initializer->reduced_value).is_valid()) {
-				Ref<MyGDScript> gdscript = local.constant->initializer->reduced_value;
-				if (gdscript.is_valid()) {
-					Ref<MyGDScriptParserRef> ref = parser->get_depended_parser_for(gdscript->get_script_path());
+				Ref<MyGDScript> my_gdscript = local.constant->initializer->reduced_value;
+				if (my_gdscript.is_valid()) {
+					Ref<MyGDScriptParserRef> ref = parser->get_depended_parser_for(my_gdscript->get_script_path());
 					if (ref->raise_status(MyGDScriptParserRef::INHERITANCE_SOLVED) != OK) {
-						push_error(vformat(R"(Could not parse script from "%s".)", gdscript->get_script_path()), first_id);
+						push_error(vformat(R"(Could not parse script from "%s".)", my_gdscript->get_script_path()), first_id);
 						return bad_type;
 					}
 					result = ref->get_parser()->head->get_datatype();
@@ -874,11 +874,11 @@ MyGDScriptParser::DataType MyGDScriptAnalyzer::resolve_datatype(MyGDScriptParser
 								found = true;
 								break;
 							} else if (Ref<Script>(member.constant->initializer->reduced_value).is_valid()) {
-								Ref<MyGDScript> gdscript = member.constant->initializer->reduced_value;
-								if (gdscript.is_valid()) {
-									Ref<MyGDScriptParserRef> ref = parser->get_depended_parser_for(gdscript->get_script_path());
+								Ref<MyGDScript> my_gdscript = member.constant->initializer->reduced_value;
+								if (my_gdscript.is_valid()) {
+									Ref<MyGDScriptParserRef> ref = parser->get_depended_parser_for(my_gdscript->get_script_path());
 									if (ref->raise_status(MyGDScriptParserRef::INHERITANCE_SOLVED) != OK) {
-										push_error(vformat(R"(Could not parse script from "%s".)", gdscript->get_script_path()), p_type);
+										push_error(vformat(R"(Could not parse script from "%s".)", my_gdscript->get_script_path()), p_type);
 										return bad_type;
 									}
 									result = ref->get_parser()->head->get_datatype();
@@ -3179,7 +3179,7 @@ const char *check_for_renamed_identifier(String identifier, MyGDScriptParser::No
 	switch (type) {
 		case MyGDScriptParser::Node::IDENTIFIER: {
 			// Check properties
-			const char *result = get_rename_from_map(RenamesMap3To4::gdscript_properties_renames, identifier);
+			const char *result = get_rename_from_map(RenamesMap3To4::my_gdscript_properties_renames, identifier);
 			if (result) {
 				return result;
 			}
@@ -3201,7 +3201,7 @@ const char *check_for_renamed_identifier(String identifier, MyGDScriptParser::No
 			return get_rename_from_map(RenamesMap3To4::builtin_types_renames, identifier);
 		}
 		case MyGDScriptParser::Node::CALL: {
-			const char *result = get_rename_from_map(RenamesMap3To4::gdscript_function_renames, identifier);
+			const char *result = get_rename_from_map(RenamesMap3To4::my_gdscript_function_renames, identifier);
 			if (result) {
 				return result;
 			}
@@ -3743,7 +3743,7 @@ void MyGDScriptAnalyzer::reduce_call(MyGDScriptParser::CallNode *p_call, bool p_
 			String base_name = is_self && !p_call->is_super ? "self" : base_type.to_string();
 #ifdef SUGGEST_GODOT4_RENAMES
 			String rename_hint;
-			if (GLOBAL_GET_CACHED(bool, "debug/gdscript/warnings/renamed_in_godot_4_hint")) {
+			if (GLOBAL_GET_CACHED(bool, "debug/my_gdscript/warnings/renamed_in_godot_4_hint")) {
 				const char *renamed_function_name = check_for_renamed_identifier(p_call->function_name, p_call->type);
 				if (renamed_function_name) {
 					rename_hint = " " + vformat(R"(Did you mean to use "%s"?)", String(renamed_function_name) + "()");
@@ -4090,7 +4090,7 @@ void MyGDScriptAnalyzer::reduce_identifier_from_base(MyGDScriptParser::Identifie
 			if (!valid && base.is_hard_type()) {
 #ifdef SUGGEST_GODOT4_RENAMES
 				String rename_hint;
-				if (GLOBAL_GET_CACHED(bool, "debug/gdscript/warnings/renamed_in_godot_4_hint")) {
+				if (GLOBAL_GET_CACHED(bool, "debug/my_gdscript/warnings/renamed_in_godot_4_hint")) {
 					const char *renamed_identifier_name = check_for_renamed_identifier(name, p_identifier->type);
 					if (renamed_identifier_name) {
 						rename_hint = " " + vformat(R"(Did you mean to use "%s"?)", renamed_identifier_name);
@@ -4134,7 +4134,7 @@ void MyGDScriptAnalyzer::reduce_identifier_from_base(MyGDScriptParser::Identifie
 					if (base.is_hard_type()) {
 #ifdef SUGGEST_GODOT4_RENAMES
 						String rename_hint;
-						if (GLOBAL_GET_CACHED(bool, "debug/gdscript/warnings/renamed_in_godot_4_hint")) {
+						if (GLOBAL_GET_CACHED(bool, "debug/my_gdscript/warnings/renamed_in_godot_4_hint")) {
 							const char *renamed_identifier_name = check_for_renamed_identifier(name, p_identifier->type);
 							if (renamed_identifier_name) {
 								rename_hint = " " + vformat(R"(Did you mean to use "%s"?)", renamed_identifier_name);
@@ -4653,7 +4653,7 @@ void MyGDScriptAnalyzer::reduce_identifier(MyGDScriptParser::IdentifierNode *p_i
 	// Not found.
 #ifdef SUGGEST_GODOT4_RENAMES
 	String rename_hint;
-	if (GLOBAL_GET_CACHED(bool, "debug/gdscript/warnings/renamed_in_godot_4_hint")) {
+	if (GLOBAL_GET_CACHED(bool, "debug/my_gdscript/warnings/renamed_in_godot_4_hint")) {
 		const char *renamed_identifier_name = check_for_renamed_identifier(name, p_identifier->type);
 		if (renamed_identifier_name) {
 			rename_hint = " " + vformat(R"(Did you mean to use "%s"?)", renamed_identifier_name);
@@ -4791,13 +4791,13 @@ void MyGDScriptAnalyzer::reduce_subscript(MyGDScriptParser::SubscriptNode *p_sub
 		// If the base is a metatype, use the analyzer instead.
 		if (p_subscript->base->is_constant && !base_type.is_meta_type) {
 			// GH-92534. If the base is a MyGDScript, use the analyzer instead.
-			bool base_is_gdscript = false;
+			bool base_is_my_gdscript = false;
 			if (p_subscript->base->reduced_value.get_type() == Variant::OBJECT) {
-				Ref<MyGDScript> gdscript = Object::cast_to<MyGDScript>(p_subscript->base->reduced_value.get_validated_object());
-				if (gdscript.is_valid()) {
-					base_is_gdscript = true;
+				Ref<MyGDScript> my_gdscript = Object::cast_to<MyGDScript>(p_subscript->base->reduced_value.get_validated_object());
+				if (my_gdscript.is_valid()) {
+					base_is_my_gdscript = true;
 					// Makes a metatype from a constant MyGDScript, since `base_type` is not a metatype.
-					MyGDScriptParser::DataType base_type_meta = type_from_variant(gdscript, p_subscript);
+					MyGDScriptParser::DataType base_type_meta = type_from_variant(my_gdscript, p_subscript);
 					// First try to reduce the attribute from the metatype.
 					reduce_identifier_from_base(p_subscript->attribute, &base_type_meta);
 					MyGDScriptParser::DataType attr_type = p_subscript->attribute->get_datatype();
@@ -4813,7 +4813,7 @@ void MyGDScriptAnalyzer::reduce_subscript(MyGDScriptParser::SubscriptNode *p_sub
 					}
 				}
 			}
-			if (!base_is_gdscript) {
+			if (!base_is_my_gdscript) {
 				// Just try to get it.
 				Variant value = p_subscript->base->reduced_value.get_named(p_subscript->attribute->name, valid);
 				if (valid) {
@@ -5983,10 +5983,10 @@ void MyGDScriptAnalyzer::is_shadowing(MyGDScriptParser::IdentifierNode *p_identi
 	const StringName &name = p_identifier->name;
 
 	{
-		List<MethodInfo> gdscript_funcs;
-		MyGDScriptLanguage::get_singleton()->get_public_functions(&gdscript_funcs);
+		List<MethodInfo> my_gdscript_funcs;
+		MyGDScriptLanguage::get_singleton()->get_public_functions(&my_gdscript_funcs);
 
-		for (MethodInfo &info : gdscript_funcs) {
+		for (MethodInfo &info : my_gdscript_funcs) {
 			if (info.name == name) {
 				parser->push_warning(p_identifier, MyGDScriptWarning::SHADOWED_GLOBAL_IDENTIFIER, p_context, name, "built-in function");
 				return;

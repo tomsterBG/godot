@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_language_protocol.cpp                                        */
+/*  my_gdscript_language_protocol.cpp                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_language_protocol.h"
+#include "my_gdscript_language_protocol.h"
 
 #include "core/config/project_settings.h"
 #include "editor/doc/doc_tools.h"
@@ -211,7 +211,7 @@ Dictionary MyGDScriptLanguageProtocol::initialize(const Dictionary &p_params) {
 
 		Dictionary params;
 		params["path"] = workspace->root;
-		Dictionary request = make_notification("gdscript_client/changeWorkspace", params);
+		Dictionary request = make_notification("my_gdscript_client/changeWorkspace", params);
 
 		ERR_FAIL_COND_V_MSG(!clients.has(latest_client_id), ret.to_json(),
 				vformat("MyGDScriptLanguageProtocol: Can't initialize invalid peer '%d'.", latest_client_id));
@@ -246,7 +246,7 @@ void MyGDScriptLanguageProtocol::initialized(const Variant &p_params) {
 		capabilities.native_classes.push_back(gdclass);
 	}
 
-	notify_client("gdscript/capabilities", capabilities.to_json());
+	notify_client("my_gdscript/capabilities", capabilities.to_json());
 }
 
 void MyGDScriptLanguageProtocol::poll(int p_limit_usec) {

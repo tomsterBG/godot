@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_docgen.h                                                     */
+/*  my_gdscript_docgen.h                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "../gdscript_parser.h"
+#include "../my_gdscript_parser.h"
 
 #include "core/doc_data.h"
 

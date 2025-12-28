@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_disassembler.cpp                                             */
+/*  my_gdscript_disassembler.cpp                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,8 +30,8 @@
 
 #ifdef DEBUG_ENABLED
 
-#include "gdscript.h"
-#include "gdscript_function.h"
+#include "my_gdscript.h"
+#include "my_gdscript_function.h"
 
 #include "core/string/string_builder.h"
 
@@ -362,18 +362,18 @@ void MyGDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 				incr += 3;
 			} break;
 			case OPCODE_SET_STATIC_VARIABLE: {
-				Ref<MyGDScript> gdscript;
+				Ref<MyGDScript> my_gdscript;
 				if (_code_ptr[ip + 2] == ADDR_CLASS) {
-					gdscript = Ref<MyGDScript>(_script);
+					my_gdscript = Ref<MyGDScript>(_script);
 				} else {
-					gdscript = get_constant(_code_ptr[ip + 2] & ADDR_MASK);
+					my_gdscript = get_constant(_code_ptr[ip + 2] & ADDR_MASK);
 				}
 
 				text += "set_static_variable script(";
-				text += MyGDScript::debug_get_script_name(gdscript);
+				text += MyGDScript::debug_get_script_name(my_gdscript);
 				text += ")";
-				if (gdscript.is_valid()) {
-					text += "[\"" + gdscript->debug_get_static_var_by_index(_code_ptr[ip + 3]) + "\"]";
+				if (my_gdscript.is_valid()) {
+					text += "[\"" + my_gdscript->debug_get_static_var_by_index(_code_ptr[ip + 3]) + "\"]";
 				} else {
 					text += "[<index " + itos(_code_ptr[ip + 3]) + ">]";
 				}
@@ -383,20 +383,20 @@ void MyGDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 				incr += 4;
 			} break;
 			case OPCODE_GET_STATIC_VARIABLE: {
-				Ref<MyGDScript> gdscript;
+				Ref<MyGDScript> my_gdscript;
 				if (_code_ptr[ip + 2] == ADDR_CLASS) {
-					gdscript = Ref<MyGDScript>(_script);
+					my_gdscript = Ref<MyGDScript>(_script);
 				} else {
-					gdscript = get_constant(_code_ptr[ip + 2] & ADDR_MASK);
+					my_gdscript = get_constant(_code_ptr[ip + 2] & ADDR_MASK);
 				}
 
 				text += "get_static_variable ";
 				text += DADDR(1);
 				text += " = script(";
-				text += MyGDScript::debug_get_script_name(gdscript);
+				text += MyGDScript::debug_get_script_name(my_gdscript);
 				text += ")";
-				if (gdscript.is_valid()) {
-					text += "[\"" + gdscript->debug_get_static_var_by_index(_code_ptr[ip + 3]) + "\"]";
+				if (my_gdscript.is_valid()) {
+					text += "[\"" + my_gdscript->debug_get_static_var_by_index(_code_ptr[ip + 3]) + "\"]";
 				} else {
 					text += "[<index " + itos(_code_ptr[ip + 3]) + ">]";
 				}
@@ -945,7 +945,7 @@ void MyGDScriptFunction::disassemble(const Vector<String> &p_code_lines) const {
 			case OPCODE_CALL_GDSCRIPT_UTILITY: {
 				int instr_var_args = _code_ptr[++ip];
 
-				text += "call-gdscript-utility ";
+				text += "call-my_gdscript-utility ";
 
 				int argc = _code_ptr[ip + 1 + instr_var_args];
 				text += DADDR(1 + argc) + " = ";

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_function.h                                                   */
+/*  my_gdscript_function.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript_utility_functions.h"
+#include "my_gdscript_utility_functions.h"
 
 #include "core/object/ref_counted.h"
 #include "core/object/script_language.h"

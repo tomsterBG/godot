@@ -34,8 +34,8 @@
 
 #include "tests/test_macros.h"
 
-#include "../gdscript.h"
-#include "gdscript_test_runner.h"
+#include "../my_gdscript.h"
+#include "my_gdscript_test_runner.h"
 
 #include "core/config/project_settings.h"
 #include "core/io/config_file.h"
@@ -263,10 +263,10 @@ TEST_SUITE("[Modules][MyGDScript][Completion]") {
 	TEST_CASE("[Editor] Check suggestion list") {
 		// Set all editor settings that code completion relies on.
 		EditorSettings::get_singleton()->set_setting("text_editor/completion/use_single_quotes", false);
-		init_language("modules/gdscript/tests/scripts");
+		init_language("modules/my_gdscript/tests/scripts");
 
-		setup_global_classes("modules/gdscript/tests/scripts/completion");
-		test_directory("modules/gdscript/tests/scripts/completion");
+		setup_global_classes("modules/my_gdscript/tests/scripts/completion");
+		test_directory("modules/my_gdscript/tests/scripts/completion");
 
 		finish_language();
 	}

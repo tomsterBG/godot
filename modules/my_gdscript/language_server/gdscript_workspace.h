@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_workspace.h                                                  */
+/*  my_gdscript_workspace.h                                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include "../gdscript_parser.h"
-#include "gdscript_extend_parser.h"
+#include "../my_gdscript_parser.h"
+#include "my_gdscript_extend_parser.h"
 #include "godot_lsp.h"
 
 #include "core/variant/variant.h"

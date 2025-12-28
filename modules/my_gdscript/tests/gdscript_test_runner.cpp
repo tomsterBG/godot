@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_test_runner.cpp                                              */
+/*  my_gdscript_test_runner.cpp                                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,13 +28,13 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_test_runner.h"
+#include "my_gdscript_test_runner.h"
 
-#include "../gdscript.h"
-#include "../gdscript_analyzer.h"
-#include "../gdscript_compiler.h"
-#include "../gdscript_parser.h"
-#include "../gdscript_tokenizer_buffer.h"
+#include "../my_gdscript.h"
+#include "../my_gdscript_analyzer.h"
+#include "../my_gdscript_compiler.h"
+#include "../my_gdscript_parser.h"
+#include "../my_gdscript_tokenizer_buffer.h"
 
 #include "core/config/project_settings.h"
 #include "core/core_globals.h"
@@ -147,7 +147,7 @@ MyGDScriptTestRunner::MyGDScriptTestRunner(const String &p_source_dir, bool p_in
 	}
 #ifdef DEBUG_ENABLED
 	// Set all warning levels to "Warn" in order to test them properly, even the ones that default to error.
-	ProjectSettings::get_singleton()->set_setting("debug/gdscript/warnings/enable", true);
+	ProjectSettings::get_singleton()->set_setting("debug/my_gdscript/warnings/enable", true);
 	for (int i = 0; i < (int)MyGDScriptWarning::WARNING_MAX; i++) {
 		if (i == MyGDScriptWarning::UNTYPED_DECLARATION || i == MyGDScriptWarning::INFERRED_DECLARATION) {
 			// TODO: Add ability for test scripts to specify which warnings to enable/disable for testing.
@@ -351,7 +351,7 @@ static bool generate_class_index_recursive(const String &p_dir) {
 	dir->list_dir_begin();
 	String next = dir->get_next();
 
-	StringName gdscript_name = MyGDScriptLanguage::get_singleton()->get_name();
+	StringName my_gdscript_name = MyGDScriptLanguage::get_singleton()->get_name();
 	while (!next.is_empty()) {
 		if (dir->current_is_dir()) {
 			if (next == "." || next == ".." || next == "completion" || next == "lsp") {
@@ -378,7 +378,7 @@ static bool generate_class_index_recursive(const String &p_dir) {
 			ERR_FAIL_COND_V_MSG(ScriptServer::is_global_class(class_name), false,
 					"Class name '" + class_name + "' from " + source_file + " is already used in " + ScriptServer::get_global_class_path(class_name));
 
-			ScriptServer::add_global_class(class_name, base_type, gdscript_name, source_file, is_abstract, is_tool);
+			ScriptServer::add_global_class(class_name, base_type, my_gdscript_name, source_file, is_abstract, is_tool);
 		}
 
 		next = dir->get_next();
@@ -412,12 +412,12 @@ void MyGDScriptTestRunner::handle_cmdline() {
 
 	for (List<String>::Element *E = cmdline_args.front(); E; E = E->next()) {
 		String &cmd = E->get();
-		if (cmd == "--gdscript-generate-tests") {
+		if (cmd == "--my_gdscript-generate-tests") {
 			String path;
 			if (E->next()) {
 				path = E->next()->get();
 			} else {
-				path = "modules/gdscript/tests/scripts";
+				path = "modules/my_gdscript/tests/scripts";
 			}
 
 			MyGDScriptTestRunner runner(path, false, cmdline_args.find("--print-filenames") != nullptr);

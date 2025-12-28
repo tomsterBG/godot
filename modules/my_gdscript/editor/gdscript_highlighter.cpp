@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_highlighter.cpp                                              */
+/*  my_gdscript_highlighter.cpp                                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,10 +28,10 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_highlighter.h"
+#include "my_gdscript_highlighter.h"
 
-#include "../gdscript.h"
-#include "../gdscript_tokenizer.h"
+#include "../my_gdscript.h"
+#include "../my_gdscript_tokenizer.h"
 
 #include "core/config/project_settings.h"
 #include "core/core_constants.h"
@@ -746,12 +746,12 @@ void MyGDScriptSyntaxHighlighter::_update_cache() {
 		}
 	}
 
-	const MyGDScriptLanguage *gdscript = MyGDScriptLanguage::get_singleton();
+	const MyGDScriptLanguage *my_gdscript = MyGDScriptLanguage::get_singleton();
 
 	/* Core types. */
 	const Color basetype_color = EDITOR_GET("text_editor/theme/highlighting/base_type_color");
 	List<String> core_types;
-	gdscript->get_core_type_words(&core_types);
+	my_gdscript->get_core_type_words(&core_types);
 	for (const String &E : core_types) {
 		class_names[StringName(E)] = basetype_color;
 	}
@@ -765,8 +765,8 @@ void MyGDScriptSyntaxHighlighter::_update_cache() {
 	/* Reserved words. */
 	const Color keyword_color = EDITOR_GET("text_editor/theme/highlighting/keyword_color");
 	const Color control_flow_keyword_color = EDITOR_GET("text_editor/theme/highlighting/control_flow_keyword_color");
-	for (const String &keyword : gdscript->get_reserved_words()) {
-		if (gdscript->is_control_flow_keyword(keyword)) {
+	for (const String &keyword : my_gdscript->get_reserved_words()) {
+		if (my_gdscript->is_control_flow_keyword(keyword)) {
 			reserved_keywords[StringName(keyword)] = control_flow_keyword_color;
 		} else {
 			reserved_keywords[StringName(keyword)] = keyword_color;
@@ -790,7 +790,7 @@ void MyGDScriptSyntaxHighlighter::_update_cache() {
 
 	/* Comments. */
 	const Color comment_color = EDITOR_GET("text_editor/theme/highlighting/comment_color");
-	for (const String &comment : gdscript->get_comment_delimiters()) {
+	for (const String &comment : my_gdscript->get_comment_delimiters()) {
 		String beg = comment.get_slicec(' ', 0);
 		String end = comment.get_slice_count(" ") > 1 ? comment.get_slicec(' ', 1) : String();
 		add_color_region(ColorRegion::TYPE_COMMENT, beg, end, comment_color, end.is_empty());
@@ -798,7 +798,7 @@ void MyGDScriptSyntaxHighlighter::_update_cache() {
 
 	/* Doc comments */
 	const Color doc_comment_color = EDITOR_GET("text_editor/theme/highlighting/doc_comment_color");
-	for (const String &doc_comment : gdscript->get_doc_comment_delimiters()) {
+	for (const String &doc_comment : my_gdscript->get_doc_comment_delimiters()) {
 		String beg = doc_comment.get_slicec(' ', 0);
 		String end = doc_comment.get_slice_count(" ") > 1 ? doc_comment.get_slicec(' ', 1) : String();
 		add_color_region(ColorRegion::TYPE_COMMENT, beg, end, doc_comment_color, end.is_empty());
@@ -901,12 +901,12 @@ void MyGDScriptSyntaxHighlighter::_update_cache() {
 		}
 	}
 
-	function_definition_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/function_definition_color");
-	global_function_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/global_function_color");
-	node_path_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/node_path_color");
-	node_ref_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/node_reference_color");
-	annotation_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/annotation_color");
-	string_name_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/string_name_color");
+	function_definition_color = EDITOR_GET("text_editor/theme/highlighting/my_gdscript/function_definition_color");
+	global_function_color = EDITOR_GET("text_editor/theme/highlighting/my_gdscript/global_function_color");
+	node_path_color = EDITOR_GET("text_editor/theme/highlighting/my_gdscript/node_path_color");
+	node_ref_color = EDITOR_GET("text_editor/theme/highlighting/my_gdscript/node_reference_color");
+	annotation_color = EDITOR_GET("text_editor/theme/highlighting/my_gdscript/annotation_color");
+	string_name_color = EDITOR_GET("text_editor/theme/highlighting/my_gdscript/string_name_color");
 	type_color = EDITOR_GET("text_editor/theme/highlighting/base_type_color");
 	comment_marker_colors[COMMENT_MARKER_CRITICAL] = EDITOR_GET("text_editor/theme/highlighting/comment_markers/critical_color");
 	comment_marker_colors[COMMENT_MARKER_WARNING] = EDITOR_GET("text_editor/theme/highlighting/comment_markers/warning_color");

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_compiler.h                                                   */
+/*  my_gdscript_compiler.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,10 +30,10 @@
 
 #pragma once
 
-#include "gdscript.h"
-#include "gdscript_codegen.h"
-#include "gdscript_function.h"
-#include "gdscript_parser.h"
+#include "my_gdscript.h"
+#include "my_gdscript_codegen.h"
+#include "my_gdscript_function.h"
+#include "my_gdscript_parser.h"
 
 #include "core/templates/hash_set.h"
 
@@ -113,8 +113,8 @@ class MyGDScriptCompiler {
 					Ref<Script> scr = obj->get_script();
 					if (scr.is_valid()) {
 						type.script_type = scr.ptr();
-						Ref<MyGDScript> gdscript = scr;
-						if (gdscript.is_valid()) {
+						Ref<MyGDScript> my_gdscript = scr;
+						if (my_gdscript.is_valid()) {
 							type.kind = MyGDScriptDataType::GDSCRIPT;
 						} else {
 							type.kind = MyGDScriptDataType::SCRIPT;

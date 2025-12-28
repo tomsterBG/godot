@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_cache.h                                                      */
+/*  my_gdscript_cache.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript.h"
+#include "my_gdscript.h"
 
 #include "core/object/ref_counted.h"
 #include "core/os/safe_binary_mutex.h"
@@ -82,9 +82,9 @@ class MyGDScriptCache {
 	// String key is full path.
 	HashMap<String, MyGDScriptParserRef *> parser_map;
 	HashMap<String, Vector<ObjectID>> abandoned_parser_map;
-	HashMap<String, Ref<MyGDScript>> shallow_gdscript_cache;
-	HashMap<String, Ref<MyGDScript>> full_gdscript_cache;
-	HashMap<String, Ref<MyGDScript>> static_gdscript_cache;
+	HashMap<String, Ref<MyGDScript>> shallow_my_gdscript_cache;
+	HashMap<String, Ref<MyGDScript>> full_my_gdscript_cache;
+	HashMap<String, Ref<MyGDScript>> static_my_gdscript_cache;
 	HashMap<String, HashSet<String>> dependencies;
 	HashMap<String, HashSet<String>> parser_inverse_dependencies;
 
@@ -101,7 +101,7 @@ public:
 
 private:
 	static SafeBinaryMutex<BINARY_MUTEX_TAG> mutex;
-	friend SafeBinaryMutex<BINARY_MUTEX_TAG> &_get_gdscript_cache_mutex();
+	friend SafeBinaryMutex<BINARY_MUTEX_TAG> &_get_my_gdscript_cache_mutex();
 
 public:
 	static void move_script(const String &p_from, const String &p_to);

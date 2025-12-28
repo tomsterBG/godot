@@ -9,7 +9,7 @@
 		If you are looking for MyGDScript's built-in functions, see [@MyGDScript] instead.
 	</description>
 	<tutorials>
-		<link title="MyGDScript documentation index">$DOCS_URL/tutorials/scripting/gdscript/index.html</link>
+		<link title="MyGDScript documentation index">$DOCS_URL/tutorials/scripting/my_gdscript/index.html</link>
 	</tutorials>
 	<methods>
 		<method name="new" qualifiers="vararg">

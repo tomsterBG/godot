@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_lambda_callable.h                                            */
+/*  my_gdscript_lambda_callable.h                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript.h"
+#include "my_gdscript.h"
 
 #include "core/object/ref_counted.h"
 #include "core/templates/vector.h"

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_utility_callable.cpp                                         */
+/*  my_gdscript_utility_callable.cpp                                         */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_utility_callable.h"
+#include "my_gdscript_utility_callable.h"
 
 bool MyGDScriptUtilityCallable::compare_equal(const CallableCustom *p_a, const CallableCustom *p_b) {
 	return p_a->hash() == p_b->hash();
@@ -105,7 +105,7 @@ void MyGDScriptUtilityCallable::call(const Variant **p_arguments, int p_argcount
 			Variant::call_utility_function(function_name, &r_return_value, p_arguments, p_argcount, r_call_error);
 			break;
 		case TYPE_GDSCRIPT:
-			gdscript_function(&r_return_value, p_arguments, p_argcount, r_call_error);
+			my_gdscript_function(&r_return_value, p_arguments, p_argcount, r_call_error);
 			break;
 	}
 }
@@ -114,7 +114,7 @@ MyGDScriptUtilityCallable::MyGDScriptUtilityCallable(const StringName &p_functio
 	function_name = p_function_name;
 	if (MyGDScriptUtilityFunctions::function_exists(p_function_name)) {
 		type = TYPE_GDSCRIPT;
-		gdscript_function = MyGDScriptUtilityFunctions::get_function(p_function_name);
+		my_gdscript_function = MyGDScriptUtilityFunctions::get_function(p_function_name);
 	} else if (Variant::has_utility_function(p_function_name)) {
 		type = TYPE_GLOBAL;
 	} else {

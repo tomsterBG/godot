@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_test_runner_suite.h                                          */
+/*  my_gdscript_test_runner_suite.h                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript_test_runner.h"
+#include "my_gdscript_test_runner.h"
 
 #include "tests/test_macros.h"
 
@@ -42,7 +42,7 @@ TEST_SUITE("[Modules][MyGDScript]") {
 	TEST_CASE("Script compilation and runtime") {
 		bool print_filenames = OS::get_singleton()->get_cmdline_args().find("--print-filenames") != nullptr;
 		bool use_binary_tokens = OS::get_singleton()->get_cmdline_args().find("--use-binary-tokens") != nullptr;
-		MyGDScriptTestRunner runner("modules/gdscript/tests/scripts", true, print_filenames, use_binary_tokens);
+		MyGDScriptTestRunner runner("modules/my_gdscript/tests/scripts", true, print_filenames, use_binary_tokens);
 		int fail_count = runner.run_tests();
 		INFO("Make sure `*.out` files have expected results.");
 		REQUIRE_MESSAGE(fail_count == 0, "All MyGDScript tests should pass.");
@@ -52,8 +52,8 @@ TEST_SUITE("[Modules][MyGDScript]") {
 
 TEST_CASE("[Modules][MyGDScript] Load source code dynamically and run it") {
 	MyGDScriptLanguage::get_singleton()->init();
-	Ref<MyGDScript> gdscript = memnew(MyGDScript);
-	gdscript->set_source_code(R"(
+	Ref<MyGDScript> my_gdscript = memnew(MyGDScript);
+	my_gdscript->set_source_code(R"(
 extends RefCounted
 
 func _init():
@@ -62,13 +62,13 @@ func _init():
 	// A spurious `Condition "err" is true` message is printed (despite parsing being successful and returning `OK`).
 	// Silence it.
 	ERR_PRINT_OFF;
-	const Error error = gdscript->reload();
+	const Error error = my_gdscript->reload();
 	ERR_PRINT_ON;
 	CHECK_MESSAGE(error == OK, "The script should parse successfully.");
 
 	// Run the script by assigning it to a reference-counted object.
 	Ref<RefCounted> ref_counted = memnew(RefCounted);
-	ref_counted->set_script(gdscript);
+	ref_counted->set_script(my_gdscript);
 	CHECK_MESSAGE(int(ref_counted->get_meta("result")) == 42, "The script should assign object metadata successfully.");
 }
 

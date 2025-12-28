@@ -11,7 +11,7 @@ config/name="MyGDScript Integration Test Suite"
 
 [debug]
 
-settings/gdscript/always_track_call_stacks=true
+settings/my_gdscript/always_track_call_stacks=true
 
 [input]
 

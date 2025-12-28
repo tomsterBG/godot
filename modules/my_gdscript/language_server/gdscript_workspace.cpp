@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_workspace.cpp                                                */
+/*  my_gdscript_workspace.cpp                                                */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,11 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_workspace.h"
+#include "my_gdscript_workspace.h"
 
-#include "../gdscript.h"
-#include "../gdscript_parser.h"
-#include "gdscript_language_protocol.h"
+#include "../my_gdscript.h"
+#include "../my_gdscript_parser.h"
+#include "my_gdscript_language_protocol.h"
 
 #include "core/config/project_settings.h"
 #include "core/object/script_language.h"

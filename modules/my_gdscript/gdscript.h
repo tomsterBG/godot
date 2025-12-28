@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript.h                                                            */
+/*  my_gdscript.h                                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript_function.h"
+#include "my_gdscript_function.h"
 
 #include "core/debugger/engine_debugger.h"
 #include "core/debugger/script_debugger.h"
@@ -217,7 +217,7 @@ private:
 	void _get_script_method_list(List<MethodInfo> *r_list, bool p_include_base) const;
 	void _get_script_signal_list(List<MethodInfo> *r_list, bool p_include_base) const;
 
-	MyGDScript *_get_gdscript_from_variant(const Variant &p_variant);
+	MyGDScript *_get_my_gdscript_from_variant(const Variant &p_variant);
 	void _collect_function_dependencies(MyGDScriptFunction *p_func, RBSet<MyGDScript *> &p_dependencies, const MyGDScript *p_except);
 	void _collect_dependencies(RBSet<MyGDScript *> &p_dependencies, const MyGDScript *p_except);
 

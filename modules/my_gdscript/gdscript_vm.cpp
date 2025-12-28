@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_vm.cpp                                                       */
+/*  my_gdscript_vm.cpp                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,9 +28,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript.h"
-#include "gdscript_function.h"
-#include "gdscript_lambda_callable.h"
+#include "my_gdscript.h"
+#include "my_gdscript_function.h"
+#include "my_gdscript_lambda_callable.h"
 
 #include "core/os/os.h"
 
@@ -1338,13 +1338,13 @@ Variant MyGDScriptFunction::call(MyGDScriptInstance *p_instance, const Variant *
 				GET_VARIANT_PTR(value, 0);
 
 				GET_VARIANT_PTR(_class, 1);
-				MyGDScript *gdscript = Object::cast_to<MyGDScript>(_class->operator Object *());
-				GD_ERR_BREAK(!gdscript);
+				MyGDScript *my_gdscript = Object::cast_to<MyGDScript>(_class->operator Object *());
+				GD_ERR_BREAK(!my_gdscript);
 
 				int index = _code_ptr[ip + 3];
-				GD_ERR_BREAK(index < 0 || index >= gdscript->static_variables.size());
+				GD_ERR_BREAK(index < 0 || index >= my_gdscript->static_variables.size());
 
-				gdscript->static_variables.write[index] = *value;
+				my_gdscript->static_variables.write[index] = *value;
 
 				ip += 4;
 			}
@@ -1356,13 +1356,13 @@ Variant MyGDScriptFunction::call(MyGDScriptInstance *p_instance, const Variant *
 				GET_VARIANT_PTR(target, 0);
 
 				GET_VARIANT_PTR(_class, 1);
-				MyGDScript *gdscript = Object::cast_to<MyGDScript>(_class->operator Object *());
-				GD_ERR_BREAK(!gdscript);
+				MyGDScript *my_gdscript = Object::cast_to<MyGDScript>(_class->operator Object *());
+				GD_ERR_BREAK(!my_gdscript);
 
 				int index = _code_ptr[ip + 3];
-				GD_ERR_BREAK(index < 0 || index >= gdscript->static_variables.size());
+				GD_ERR_BREAK(index < 0 || index >= my_gdscript->static_variables.size());
 
-				*target = gdscript->static_variables[index];
+				*target = my_gdscript->static_variables[index];
 
 				ip += 4;
 			}

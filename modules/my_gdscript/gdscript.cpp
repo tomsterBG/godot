@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript.cpp                                                          */
+/*  my_gdscript.cpp                                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,22 +28,22 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript.h"
+#include "my_gdscript.h"
 
-#include "gdscript_analyzer.h"
-#include "gdscript_cache.h"
-#include "gdscript_compiler.h"
-#include "gdscript_parser.h"
-#include "gdscript_rpc_callable.h"
-#include "gdscript_tokenizer_buffer.h"
-#include "gdscript_warning.h"
+#include "my_gdscript_analyzer.h"
+#include "my_gdscript_cache.h"
+#include "my_gdscript_compiler.h"
+#include "my_gdscript_parser.h"
+#include "my_gdscript_rpc_callable.h"
+#include "my_gdscript_tokenizer_buffer.h"
+#include "my_gdscript_warning.h"
 
 #ifdef TOOLS_ENABLED
-#include "editor/gdscript_docgen.h"
+#include "editor/my_gdscript_docgen.h"
 #endif
 
 #ifdef TESTS_ENABLED
-#include "tests/gdscript_test_runner.h"
+#include "tests/my_gdscript_test_runner.h"
 #endif
 
 #include "core/config/engine.h"
@@ -788,7 +788,7 @@ Error MyGDScript::reload(bool p_keep_state) {
 		if (!source_path.is_empty()) {
 			if (MyGDScriptCache::get_cached_script(source_path).is_null()) {
 				MutexLock lock(MyGDScriptCache::singleton->mutex);
-				MyGDScriptCache::singleton->shallow_gdscript_cache[source_path] = Ref<MyGDScript>(this);
+				MyGDScriptCache::singleton->shallow_my_gdscript_cache[source_path] = Ref<MyGDScript>(this);
 			}
 			if (MyGDScriptCache::has_parser(source_path)) {
 				Error err = OK;
@@ -1103,7 +1103,7 @@ String MyGDScript::get_script_path() const {
 }
 
 Error MyGDScript::load_source_code(const String &p_path) {
-	if (p_path.is_empty() || p_path.begins_with("gdscript://") || ResourceLoader::get_resource_type(p_path.get_slice("::", 0)) == "PackedScene") {
+	if (p_path.is_empty() || p_path.begins_with("my_gdscript://") || ResourceLoader::get_resource_type(p_path.get_slice("::", 0)) == "PackedScene") {
 		return OK;
 	}
 
@@ -1355,7 +1355,7 @@ void MyGDScript::get_script_signal_list(List<MethodInfo> *r_signals) const {
 	_get_script_signal_list(r_signals, true);
 }
 
-MyGDScript *MyGDScript::_get_gdscript_from_variant(const Variant &p_variant) {
+MyGDScript *MyGDScript::_get_my_gdscript_from_variant(const Variant &p_variant) {
 	Object *obj = p_variant;
 	if (obj == nullptr || obj->get_instance_id().is_null()) {
 		return nullptr;
@@ -1371,7 +1371,7 @@ void MyGDScript::_collect_function_dependencies(MyGDScriptFunction *p_func, RBSe
 		_collect_function_dependencies(lambda, p_dependencies, p_except);
 	}
 	for (const Variant &V : p_func->constants) {
-		MyGDScript *scr = _get_gdscript_from_variant(V);
+		MyGDScript *scr = _get_my_gdscript_from_variant(V);
 		if (scr != nullptr && scr != p_except) {
 			scr->_collect_dependencies(p_dependencies, p_except);
 		}
@@ -1409,7 +1409,7 @@ void MyGDScript::_collect_dependencies(RBSet<MyGDScript *> &p_dependencies, cons
 	}
 
 	for (const KeyValue<StringName, Variant> &E : constants) {
-		MyGDScript *scr = _get_gdscript_from_variant(E.value);
+		MyGDScript *scr = _get_my_gdscript_from_variant(E.value);
 		if (scr != nullptr && scr != p_except) {
 			scr->_collect_dependencies(p_dependencies, p_except);
 		}
@@ -1424,7 +1424,7 @@ MyGDScript::MyGDScript() :
 		MyGDScriptLanguage::get_singleton()->script_list.add(&script_list);
 	}
 
-	path = vformat("gdscript://%d.gd", get_instance_id());
+	path = vformat("my_gdscript://%d.gd", get_instance_id());
 }
 
 void MyGDScript::_save_orphaned_subclasses(ClearData *p_clear_data) {
@@ -1449,7 +1449,7 @@ void MyGDScript::_save_orphaned_subclasses(ClearData *p_clear_data) {
 	subclasses.clear();
 	// subclasses are also held by constants, clear those as well
 	for (KeyValue<StringName, Variant> &E : constants) {
-		MyGDScript *gdscr = _get_gdscript_from_variant(E.value);
+		MyGDScript *gdscr = _get_my_gdscript_from_variant(E.value);
 		if (gdscr != nullptr) {
 			p_clear_data->scripts.insert(gdscr);
 		}
@@ -1471,12 +1471,12 @@ void MyGDScript::_save_orphaned_subclasses(ClearData *p_clear_data) {
 #ifdef DEBUG_ENABLED
 String MyGDScript::debug_get_script_name(const Ref<Script> &p_script) {
 	if (p_script.is_valid()) {
-		Ref<MyGDScript> gdscript = p_script;
-		if (gdscript.is_valid()) {
-			if (gdscript->get_local_name() != StringName()) {
-				return gdscript->get_local_name();
+		Ref<MyGDScript> my_gdscript = p_script;
+		if (my_gdscript.is_valid()) {
+			if (my_gdscript->get_local_name() != StringName()) {
+				return my_gdscript->get_local_name();
 			}
-			return gdscript->get_fully_qualified_name().get_file();
+			return my_gdscript->get_fully_qualified_name().get_file();
 		}
 
 		if (p_script->get_global_name() != StringName()) {
@@ -2547,7 +2547,7 @@ void MyGDScriptLanguage::reload_all_scripts() {
 		while (elem) {
 			if (elem->self()->get_path().is_resource_file()) {
 				print_verbose("MyGDScript: Found: " + elem->self()->get_path());
-				scripts.push_back(Ref<MyGDScript>(elem->self())); //cast to gdscript to avoid being erased by accident
+				scripts.push_back(Ref<MyGDScript>(elem->self())); //cast to my_gdscript to avoid being erased by accident
 			}
 			elem = elem->next();
 		}
@@ -2581,7 +2581,7 @@ void MyGDScriptLanguage::reload_scripts(const Array &p_scripts, bool p_soft_relo
 		while (elem) {
 			// Scripts will reload all subclasses, so only reload root scripts.
 			if (elem->self()->is_root_script() && !elem->self()->get_path().is_empty()) {
-				scripts.push_back(Ref<MyGDScript>(elem->self())); //cast to gdscript to avoid being erased by accident
+				scripts.push_back(Ref<MyGDScript>(elem->self())); //cast to my_gdscript to avoid being erased by accident
 			}
 			elem = elem->next();
 		}
@@ -2961,17 +2961,17 @@ MyGDScriptLanguage::MyGDScriptLanguage() {
 	script_frame_time = 0;
 #endif
 
-	_debug_max_call_stack = GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "debug/settings/gdscript/max_call_stack", PROPERTY_HINT_RANGE, "512," + itos(MyGDScriptFunction::MAX_CALL_DEPTH - 1) + ",1"), 1024);
-	track_call_stack = GLOBAL_DEF_RST("debug/settings/gdscript/always_track_call_stacks", false);
-	track_locals = GLOBAL_DEF_RST("debug/settings/gdscript/always_track_local_variables", false);
+	_debug_max_call_stack = GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "debug/settings/my_gdscript/max_call_stack", PROPERTY_HINT_RANGE, "512," + itos(MyGDScriptFunction::MAX_CALL_DEPTH - 1) + ",1"), 1024);
+	track_call_stack = GLOBAL_DEF_RST("debug/settings/my_gdscript/always_track_call_stacks", false);
+	track_locals = GLOBAL_DEF_RST("debug/settings/my_gdscript/always_track_local_variables", false);
 
 #ifdef DEBUG_ENABLED
 	track_call_stack = true;
 	track_locals = track_locals || EngineDebugger::is_active();
 
-	GLOBAL_DEF("debug/gdscript/warnings/enable", true);
-	GLOBAL_DEF("debug/gdscript/warnings/exclude_addons", true);
-	GLOBAL_DEF("debug/gdscript/warnings/renamed_in_godot_4_hint", true);
+	GLOBAL_DEF("debug/my_gdscript/warnings/enable", true);
+	GLOBAL_DEF("debug/my_gdscript/warnings/exclude_addons", true);
+	GLOBAL_DEF("debug/my_gdscript/warnings/renamed_in_godot_4_hint", true);
 	for (int i = 0; i < (int)MyGDScriptWarning::WARNING_MAX; i++) {
 		MyGDScriptWarning::Code code = (MyGDScriptWarning::Code)i;
 		Variant default_enabled = MyGDScriptWarning::get_default_value(code);
@@ -2980,9 +2980,9 @@ MyGDScriptLanguage::MyGDScriptLanguage() {
 	}
 
 #ifndef DISABLE_DEPRECATED
-	ProjectSettings::get_singleton()->set_as_internal("debug/gdscript/warnings/property_used_as_function", true);
-	ProjectSettings::get_singleton()->set_as_internal("debug/gdscript/warnings/constant_used_as_function", true);
-	ProjectSettings::get_singleton()->set_as_internal("debug/gdscript/warnings/function_used_as_property", true);
+	ProjectSettings::get_singleton()->set_as_internal("debug/my_gdscript/warnings/property_used_as_function", true);
+	ProjectSettings::get_singleton()->set_as_internal("debug/my_gdscript/warnings/constant_used_as_function", true);
+	ProjectSettings::get_singleton()->set_as_internal("debug/my_gdscript/warnings/function_used_as_property", true);
 #endif
 #endif // DEBUG_ENABLED
 }

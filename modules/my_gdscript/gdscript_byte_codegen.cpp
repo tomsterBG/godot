@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_byte_codegen.cpp                                             */
+/*  my_gdscript_byte_codegen.cpp                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_byte_codegen.h"
+#include "my_gdscript_byte_codegen.h"
 
 #include "core/debugger/engine_debugger.h"
 
@@ -1119,7 +1119,7 @@ void MyGDScriptByteCodeGenerator::write_call_async(const Address &p_target, cons
 	ct.cleanup();
 }
 
-void MyGDScriptByteCodeGenerator::write_call_gdscript_utility(const Address &p_target, const StringName &p_function, const Vector<Address> &p_arguments) {
+void MyGDScriptByteCodeGenerator::write_call_my_gdscript_utility(const Address &p_target, const StringName &p_function, const Vector<Address> &p_arguments) {
 	append_opcode_and_argcount(MyGDScriptFunction::OPCODE_CALL_GDSCRIPT_UTILITY, 1 + p_arguments.size());
 	MyGDScriptUtilityFunctions::FunctionPtr gds_function = MyGDScriptUtilityFunctions::get_function(p_function);
 	for (int i = 0; i < p_arguments.size(); i++) {

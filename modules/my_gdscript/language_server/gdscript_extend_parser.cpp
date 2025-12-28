@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_extend_parser.cpp                                            */
+/*  my_gdscript_extend_parser.cpp                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,13 +28,13 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_extend_parser.h"
+#include "my_gdscript_extend_parser.h"
 
-#include "../gdscript.h"
-#include "../gdscript_analyzer.h"
+#include "../my_gdscript.h"
+#include "../my_gdscript_analyzer.h"
 #include "editor/settings/editor_settings.h"
-#include "gdscript_language_protocol.h"
-#include "gdscript_workspace.h"
+#include "my_gdscript_language_protocol.h"
+#include "my_gdscript_workspace.h"
 
 int get_indent_size() {
 	if (EditorSettings::get_singleton()) {
@@ -134,7 +134,7 @@ void ExtendMyGDScriptParser::update_diagnostics() {
 		LSP::Diagnostic diagnostic;
 		diagnostic.severity = LSP::DiagnosticSeverity::Error;
 		diagnostic.message = error.message;
-		diagnostic.source = "gdscript";
+		diagnostic.source = "my_gdscript";
 		diagnostic.code = -1;
 		LSP::Range range;
 		LSP::Position pos;
@@ -155,7 +155,7 @@ void ExtendMyGDScriptParser::update_diagnostics() {
 		LSP::Diagnostic diagnostic;
 		diagnostic.severity = LSP::DiagnosticSeverity::Warning;
 		diagnostic.message = "(" + warning.get_name() + "): " + warning.get_message();
-		diagnostic.source = "gdscript";
+		diagnostic.source = "my_gdscript";
 		diagnostic.code = warning.code;
 		LSP::Range range;
 		LSP::Position pos;
@@ -710,7 +710,7 @@ String ExtendMyGDScriptParser::get_identifier_under_position(const LSP::Position
 
 	// `p_position` cursor is BETWEEN chars, not ON chars.
 	// ->
-	// ```gdscript
+	// ```my_gdscript
 	// var member| := some_func|(some_variable|)
 	//           ^             ^              ^
 	//           |             |              | cursor on `some_variable, position on `)`

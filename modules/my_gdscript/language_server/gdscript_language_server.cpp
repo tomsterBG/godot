@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_language_server.cpp                                          */
+/*  my_gdscript_language_server.cpp                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_language_server.h"
+#include "my_gdscript_language_server.h"
 
 #include "core/os/os.h"
 #include "editor/editor_log.h"

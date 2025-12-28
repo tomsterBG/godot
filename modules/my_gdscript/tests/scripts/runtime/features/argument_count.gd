@@ -96,7 +96,7 @@ func test():
     print(global_callable_2.get_argument_count()) # Should print 3.
 
     # Test MyGDScript methods.
-    var gdscript_callable_1 = char
-    print(gdscript_callable_1.get_argument_count()) # Should print 1.
-    var gdscript_callable_2 = is_instance_of
-    print(gdscript_callable_2.get_argument_count()) # Should print 2.
+    var my_gdscript_callable_1 = char
+    print(my_gdscript_callable_1.get_argument_count()) # Should print 1.
+    var my_gdscript_callable_2 = is_instance_of
+    print(my_gdscript_callable_2.get_argument_count()) # Should print 2.

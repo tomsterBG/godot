@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_language_protocol.h                                          */
+/*  my_gdscript_language_protocol.h                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include "gdscript_text_document.h"
-#include "gdscript_workspace.h"
+#include "my_gdscript_text_document.h"
+#include "my_gdscript_workspace.h"
 
 #include "core/io/stream_peer_tcp.h"
 #include "core/io/tcp_server.h"

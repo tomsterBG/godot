@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_parser.h                                                     */
+/*  my_gdscript_parser.h                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,11 +30,11 @@
 
 #pragma once
 
-#include "gdscript_cache.h"
-#include "gdscript_tokenizer.h"
+#include "my_gdscript_cache.h"
+#include "my_gdscript_tokenizer.h"
 
 #ifdef DEBUG_ENABLED
-#include "gdscript_warning.h"
+#include "my_gdscript_warning.h"
 #endif
 
 #include "core/io/resource.h"

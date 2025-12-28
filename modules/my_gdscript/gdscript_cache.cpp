@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_cache.cpp                                                    */
+/*  my_gdscript_cache.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,12 +28,12 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_cache.h"
+#include "my_gdscript_cache.h"
 
-#include "gdscript.h"
-#include "gdscript_analyzer.h"
-#include "gdscript_compiler.h"
-#include "gdscript_parser.h"
+#include "my_gdscript.h"
+#include "my_gdscript_analyzer.h"
+#include "my_gdscript_compiler.h"
+#include "my_gdscript_parser.h"
 
 #include "core/io/file_access.h"
 #include "core/templates/vector.h"
@@ -144,12 +144,12 @@ MyGDScriptParserRef::~MyGDScriptParserRef() {
 
 MyGDScriptCache *MyGDScriptCache::singleton = nullptr;
 
-SafeBinaryMutex<MyGDScriptCache::BINARY_MUTEX_TAG> &_get_gdscript_cache_mutex() {
+SafeBinaryMutex<MyGDScriptCache::BINARY_MUTEX_TAG> &_get_my_gdscript_cache_mutex() {
 	return MyGDScriptCache::mutex;
 }
 
 template <>
-thread_local SafeBinaryMutex<MyGDScriptCache::BINARY_MUTEX_TAG>::TLSData SafeBinaryMutex<MyGDScriptCache::BINARY_MUTEX_TAG>::tls_data(_get_gdscript_cache_mutex());
+thread_local SafeBinaryMutex<MyGDScriptCache::BINARY_MUTEX_TAG>::TLSData SafeBinaryMutex<MyGDScriptCache::BINARY_MUTEX_TAG>::tls_data(_get_my_gdscript_cache_mutex());
 SafeBinaryMutex<MyGDScriptCache::BINARY_MUTEX_TAG> MyGDScriptCache::mutex;
 
 void MyGDScriptCache::move_script(const String &p_from, const String &p_to) {
@@ -165,15 +165,15 @@ void MyGDScriptCache::move_script(const String &p_from, const String &p_to) {
 
 	remove_parser(p_from);
 
-	if (singleton->shallow_gdscript_cache.has(p_from) && !p_from.is_empty()) {
-		singleton->shallow_gdscript_cache[p_to] = singleton->shallow_gdscript_cache[p_from];
+	if (singleton->shallow_my_gdscript_cache.has(p_from) && !p_from.is_empty()) {
+		singleton->shallow_my_gdscript_cache[p_to] = singleton->shallow_my_gdscript_cache[p_from];
 	}
-	singleton->shallow_gdscript_cache.erase(p_from);
+	singleton->shallow_my_gdscript_cache.erase(p_from);
 
-	if (singleton->full_gdscript_cache.has(p_from) && !p_from.is_empty()) {
-		singleton->full_gdscript_cache[p_to] = singleton->full_gdscript_cache[p_from];
+	if (singleton->full_my_gdscript_cache.has(p_from) && !p_from.is_empty()) {
+		singleton->full_my_gdscript_cache[p_to] = singleton->full_my_gdscript_cache[p_from];
 	}
-	singleton->full_gdscript_cache.erase(p_from);
+	singleton->full_my_gdscript_cache.erase(p_from);
 }
 
 void MyGDScriptCache::remove_script(const String &p_path) {
@@ -205,8 +205,8 @@ void MyGDScriptCache::remove_script(const String &p_path) {
 	remove_parser(p_path);
 
 	singleton->dependencies.erase(p_path);
-	singleton->shallow_gdscript_cache.erase(p_path);
-	singleton->full_gdscript_cache.erase(p_path);
+	singleton->shallow_my_gdscript_cache.erase(p_path);
+	singleton->full_my_gdscript_cache.erase(p_path);
 }
 
 Ref<MyGDScriptParserRef> MyGDScriptCache::get_parser(const String &p_path, MyGDScriptParserRef::Status p_status, Error &r_error, const String &p_owner) {
@@ -301,11 +301,11 @@ Ref<MyGDScript> MyGDScriptCache::get_shallow_script(const String &p_path, Error 
 	if (!p_owner.is_empty()) {
 		singleton->dependencies[p_owner].insert(p_path);
 	}
-	if (singleton->full_gdscript_cache.has(p_path)) {
-		return singleton->full_gdscript_cache[p_path];
+	if (singleton->full_my_gdscript_cache.has(p_path)) {
+		return singleton->full_my_gdscript_cache[p_path];
 	}
-	if (singleton->shallow_gdscript_cache.has(p_path)) {
-		return singleton->shallow_gdscript_cache[p_path];
+	if (singleton->shallow_my_gdscript_cache.has(p_path)) {
+		return singleton->shallow_my_gdscript_cache[p_path];
 	}
 
 	const String remapped_path = ResourceLoader::path_remap(p_path);
@@ -332,7 +332,7 @@ Ref<MyGDScript> MyGDScriptCache::get_shallow_script(const String &p_path, Error 
 		MyGDScriptCompiler::make_scripts(script.ptr(), parser_ref->get_parser()->get_tree(), true);
 	}
 
-	singleton->shallow_gdscript_cache[p_path] = script;
+	singleton->shallow_my_gdscript_cache[p_path] = script;
 
 	return script;
 }
@@ -346,8 +346,8 @@ Ref<MyGDScript> MyGDScriptCache::get_full_script(const String &p_path, Error &r_
 
 	Ref<MyGDScript> script;
 	r_error = OK;
-	if (singleton->full_gdscript_cache.has(p_path)) {
-		script = singleton->full_gdscript_cache[p_path];
+	if (singleton->full_my_gdscript_cache.has(p_path)) {
+		script = singleton->full_my_gdscript_cache[p_path];
 		if (!p_update_from_disk) {
 			return script;
 		}
@@ -388,8 +388,8 @@ Ref<MyGDScript> MyGDScriptCache::get_full_script(const String &p_path, Error &r_
 		return script;
 	}
 
-	singleton->full_gdscript_cache[p_path] = script;
-	singleton->shallow_gdscript_cache.erase(p_path);
+	singleton->full_my_gdscript_cache[p_path] = script;
+	singleton->shallow_my_gdscript_cache.erase(p_path);
 
 	return script;
 }
@@ -397,12 +397,12 @@ Ref<MyGDScript> MyGDScriptCache::get_full_script(const String &p_path, Error &r_
 Ref<MyGDScript> MyGDScriptCache::get_cached_script(const String &p_path) {
 	MutexLock lock(singleton->mutex);
 
-	if (singleton->full_gdscript_cache.has(p_path)) {
-		return singleton->full_gdscript_cache[p_path];
+	if (singleton->full_my_gdscript_cache.has(p_path)) {
+		return singleton->full_my_gdscript_cache[p_path];
 	}
 
-	if (singleton->shallow_gdscript_cache.has(p_path)) {
-		return singleton->shallow_gdscript_cache[p_path];
+	if (singleton->shallow_my_gdscript_cache.has(p_path)) {
+		return singleton->shallow_my_gdscript_cache[p_path];
 	}
 
 	return Ref<MyGDScript>();
@@ -413,8 +413,8 @@ Error MyGDScriptCache::finish_compiling(const String &p_owner) {
 
 	// Mark this as compiled.
 	Ref<MyGDScript> script = get_cached_script(p_owner);
-	singleton->full_gdscript_cache[p_owner] = script;
-	singleton->shallow_gdscript_cache.erase(p_owner);
+	singleton->full_my_gdscript_cache[p_owner] = script;
+	singleton->shallow_my_gdscript_cache.erase(p_owner);
 
 	HashSet<String> depends = singleton->dependencies[p_owner];
 
@@ -437,11 +437,11 @@ Error MyGDScriptCache::finish_compiling(const String &p_owner) {
 void MyGDScriptCache::add_static_script(Ref<MyGDScript> p_script) {
 	ERR_FAIL_COND_MSG(p_script.is_null(), "Trying to cache empty script as static.");
 	ERR_FAIL_COND_MSG(!p_script->is_valid(), "Trying to cache non-compiled script as static.");
-	singleton->static_gdscript_cache[p_script->get_fully_qualified_name()] = p_script;
+	singleton->static_my_gdscript_cache[p_script->get_fully_qualified_name()] = p_script;
 }
 
 void MyGDScriptCache::remove_static_script(const String &p_fqcn) {
-	singleton->static_gdscript_cache.erase(p_fqcn);
+	singleton->static_my_gdscript_cache.erase(p_fqcn);
 }
 
 void MyGDScriptCache::clear() {
@@ -483,9 +483,9 @@ void MyGDScriptCache::clear() {
 	}
 
 	parser_map_refs.clear();
-	singleton->shallow_gdscript_cache.clear();
-	singleton->full_gdscript_cache.clear();
-	singleton->static_gdscript_cache.clear();
+	singleton->shallow_my_gdscript_cache.clear();
+	singleton->full_my_gdscript_cache.clear();
+	singleton->static_my_gdscript_cache.clear();
 }
 
 MyGDScriptCache::MyGDScriptCache() {

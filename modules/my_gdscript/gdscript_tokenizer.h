@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_tokenizer.h                                                  */
+/*  my_gdscript_tokenizer.h                                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -45,7 +45,7 @@ public:
 	};
 
 	struct Token {
-		// If this enum changes, please increment the TOKENIZER_VERSION in gdscript_tokenizer_buffer.h
+		// If this enum changes, please increment the TOKENIZER_VERSION in my_gdscript_tokenizer_buffer.h
 		enum Type {
 			EMPTY,
 			// Basic

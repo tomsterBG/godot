@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_text_document.cpp                                            */
+/*  my_gdscript_text_document.cpp                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,11 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_text_document.h"
+#include "my_gdscript_text_document.h"
 
-#include "../gdscript.h"
-#include "gdscript_extend_parser.h"
-#include "gdscript_language_protocol.h"
+#include "../my_gdscript.h"
+#include "my_gdscript_extend_parser.h"
+#include "my_gdscript_language_protocol.h"
 
 #include "editor/script/script_text_editor.h"
 #include "editor/settings/editor_settings.h"
@@ -135,7 +135,7 @@ LSP::TextDocumentItem MyGDScriptTextDocument::load_document_item(const Variant &
 
 void MyGDScriptTextDocument::notify_client_show_symbol(const LSP::DocumentSymbol *symbol) {
 	ERR_FAIL_NULL(symbol);
-	MyGDScriptLanguageProtocol::get_singleton()->notify_client("gdscript/show_native_symbol", symbol->to_json(true));
+	MyGDScriptLanguageProtocol::get_singleton()->notify_client("my_gdscript/show_native_symbol", symbol->to_json(true));
 }
 
 void MyGDScriptTextDocument::initialize() {

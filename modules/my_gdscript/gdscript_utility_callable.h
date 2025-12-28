@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_utility_callable.h                                           */
+/*  my_gdscript_utility_callable.h                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript_utility_functions.h"
+#include "my_gdscript_utility_functions.h"
 
 #include "core/variant/callable.h"
 
@@ -42,7 +42,7 @@ class MyGDScriptUtilityCallable : public CallableCustom {
 		TYPE_GDSCRIPT,
 	};
 	Type type = TYPE_INVALID;
-	MyGDScriptUtilityFunctions::FunctionPtr gdscript_function = nullptr;
+	MyGDScriptUtilityFunctions::FunctionPtr my_gdscript_function = nullptr;
 	uint32_t h = 0;
 
 	static bool compare_equal(const CallableCustom *p_a, const CallableCustom *p_b);

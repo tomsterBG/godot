@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_test_runner.h                                                */
+/*  my_gdscript_test_runner.h                                                */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "../gdscript.h"
+#include "../my_gdscript.h"
 
 #include "core/error/error_macros.h"
 #include "core/string/print_string.h"

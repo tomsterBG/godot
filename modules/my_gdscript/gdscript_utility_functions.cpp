@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_utility_functions.cpp                                        */
+/*  my_gdscript_utility_functions.cpp                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,9 +28,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_utility_functions.h"
+#include "my_gdscript_utility_functions.h"
 
-#include "gdscript.h"
+#include "my_gdscript.h"
 
 #include "core/io/resource_loader.h"
 #include "core/object/class_db.h"

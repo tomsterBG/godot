@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_analyzer.h                                                   */
+/*  my_gdscript_analyzer.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include "gdscript_cache.h"
-#include "gdscript_parser.h"
+#include "my_gdscript_cache.h"
+#include "my_gdscript_parser.h"
 
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_lambda_callable.cpp                                          */
+/*  my_gdscript_lambda_callable.cpp                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,9 +28,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_lambda_callable.h"
+#include "my_gdscript_lambda_callable.h"
 
-#include "gdscript.h"
+#include "my_gdscript.h"
 
 #include "core/templates/hashfuncs.h"
 

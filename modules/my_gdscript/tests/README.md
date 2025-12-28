@@ -4,7 +4,7 @@ The `scripts/` folder contains integration tests in the form of MyGDScript files
 and output files.
 
 See the
-[Integration tests for MyGDScript documentation](https://docs.godotengine.org/en/latest/engine_details/architecture/unit_testing.html#integration-tests-for-gdscript)
+[Integration tests for MyGDScript documentation](https://docs.godotengine.org/en/latest/engine_details/architecture/unit_testing.html#integration-tests-for-my_gdscript)
 for information about creating and running MyGDScript integration tests.
 
 # MyGDScript Autocompletion tests

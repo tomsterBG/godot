@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_translation_parser_plugin.h                                  */
+/*  my_gdscript_translation_parser_plugin.h                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include "../gdscript_parser.h"
-#include "../gdscript_tokenizer.h"
+#include "../my_gdscript_parser.h"
+#include "../my_gdscript_tokenizer.h"
 
 #include "core/templates/hash_map.h"
 #include "core/templates/hash_set.h"

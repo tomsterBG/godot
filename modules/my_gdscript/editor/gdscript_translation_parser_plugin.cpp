@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_translation_parser_plugin.cpp                                */
+/*  my_gdscript_translation_parser_plugin.cpp                                */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,10 +28,10 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_translation_parser_plugin.h"
+#include "my_gdscript_translation_parser_plugin.h"
 
-#include "../gdscript.h"
-#include "../gdscript_analyzer.h"
+#include "../my_gdscript.h"
+#include "../my_gdscript_analyzer.h"
 
 #include "core/io/resource_loader.h"
 
@@ -51,8 +51,8 @@ Error MyGDScriptEditorTranslationParserPlugin::parse_file(const String &p_path, 
 
 	translations = r_translations;
 
-	Ref<MyGDScript> gdscript = loaded_res;
-	String source_code = gdscript->get_source_code();
+	Ref<MyGDScript> my_gdscript = loaded_res;
+	String source_code = my_gdscript->get_source_code();
 
 	MyGDScriptParser parser;
 	err = parser.parse(source_code, p_path, false);

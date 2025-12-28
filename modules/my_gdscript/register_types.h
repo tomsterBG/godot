@@ -32,5 +32,5 @@
 
 #include "modules/register_module_types.h"
 
-void initialize_gdscript_module(ModuleInitializationLevel p_level);
-void uninitialize_gdscript_module(ModuleInitializationLevel p_level);
+void initialize_my_gdscript_module(ModuleInitializationLevel p_level);
+void uninitialize_my_gdscript_module(ModuleInitializationLevel p_level);

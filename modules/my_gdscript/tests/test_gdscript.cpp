@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  test_gdscript.cpp                                                     */
+/*  test_my_gdscript.cpp                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,13 +28,13 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "test_gdscript.h"
+#include "test_my_gdscript.h"
 
-#include "../gdscript_analyzer.h"
-#include "../gdscript_compiler.h"
-#include "../gdscript_parser.h"
-#include "../gdscript_tokenizer.h"
-#include "../gdscript_tokenizer_buffer.h"
+#include "../my_gdscript_analyzer.h"
+#include "../my_gdscript_compiler.h"
+#include "../my_gdscript_parser.h"
+#include "../my_gdscript_tokenizer.h"
+#include "../my_gdscript_tokenizer_buffer.h"
 
 #include "core/config/project_settings.h"
 #include "core/io/file_access.h"

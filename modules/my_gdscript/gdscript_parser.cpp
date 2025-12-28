@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_parser.cpp                                                   */
+/*  my_gdscript_parser.cpp                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,10 +28,10 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "gdscript_parser.h"
+#include "my_gdscript_parser.h"
 
-#include "gdscript.h"
-#include "gdscript_tokenizer_buffer.h"
+#include "my_gdscript.h"
+#include "my_gdscript_tokenizer_buffer.h"
 
 #include "core/config/project_settings.h"
 #include "core/io/resource_loader.h"
@@ -137,7 +137,7 @@ MyGDScriptParser::MyGDScriptParser() {
 	}
 
 #ifdef DEBUG_ENABLED
-	is_ignoring_warnings = !(bool)GLOBAL_GET("debug/gdscript/warnings/enable");
+	is_ignoring_warnings = !(bool)GLOBAL_GET("debug/my_gdscript/warnings/enable");
 	for (int i = 0; i < MyGDScriptWarning::WARNING_MAX; i++) {
 		warning_ignore_start_lines[i] = INT_MAX;
 	}
@@ -198,7 +198,7 @@ void MyGDScriptParser::push_warning(const Node *p_source, MyGDScriptWarning::Cod
 	if (is_ignoring_warnings) {
 		return;
 	}
-	if (GLOBAL_GET_CACHED(bool, "debug/gdscript/warnings/exclude_addons") && script_path.begins_with("res://addons/")) {
+	if (GLOBAL_GET_CACHED(bool, "debug/my_gdscript/warnings/exclude_addons") && script_path.begins_with("res://addons/")) {
 		return;
 	}
 	MyGDScriptWarning::WarnLevel warn_level = (MyGDScriptWarning::WarnLevel)(int)GLOBAL_GET(MyGDScriptWarning::get_settings_path_from_code(p_code));
@@ -1498,8 +1498,8 @@ MyGDScriptParser::EnumNode *MyGDScriptParser::parse_enum(bool p_is_static) {
 	HashMap<StringName, int> elements;
 
 #ifdef DEBUG_ENABLED
-	List<MethodInfo> gdscript_funcs;
-	MyGDScriptLanguage::get_singleton()->get_public_functions(&gdscript_funcs);
+	List<MethodInfo> my_gdscript_funcs;
+	MyGDScriptLanguage::get_singleton()->get_public_functions(&my_gdscript_funcs);
 #endif
 
 	do {

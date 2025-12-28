@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_extend_parser.h                                              */
+/*  my_gdscript_extend_parser.h                                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "../gdscript_parser.h"
+#include "../my_gdscript_parser.h"
 #include "godot_lsp.h"
 
 #include "core/variant/variant.h"
@@ -62,7 +62,7 @@ typedef HashMap<String, const LSP::DocumentSymbol *> ClassMembers;
  *   	* LSP: tab is single char
  *
  * Example:
- * ```gdscript
+ * ```my_gdscript
  * →→var my_value = 42
  * ```
  * `_` is at:

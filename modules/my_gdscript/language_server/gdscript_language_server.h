@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_language_server.h                                            */
+/*  my_gdscript_language_server.h                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript_language_protocol.h"
+#include "my_gdscript_language_protocol.h"
 
 #include "editor/plugins/editor_plugin.h"
 

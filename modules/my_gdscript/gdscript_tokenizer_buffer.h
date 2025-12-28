@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  gdscript_tokenizer_buffer.h                                           */
+/*  my_gdscript_tokenizer_buffer.h                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "gdscript_tokenizer.h"
+#include "my_gdscript_tokenizer.h"
 
 class MyGDScriptTokenizerBuffer : public MyGDScriptTokenizer {
 public:

@@ -30,23 +30,23 @@
 
 #include "register_types.h"
 
-#include "gdscript.h"
-#include "gdscript_cache.h"
-#include "gdscript_parser.h"
-#include "gdscript_tokenizer_buffer.h"
-#include "gdscript_utility_functions.h"
+#include "my_gdscript.h"
+#include "my_gdscript_cache.h"
+#include "my_gdscript_parser.h"
+#include "my_gdscript_tokenizer_buffer.h"
+#include "my_gdscript_utility_functions.h"
 
 #ifdef TOOLS_ENABLED
-#include "editor/gdscript_highlighter.h"
-#include "editor/gdscript_translation_parser_plugin.h"
+#include "editor/my_gdscript_highlighter.h"
+#include "editor/my_gdscript_translation_parser_plugin.h"
 
 #ifndef GDSCRIPT_NO_LSP
-#include "language_server/gdscript_language_server.h"
+#include "language_server/my_gdscript_language_server.h"
 #endif
 #endif // TOOLS_ENABLED
 
 #ifdef TESTS_ENABLED
-#include "tests/test_gdscript.h"
+#include "tests/test_my_gdscript.h"
 #endif
 
 #include "core/io/file_access.h"
@@ -69,11 +69,11 @@
 MyGDScriptLanguage *script_language_gd = nullptr;
 Ref<ResourceFormatLoaderMyGDScript> resource_loader_gd;
 Ref<ResourceFormatSaverMyGDScript> resource_saver_gd;
-MyGDScriptCache *gdscript_cache = nullptr;
+MyGDScriptCache *my_gdscript_cache = nullptr;
 
 #ifdef TOOLS_ENABLED
 
-Ref<MyGDScriptEditorTranslationParserPlugin> gdscript_translation_parser_plugin;
+Ref<MyGDScriptEditorTranslationParserPlugin> my_gdscript_translation_parser_plugin;
 
 class EditorExportMyGDScript : public EditorExportPlugin {
 	GDCLASS(EditorExportMyGDScript, EditorExportPlugin);
@@ -121,9 +121,9 @@ static void _editor_init() {
 	EditorExport::get_singleton()->add_export_plugin(gd_export);
 
 #ifdef TOOLS_ENABLED
-	Ref<MyGDScriptSyntaxHighlighter> gdscript_syntax_highlighter;
-	gdscript_syntax_highlighter.instantiate();
-	ScriptEditor::get_singleton()->register_syntax_highlighter(gdscript_syntax_highlighter);
+	Ref<MyGDScriptSyntaxHighlighter> my_gdscript_syntax_highlighter;
+	my_gdscript_syntax_highlighter.instantiate();
+	ScriptEditor::get_singleton()->register_syntax_highlighter(my_gdscript_syntax_highlighter);
 #endif
 
 #ifndef GDSCRIPT_NO_LSP
@@ -136,7 +136,7 @@ static void _editor_init() {
 
 #endif // TOOLS_ENABLED
 
-void initialize_gdscript_module(ModuleInitializationLevel p_level) {
+void initialize_my_gdscript_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		GDREGISTER_CLASS(MyGDScript);
 
@@ -149,7 +149,7 @@ void initialize_gdscript_module(ModuleInitializationLevel p_level) {
 		resource_saver_gd.instantiate();
 		ResourceSaver::add_resource_format_saver(resource_saver_gd);
 
-		gdscript_cache = memnew(MyGDScriptCache);
+		my_gdscript_cache = memnew(MyGDScriptCache);
 
 		MyGDScriptUtilityFunctions::register_functions();
 	}
@@ -158,20 +158,20 @@ void initialize_gdscript_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		EditorNode::add_init_callback(_editor_init);
 
-		gdscript_translation_parser_plugin.instantiate();
-		EditorTranslationParser::get_singleton()->add_parser(gdscript_translation_parser_plugin, EditorTranslationParser::STANDARD);
+		my_gdscript_translation_parser_plugin.instantiate();
+		EditorTranslationParser::get_singleton()->add_parser(my_gdscript_translation_parser_plugin, EditorTranslationParser::STANDARD);
 	} else if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 		GDREGISTER_CLASS(MyGDScriptSyntaxHighlighter);
 	}
 #endif // TOOLS_ENABLED
 }
 
-void uninitialize_gdscript_module(ModuleInitializationLevel p_level) {
+void uninitialize_my_gdscript_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		ScriptServer::unregister_language(script_language_gd);
 
-		if (gdscript_cache) {
-			memdelete(gdscript_cache);
+		if (my_gdscript_cache) {
+			memdelete(my_gdscript_cache);
 		}
 
 		if (script_language_gd) {
@@ -190,8 +190,8 @@ void uninitialize_gdscript_module(ModuleInitializationLevel p_level) {
 
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
-		EditorTranslationParser::get_singleton()->remove_parser(gdscript_translation_parser_plugin, EditorTranslationParser::STANDARD);
-		gdscript_translation_parser_plugin.unref();
+		EditorTranslationParser::get_singleton()->remove_parser(my_gdscript_translation_parser_plugin, EditorTranslationParser::STANDARD);
+		my_gdscript_translation_parser_plugin.unref();
 	}
 #endif // TOOLS_ENABLED
 }
@@ -217,9 +217,9 @@ void test_bytecode() {
 	MyGDScriptTests::test(MyGDScriptTests::TestType::TEST_BYTECODE);
 }
 
-REGISTER_TEST_COMMAND("gdscript-tokenizer", &test_tokenizer);
-REGISTER_TEST_COMMAND("gdscript-tokenizer-buffer", &test_tokenizer_buffer);
-REGISTER_TEST_COMMAND("gdscript-parser", &test_parser);
-REGISTER_TEST_COMMAND("gdscript-compiler", &test_compiler);
-REGISTER_TEST_COMMAND("gdscript-bytecode", &test_bytecode);
+REGISTER_TEST_COMMAND("my_gdscript-tokenizer", &test_tokenizer);
+REGISTER_TEST_COMMAND("my_gdscript-tokenizer-buffer", &test_tokenizer_buffer);
+REGISTER_TEST_COMMAND("my_gdscript-parser", &test_parser);
+REGISTER_TEST_COMMAND("my_gdscript-compiler", &test_compiler);
+REGISTER_TEST_COMMAND("my_gdscript-bytecode", &test_bytecode);
 #endif
