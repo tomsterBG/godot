@@ -37,7 +37,7 @@
 		<method name="is_running">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if SkeletonIK is applying IK effects on continues frames to the [Skeleton3D] bones. Returns [code]false[/code] if SkeletonIK is stopped or [method start] was used with the [code]one_time[/code] parameter set to [code]true[/code].
+				Returns [code]true[/code] if SkeletonIK is applying IK effects on continuous frames to the [Skeleton3D] bones. Returns [code]false[/code] if SkeletonIK is stopped or [method start] was used with the [code]one_time[/code] parameter set to [code]true[/code].
 			</description>
 		</method>
 		<method name="start">

@@ -255,7 +255,7 @@
 			<param index="0" name="agent" type="RID" />
 			<param index="1" name="velocity" type="Vector2" />
 			<description>
-				Sets [param velocity] as the new wanted velocity for the specified [param agent]. The avoidance simulation will try to fulfill this velocity if possible but will modify it to avoid collision with other agent's and obstacles. When an agent is teleported to a new position far away use [method agent_set_velocity_forced] instead to reset the internal velocity state.
+				Sets [param velocity] as the new wanted velocity for the specified [param agent]. The avoidance simulation will try to fulfill this velocity if possible but will modify it to avoid collision with other agents and obstacles. When an agent is teleported to a new position far away use [method agent_set_velocity_forced] instead to reset the internal velocity state.
 			</description>
 		</method>
 		<method name="agent_set_velocity_forced">
@@ -736,7 +736,7 @@
 			<param index="0" name="obstacle" type="RID" />
 			<param index="1" name="layers" type="int" />
 			<description>
-				Set the obstacles's [code]avoidance_layers[/code] bitmask.
+				Set the obstacle's [code]avoidance_layers[/code] bitmask.
 			</description>
 		</method>
 		<method name="obstacle_set_map">
@@ -784,7 +784,7 @@
 			<param index="0" name="obstacle" type="RID" />
 			<param index="1" name="vertices" type="PackedVector2Array" />
 			<description>
-				Sets the outline vertices for the obstacle. If the vertices are winded in clockwise order agents will be pushed in by the obstacle, else they will be pushed out.
+				Sets the outline vertices for the obstacle. If the vertices are wound in clockwise order agents will be pushed in by the obstacle, else they will be pushed out.
 			</description>
 		</method>
 		<method name="parse_source_geometry_data">
@@ -1109,7 +1109,7 @@
 			Constant to get the number of navigation mesh polygon edges that are considered connected by edge proximity.
 		</constant>
 		<constant name="INFO_EDGE_FREE_COUNT" value="8" enum="ProcessInfo">
-			Constant to get the number of navigation mesh polygon edges that could not be merged but may be still connected by edge proximity or with links.
+			Constant to get the number of navigation mesh polygon edges that could not be merged but may still be connected by edge proximity or with links.
 		</constant>
 		<constant name="INFO_OBSTACLE_COUNT" value="9" enum="ProcessInfo">
 			Constant to get the number of active navigation obstacles.
