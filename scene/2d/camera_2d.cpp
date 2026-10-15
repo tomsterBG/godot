@@ -131,30 +131,24 @@ Transform2D Camera2D::get_camera_transform() {
 
 	if (!first) {
 		if (anchor_mode == ANCHOR_MODE_DRAG_CENTER) {
+			// Horizontal drag margin constraint.
 			if (drag_horizontal_enabled && !is_part_of_edited_scene() && !drag_horizontal_offset_changed) {
 				camera_pos.x = MIN(camera_pos.x, (new_camera_pos.x + screen_size.x * 0.5 * zoom_scale.x * drag_margin[SIDE_LEFT]));
 				camera_pos.x = MAX(camera_pos.x, (new_camera_pos.x - screen_size.x * 0.5 * zoom_scale.x * drag_margin[SIDE_RIGHT]));
 			} else {
-				if (drag_horizontal_offset < 0) {
-					camera_pos.x = new_camera_pos.x + screen_size.x * 0.5 * drag_margin[SIDE_RIGHT] * drag_horizontal_offset;
-				} else {
-					camera_pos.x = new_camera_pos.x + screen_size.x * 0.5 * drag_margin[SIDE_LEFT] * drag_horizontal_offset;
-				}
-
+				Side side = (drag_horizontal_offset < 0.0) ? SIDE_RIGHT : SIDE_LEFT;
+				camera_pos.x = new_camera_pos.x + screen_size.x * 0.5 * drag_margin[side] * drag_horizontal_offset;
 				drag_horizontal_offset_changed = false;
 			}
 
+			// Vertical drag margin constraint.
 			if (drag_vertical_enabled && !is_part_of_edited_scene() && !drag_vertical_offset_changed) {
 				camera_pos.y = MIN(camera_pos.y, (new_camera_pos.y + screen_size.y * 0.5 * zoom_scale.y * drag_margin[SIDE_TOP]));
 				camera_pos.y = MAX(camera_pos.y, (new_camera_pos.y - screen_size.y * 0.5 * zoom_scale.y * drag_margin[SIDE_BOTTOM]));
 
 			} else {
-				if (drag_vertical_offset < 0) {
-					camera_pos.y = new_camera_pos.y + screen_size.y * 0.5 * drag_margin[SIDE_BOTTOM] * drag_vertical_offset;
-				} else {
-					camera_pos.y = new_camera_pos.y + screen_size.y * 0.5 * drag_margin[SIDE_TOP] * drag_vertical_offset;
-				}
-
+				Side side = (drag_vertical_offset < 0.0) ? SIDE_BOTTOM : SIDE_TOP;
+				camera_pos.y = new_camera_pos.y + screen_size.y * 0.5 * drag_margin[side] * drag_vertical_offset;
 				drag_vertical_offset_changed = false;
 			}
 
@@ -199,8 +193,8 @@ Transform2D Camera2D::get_camera_transform() {
 		if (position_smoothing_enabled && !is_part_of_edited_scene()) {
 			bool physics_process = (process_callback == CAMERA2D_PROCESS_PHYSICS) || is_physics_interpolated_and_enabled();
 			real_t delta = physics_process ? get_physics_process_delta_time() : get_process_delta_time();
-			real_t c = position_smoothing_speed * delta;
-			smoothed_camera_pos = ((camera_pos - smoothed_camera_pos) * c) + smoothed_camera_pos;
+			real_t weight = position_smoothing_speed * delta;
+			smoothed_camera_pos = smoothed_camera_pos.lerp(camera_pos, weight);
 			ret_camera_pos = smoothed_camera_pos;
 			//camera_pos=camera_pos*(1.0-position_smoothing_speed)+new_camera_pos*position_smoothing_speed;
 		} else {
@@ -572,18 +566,6 @@ void Camera2D::_make_current(Object *p_which) {
 	}
 }
 
-void Camera2D::set_limit_rect(const Rect2i &p_limit_rect) {
-	const Point2i limit_rect_end = p_limit_rect.get_end();
-	set_limit(SIDE_LEFT, p_limit_rect.position.x);
-	set_limit(SIDE_TOP, p_limit_rect.position.y);
-	set_limit(SIDE_RIGHT, limit_rect_end.x);
-	set_limit(SIDE_BOTTOM, limit_rect_end.y);
-}
-
-Rect2i Camera2D::get_limit_rect() const {
-	return Rect2i(limit[SIDE_LEFT], limit[SIDE_TOP], limit[SIDE_RIGHT] - limit[SIDE_LEFT], limit[SIDE_BOTTOM] - limit[SIDE_TOP]);
-}
-
 void Camera2D::make_current() {
 	ERR_FAIL_COND(!enabled || !is_inside_tree());
 	get_tree()->call_group(group_name, "_make_current", this);
@@ -618,6 +600,18 @@ bool Camera2D::is_current() const {
 		return viewport->get_camera_2d() == this;
 	}
 	return false;
+}
+
+void Camera2D::set_limit_rect(const Rect2i &p_limit_rect) {
+	const Point2i limit_rect_end = p_limit_rect.get_end();
+	set_limit(SIDE_LEFT, p_limit_rect.position.x);
+	set_limit(SIDE_TOP, p_limit_rect.position.y);
+	set_limit(SIDE_RIGHT, limit_rect_end.x);
+	set_limit(SIDE_BOTTOM, limit_rect_end.y);
+}
+
+Rect2i Camera2D::get_limit_rect() const {
+	return Rect2i(limit[SIDE_LEFT], limit[SIDE_TOP], limit[SIDE_RIGHT] - limit[SIDE_LEFT], limit[SIDE_BOTTOM] - limit[SIDE_TOP]);
 }
 
 void Camera2D::set_limit(Side p_side, int p_limit) {
